@@ -1,0 +1,557 @@
+---
+title: "ANOVA in Gains for gain flow (debate) (gain flow (debate))"
+author: Geiser C. Challco <geiser@alumni.usp.br>
+comment: Teste ANCOVA para determinar se houve diferenças significativas
+         na gain flow (debate) (medido usando pre- e pos-testes).
+         
+         ANCOVA test to determine whether there were significant differences
+         in gain flow (debate) (measured using pre- and post-tests).
+         
+         Author - Geiser C. Challco <geiser@alumni.usp.br>
+         
+         Shiny-Statistic is distributed in the hope that it will be useful,
+         but WITHOUT ANY WARRANTY; without even the implied warranty of
+         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+         GNU General Public License for more details.
+         
+         You should have received a copy of the GNU General Public License.
+         This file is  generate using Shiny-Statistic app (https://github.com/geiser/rshinystatistics)
+         If not, see <https://www.gnu.org/licenses/>.
+output:
+  github_document:
+    toc: true
+  word_document:
+    toc: true
+  html_document:
+    toc: true
+fontsize: 10pt
+---
+
+
+**NOTE**
+
+ - Teste ANOVA para determinar se houve diferenças significativas
+no gain flow (debate) (medido usando a diferença entre post-test e pre-testes).
+ - ANOVA test to determine whether there were significant differences
+in gain flow (debate) (measured using the difference between post-test and pre-tests).
+
+```{r setup, include=FALSE}
+# Install and Load Packages
+if (!'remotes' %in% rownames(installed.packages())) install.packages('remotes')
+if (!"rshinystatistics" %in% rownames(installed.packages())) {
+  remotes::install_github("geiser/rshinystatistics")
+} else if (packageVersion("rshinystatistics") < "0.0.0.9900") {
+  remotes::install_github("geiser/rshinystatistics")
+}
+
+wants <- c('ggplot2','ggpubr','rshinystatistics','utils','randomcoloR')
+has <- wants %in% rownames(installed.packages())
+if (any(!has)) install.packages(wants[!has])
+
+library(readxl)
+
+library(shiny)
+library(esquisse)
+library(scales)
+library(knitr)
+library(rmarkdown)
+
+library(utils)
+library(ggpubr)
+library(ggplot2)
+library(randomcoloR)
+
+library(dplyr)
+
+library(rshinystatistics)
+```
+
+```{r, include=FALSE, purl=FALSE}
+options(knitr.kable.NA = '')
+opts_chunk$set(echo = FALSE)
+defaultW <- getOption("warn")
+options(warn = -1)
+```
+
+```{r, include=FALSE}
+# Setting Initial Variables
+dv = "gain.flow.debat"
+
+fatores2 <- c("Sexo","Zona","Cor.Raca")
+lfatores2 <- as.list(fatores2)
+names(lfatores2) <- fatores2
+
+fatores1 <- c("grupo", fatores2)
+lfatores1 <- as.list(fatores1)
+names(lfatores1) <- fatores1
+
+lfatores <- c(lfatores1)
+
+# ..
+
+gdat <- read_excel("data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
+
+gdat <- gdat[which(gdat$Serie == "1 ano"),]
+
+dat <- gdat
+dat$grupo <- factor(dat[["WG.Grupo"]], c("Controle","Experimental"))
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], sort(unique(dat[[coln]])[!is.na(unique(dat[[coln]]))]))
+}
+dat <- dat[which(!is.na(dat[[dv]])),]
+dat <- dat[,c("id",names(lfatores),dv)]
+
+color <- list()
+color[["grupo"]] = c("#bcbd22","#008000")
+color[["Sexo"]] = c("#FF007F","#4D4DFF")
+color[["Zona"]] = c("#AA00FF","#00CCCC")
+color[["Cor.Raca"]] = c(
+  "Parda"="#b97100","Indígena"="#9F262F",
+  "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
+)
+
+color[["grupo:Sexo"]] = c(
+  "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
+  "Experimental:F"="#FF007F", "Experimental:M"="#4D4DFF",
+  "Controle.F"="#ff99cb", "Controle.M"="#b7b7ff",
+  "Experimental.F"="#FF007F", "Experimental.M"="#4D4DFF"
+)
+color[["grupo:Zona"]] = c(
+  "Controle:Rural"="#b2efef","Controle:Urbana"="#e5b2ff",
+  "Experimental:Rural"="#00CCCC", "Experimental:Urbana"="#AA00FF",
+  "Controle.Rural"="#b2efef","Controle.Urbana"="#e5b2ff",
+  "Experimental.Rural"="#00CCCC", "Experimental.Urbana"="#AA00FF"
+)
+color[["grupo:Cor.Raca"]] = c(
+    "Controle:Parda"="#e3c699", "Experimental:Parda"="#b97100",
+    "Controle:Indígena"="#e2bdc0", "Experimental:Indígena"="#9F262F",
+    "Controle:Branca"="#c0e8cb", "Experimental:Branca"="#87c498",
+    "Controle:Preta"="#dad9d9", "Experimental:Preta"="#848283",
+    "Controle:Amarela"="#eee3a4", "Experimental:Amarela"="#D6B91C",
+    
+    "Controle.Parda"="#e3c699", "Experimental.Parda"="#b97100",
+    "Controle.Indígena"="#e2bdc0", "Experimental.Indígena"="#9F262F",
+    "Controle.Branca"="#c0e8cb", "Experimental.Branca"="#87c498",
+    "Controle.Preta"="#dad9d9", "Experimental.Preta"="#848283",
+    "Controle.Amarela"="#eee3a4", "Experimental.Amarela"="#D6B91C"
+)
+
+
+for (coln in c("vocab","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","leitura.compreensao")) {
+  color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  color[[paste0("grupo:",coln,".quintile")]] = c(
+    "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
+    "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
+    "Experimental.3rd quintile"="#8fce00", "Controle.3rd quintile"="#ddf0b2",
+    "Experimental.4th quintile"="#0000FF", "Controle.4th quintile"="#b2b2ff",
+    "Experimental.5th quintile"="#4000BF", "Controle.5th quintile"="#b299e5",
+    
+    "Experimental:1st quintile"="#BF0040", "Controle:1st quintile"="#d8668c",
+    "Experimental:2nd quintile"="#FF0000", "Controle:2nd quintile"="#ff7f7f",
+    "Experimental:3rd quintile"="#8fce00", "Controle:3rd quintile"="#ddf0b2",
+    "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
+    "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
+}
+
+
+for (f in c("grupo", names(lfatores))) {
+  if (is.null(color[[f]]) && length(unique(dat[[f]])) > 0) 
+      color[[f]] <- distinctColorPalette(length(unique(dat[[f]])))
+}
+for (f in c(fatores2)) {
+  if (is.null(color[[paste0("grupo:",f)]]) && length(unique(dat[[f]])) > 0)
+    color[[paste0("grupo:",f)]] <- distinctColorPalette(length(unique(dat[["grupo"]]))*length(unique(dat[[f]])))
+}
+```
+
+# Descriptive Statistics of Initial Data
+
+```{r, include=FALSE}
+df <- do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
+  if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    get.descriptives(dat, dv, c("grupo", f))
+}))
+(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+# Checking of Assumptions
+
+## Assumption: Normality distribution of data
+
+```{r, echo=FALSE, include=FALSE}
+(df <- do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
+  if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    normality.test.by.residual(dat,dv,c("grupo", f))
+})))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df)
+```
+
+## Assumption: Homogeneity of data distribution
+
+```{r, echo=FALSE, include=FALSE}
+(df <- do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
+  if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    homogeneity.test(dat[which(!is.na(dat[[f]])),],dv,c("grupo",f))
+})))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df)
+```
+
+# Computation of ANCOVA test and Pairwise Comparison
+
+## ANCOVA tests for one factor
+
+```{r, echo=FALSE, include=FALSE}
+aovs1 <- lapply(lfatores1, FUN = function(x) {
+  aov = anova.test(dat[!is.na(dat[[x]]),],dv,x,type=2)[[dv]]
+  if (!is.null(aov))
+    cbind(formula=rep(paste0("gain.flow.debat~",x),nrow(aov)),aov)
+})
+
+aov1 <- do.call(rbind, aovs1)
+row.names(aov1) <- c()
+(aov1 <- aov1[!duplicated(aov1$Effect),])
+```
+
+```{r, echo=FALSE, purl=FALSE}
+df <- round.pval(aov1)
+kable(df[,c("Effect","DFn","DFd","SSn","SSd","F","p","ges","p<.05")], digits=3)
+```
+
+## ANCOVA tests for two factors
+
+```{r, echo=FALSE, include=FALSE}
+aovs2 <- lapply(lfatores2, FUN = function(x) {
+  tdat <- dat[!is.na(dat[[x]]),]
+  if (length(unique(tdat$grupo)) >= 2 &&  length(unique(tdat[[x]])) >= 2) {
+    aov = anova.test(tdat,dv,c("grupo",x),type=2)[[dv]]
+    if (!is.null(aov))
+      return(cbind(formula=rep(paste0("gain.flow.debat~grupo","*",x),nrow(aov)), aov))  
+  }
+})
+
+aov2 <- do.call(rbind, aovs2)
+row.names(aov2) <- c()
+(aov2 <- aov2[!duplicated(aov2$Effect) & !aov2$Effect %in% fatores1,])
+```
+
+```{r, echo=FALSE, purl=FALSE}
+df <- round.pval(aov2)
+kable(df[,c("Effect","DFn","DFd","SSn","SSd","F","p","ges","p<.05")], digits=3)
+```
+
+
+
+## Pairwise comparisons for one factor: **grupo** 
+
+```{r, include=FALSE}
+pdat = dat[!is.na(dat[["grupo"]]),]
+pdat = tryCatch(remove_group_data(pdat, "gain.flow.debat", c("grupo")), error = function(e) NULL)
+
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1) {
+  pwc = anova.pwc(pdat, "gain.flow.debat", "grupo")
+  (apa <- get.anova.emmeans.with.ds(pwc, pdat, "gain.flow.debat", c("grupo"), "apa-format"))
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1)
+  kable(apa, digits = 3)
+```
+
+```{r, include=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1) {
+  pdf <- get.anova.pwc.table(pwc, only.sig = F)
+  (pdf <- pdf[!is.na(pdf$p.adj),])
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1) {
+  pdf <- round.pval(pdf)
+  kable(pdf[,c(".y.","group1","group2","estimate","conf.low",
+               "conf.high","se","statistic","p","p.adj","p.adj.signif")], digits = 3)
+}
+```
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1)
+  plots <- oneWayAnovaPlots(pdat, "gain.flow.debat", "grupo", aov1, pwc$gain.flow.debat,
+                            addParam = c("mean_se"), font.label.size=10,
+                            step.increase=0.05, p.label="p.adj",
+                            subtitle = which(aov1$Effect == "grupo"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["grupo"]]$data)))
+  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+
+```{r}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1)
+#  plots <- oneWayAncovaBoxPlots(
+#    pdat, "gain.flow.debat", "grupo", aov1, pwc$gain.flow.debat,",
+#    theme = "classic", color = color[["grupo"]],
+#    subtitle = which(aov1$Effect == "grupo"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1)
+#  plots[["grupo"]] + ggplot2::ylab("gain flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1)
+#  plots <- oneWayAncovaBoxPlots(
+#    pdat.long, "gain.flow.debat", "grupo", aov1, pwc.long, pre.post = "time",
+#    theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width=10, fig.height=6}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1)
+#  plots[["grupo"]] + ggplot2::ylab("gain flow (debate)")
+```
+
+
+
+## Pairwise comparisons for two factors
+
+
+
+### factores: **grupo:Sexo**
+
+```{r, include=FALSE}
+pdat = dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),]
+pdat = tryCatch(remove_group_data(pdat, "gain.flow.debat", c("grupo","Sexo")), error = function(e) NULL)
+
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1) {
+  pwc = anova.pwc(pdat, "gain.flow.debat", c("grupo","Sexo"))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]]))
+    (apa <- get.anova.emmeans.with.ds(pwc, pdat, "gain.flow.debat", c("grupo","Sexo"), "apa-format"))
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1)
+  kable(apa, digits = 3)
+```
+
+```{r, include=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1) {
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]])) {
+    pdf <- get.anova.pwc.table(pwc, only.sig = F)
+    (pdf <- pdf[!is.na(pdf$p.adj),])
+  } else 
+    pdf <- NULL
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdf) && !is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1) {
+  pdf <- round.pval(pdf)
+  kable(pdf[,c(".y.","grupo","Sexo","group1","group2","estimate","conf.low",
+               "conf.high","se","statistic","p","p.adj","p.adj.signif")], digits = 3)
+}
+```
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1)
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]]))
+    plots <- twoWayAnovaPlots(
+      pdat, "gain.flow.debat", c("grupo","Sexo"), aov2, pwc$gain.flow.debat,
+      addParam = c("mean_se"), font.label.size=10,
+      step.increase=0.05, subtitle = which(aov2$Effect == "grupo:Sexo"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["grupo"]]$data)))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]]))
+    plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Sexo"]])
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["Sexo"]]$data)))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]]))
+    plots[["Sexo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1)
+#  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]]))
+#    plots <- twoWayAncovaBoxPlots(
+#      pdat, "gain.flow.debat", c("grupo","Sexo"), aov2, pwc$gain.flow.debat,
+#      theme = "classic", color = color[["grupo:Sexo"]],
+#      subtitle = which(aov2$Effect == "grupo:Sexo"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Sexo"]])) > 1)
+#  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Sexo"]]))
+#    plots[["grupo:Sexo"]] + ggplot2::ylab("gain flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+### factores: **grupo:Zona**
+
+```{r, include=FALSE}
+pdat = dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),]
+pdat = tryCatch(remove_group_data(pdat, "gain.flow.debat", c("grupo","Zona")), error = function(e) NULL)
+
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1) {
+  pwc = anova.pwc(pdat, "gain.flow.debat", c("grupo","Zona"))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]]))
+    (apa <- get.anova.emmeans.with.ds(pwc, pdat, "gain.flow.debat", c("grupo","Zona"), "apa-format"))
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1)
+  kable(apa, digits = 3)
+```
+
+```{r, include=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1) {
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]])) {
+    pdf <- get.anova.pwc.table(pwc, only.sig = F)
+    (pdf <- pdf[!is.na(pdf$p.adj),])
+  } else 
+    pdf <- NULL
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdf) && !is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1) {
+  pdf <- round.pval(pdf)
+  kable(pdf[,c(".y.","grupo","Zona","group1","group2","estimate","conf.low",
+               "conf.high","se","statistic","p","p.adj","p.adj.signif")], digits = 3)
+}
+```
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1)
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]]))
+    plots <- twoWayAnovaPlots(
+      pdat, "gain.flow.debat", c("grupo","Zona"), aov2, pwc$gain.flow.debat,
+      addParam = c("mean_se"), font.label.size=10,
+      step.increase=0.05, subtitle = which(aov2$Effect == "grupo:Zona"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["grupo"]]$data)))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]]))
+    plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Zona"]])
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["Zona"]]$data)))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]]))
+    plots[["Zona"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1)
+#  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]]))
+#    plots <- twoWayAncovaBoxPlots(
+#      pdat, "gain.flow.debat", c("grupo","Zona"), aov2, pwc$gain.flow.debat,
+#      theme = "classic", color = color[["grupo:Zona"]],
+#      subtitle = which(aov2$Effect == "grupo:Zona"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Zona"]])) > 1)
+#  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Zona"]]))
+#    plots[["grupo:Zona"]] + ggplot2::ylab("gain flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+### factores: **grupo:Cor.Raca**
+
+```{r, include=FALSE}
+pdat = dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),]
+pdat = tryCatch(remove_group_data(pdat, "gain.flow.debat", c("grupo","Cor.Raca")), error = function(e) NULL)
+
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1) {
+  pwc = anova.pwc(pdat, "gain.flow.debat", c("grupo","Cor.Raca"))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]]))
+    (apa <- get.anova.emmeans.with.ds(pwc, pdat, "gain.flow.debat", c("grupo","Cor.Raca"), "apa-format"))
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1)
+  kable(apa, digits = 3)
+```
+
+```{r, include=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1) {
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]])) {
+    pdf <- get.anova.pwc.table(pwc, only.sig = F)
+    (pdf <- pdf[!is.na(pdf$p.adj),])
+  } else 
+    pdf <- NULL
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdf) && !is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1) {
+  pdf <- round.pval(pdf)
+  kable(pdf[,c(".y.","grupo","Cor.Raca","group1","group2","estimate","conf.low",
+               "conf.high","se","statistic","p","p.adj","p.adj.signif")], digits = 3)
+}
+```
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1)
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]]))
+    plots <- twoWayAnovaPlots(
+      pdat, "gain.flow.debat", c("grupo","Cor.Raca"), aov2, pwc$gain.flow.debat,
+      addParam = c("mean_se"), font.label.size=10,
+      step.increase=0.05, subtitle = which(aov2$Effect == "grupo:Cor.Raca"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["grupo"]]$data)))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]]))
+    plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Cor.Raca"]])
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(pdat) && !is.null(nrow(plots[["Cor.Raca"]]$data)))
+  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]]))
+    plots[["Cor.Raca"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1)
+#  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]]))
+#    plots <- twoWayAncovaBoxPlots(
+#      pdat, "gain.flow.debat", c("grupo","Cor.Raca"), aov2, pwc$gain.flow.debat,
+#      theme = "classic", color = color[["grupo:Cor.Raca"]],
+#      subtitle = which(aov2$Effect == "grupo:Cor.Raca"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+#if (!is.null(pdat) && length(unique(pdat[["grupo"]])) > 1 && length(unique(pdat[["Cor.Raca"]])) > 1)
+#  if (!is.null(pwc[["gain.flow.debat"]][["grupo"]]) || !is.null(pwc[["gain.flow.debat"]][["Cor.Raca"]]))
+#    plots[["grupo:Cor.Raca"]] + ggplot2::ylab("gain flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```

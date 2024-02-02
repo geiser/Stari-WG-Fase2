@@ -1,0 +1,98 @@
+
+
+#{{ title }} 
+
+```{r, include=FALSE}
+pdat = dat[!is.na(dat[["{{ iv }}"]]),]
+pdat = tryCatch(remove_group_data(pdat, "{{ dv }}", c("{{ iv }}")), error = function(e) NULL)
+
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1) {
+  pwc = ancova.pwc(pdat, "{{ dv }}", "{{ iv }}", "{{ covar }}", pwc.covar=T)
+  (apa <- get.ancova.emmeans.with.ds(pwc, pdat, "{{ dv }}", c("{{ iv }}"), "apa-format", covar = "{{ covar }}"))
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1)
+  kable(apa, digits = 3)
+```
+
+```{r, include=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1) {
+  pdf <- get.ancova.pwc.table(pwc, only.sig = F)
+  (pdf <- pdf[!is.na(pdf$p.adj),])
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1) {
+  pdf <- round.pval(pdf)
+  kable(pdf[,c(".y.","group1","group2","estimate","conf.low",
+               "conf.high","se","statistic","p","p.adj","p.adj.signif")], digits = 3)
+}
+```
+
+
+```{r, include=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1) {
+  pdat.long = dat.long[!is.na(dat.long[["{{ iv }}"]]),]
+  pdat.long = remove_group_data(pdat.long, "{{ pivot.value }}", c("{{ pivot.key }}","{{ iv }}"))
+  
+  pwc.long = anova.pwc(pdat.long, "{{ pivot.value }}", c("{{ pivot.key }}","{{ iv }}"))
+  pwc.long = pwc.long${{ pivot.value }}${{ pivot.key }}
+  (pdf.long <- pwc.long[!is.na(pwc.long$p.adj),])
+}
+```
+
+```{r, echo=FALSE, purl=FALSE}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1) {
+  pdf.long <- round.pval(pdf.long)
+  kable(pdf.long[,c(".y.","{{ iv }}","group1","group2","estimate","conf.low","conf.high",
+                    "se","statistic","p","p.adj","p.adj.signif")], digits = 3)
+}
+```
+
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1)
+  plots <- oneWayAncovaPlots(pdat, "{{ dv }}", "{{ iv }}", {{ aov }}, pwc${{ dv }},
+                             addParam = c("mean_se"), font.label.size=10,
+                             step.increase=0.05, p.label="p.adj",
+                             subtitle = which({{ aov }}$Effect == "{{ iv }}"))
+```
+
+```{r, dpi=300, fig.width={{ fig.width }}, fig.height={{ fig.height }}}
+if (!is.null(pdat) && !is.null(nrow(plots[["{{ iv }}"]]$data)))
+  plots[["{{ iv }}"]] + ggplot2::scale_color_manual(values = color[["{{ iv }}"]])
+```
+
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1)
+  plots <- oneWayAncovaBoxPlots(
+    pdat, "{{ dv }}", "{{ iv }}", {{ aov }}, pwc${{ dv }}, covar = "{{ covar }}",
+    theme = "classic", color = color[["{{ iv }}"]],
+    subtitle = which({{ aov }}$Effect == "{{ iv }}"))
+```
+
+```{r, dpi=300, fig.width={{ fig.width.bar }}, fig.height={{ fig.height.bar }}}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1)
+  plots[["{{ iv }}"]] + ggplot2::ylab("{{ ylab }}") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1)
+  plots <- oneWayAncovaBoxPlots(
+    pdat.long, "{{ pivot.value }}", "{{ iv }}", {{ aov }}, pwc.long, pre.post = "{{ pivot.key }}",
+    theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width={{ fig.width.pbar }}, fig.height={{ fig.height.pbar }}}
+if (!is.null(pdat) && length(unique(pdat[["{{ iv }}"]])) > 1)
+  plots[["{{ iv }}"]] + ggplot2::ylab("{{ ylab }}")
+```
+
+

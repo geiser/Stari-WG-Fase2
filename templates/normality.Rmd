@@ -1,0 +1,16 @@
+
+
+#{{ title }}
+
+```{r, echo=FALSE, include=FALSE}
+(df <- do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
+  df <- dat[["{{ var }}"]]
+  if (nrow(df) > 0 && sum(!is.na(unique(df[[f]]))) > 1)
+    normality.test.by.residual(df, "{{ var }}.pos", c("grupo", f), c(), "{{ var }}.pre")
+})))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df)
+```
+
