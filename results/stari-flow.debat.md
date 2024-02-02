@@ -129,11 +129,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -167,16 +167,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -199,9 +199,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | flow.debat | Controle     | Urbana | pre    | pos    |   -0.214 |   -0.733 |     0.305 | 0.263 |    -0.814 | 0.417 | 0.417 | ns           |
 | flow.debat | Experimental | Rural  | pre    | pos    |    0.033 |   -0.257 |     0.322 | 0.147 |     0.222 | 0.824 | 0.824 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -239,8 +239,8 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-59-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-59-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
+![](stari-flow.debat_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->

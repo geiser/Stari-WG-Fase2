@@ -155,11 +155,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -193,16 +193,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -234,16 +234,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -274,6 +274,6 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Controle     | 5th quintile                 | pre    | pos    |    3.143 |    0.948 |     5.337 | 1.096 |     2.867 | 0.006 | 0.006 | \*\*         |
 | leitura.compreensao | Experimental | 3rd quintile                 | pre    | pos    |    0.750 |   -1.303 |     2.803 | 1.026 |     0.731 | 0.468 | 0.468 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-8-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->

@@ -106,7 +106,7 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-gain.leitura.compreensao-Serie-7-ano-gain_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](stari-gain.leitura.compreensao-Serie-7-ano-gain_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -129,12 +129,12 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-gain.leitura.compreensao-Serie-7-ano-gain_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](stari-gain.leitura.compreensao-Serie-7-ano-gain_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-gain.leitura.compreensao-Serie-7-ano-gain_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](stari-gain.leitura.compreensao-Serie-7-ano-gain_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 

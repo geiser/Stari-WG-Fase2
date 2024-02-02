@@ -125,11 +125,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -154,9 +154,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | flow.debat | Controle     | M    | pre    | pos    |    0.127 |   -0.492 |     0.746 | 0.306 |     0.415 | 0.680 | 0.680 | ns           |
 | flow.debat | Experimental | M    | pre    | pos    |    0.113 |   -0.544 |     0.770 | 0.324 |     0.348 | 0.730 | 0.730 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-flow.debat-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 

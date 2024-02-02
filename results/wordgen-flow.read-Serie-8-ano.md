@@ -129,11 +129,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -167,16 +167,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -208,16 +208,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -240,6 +240,6 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | flow.read | Experimental | Branca   | pre    | pos    |   -0.085 |   -0.409 |     0.239 | 0.164 |    -0.517 | 0.606 | 0.606 | ns           |
 | flow.read | Experimental | Parda    | pre    | pos    |    0.087 |   -0.112 |     0.287 | 0.101 |     0.864 | 0.389 | 0.389 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
+![](wordgen-flow.read-Serie-8-ano_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->

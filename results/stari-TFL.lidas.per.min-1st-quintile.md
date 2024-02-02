@@ -140,13 +140,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | TFL.lidas.per.min | Controle     | pre    | pos    |    -40.2 |  -56.749 |   -23.651 |  8.160 |    -4.927 | \<0.001 | \<0.001 | \*\*\*\*     |
 | TFL.lidas.per.min | Experimental | pre    | pos    |    -37.4 |  -66.064 |    -8.736 | 14.133 |    -2.646 | 0.012   | 0.012   | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-1st-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 

@@ -127,11 +127,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -156,9 +156,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | flow.math | Controle     | M    | pre    | pos    |    0.089 |   -0.422 |     0.600 | 0.254 |     0.351 | 0.728 | 0.728 | ns           |
 | flow.math | Experimental | M    | pre    | pos    |    0.278 |   -0.294 |     0.849 | 0.284 |     0.980 | 0.333 | 0.333 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -181,8 +181,8 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | flow.math | Controle     | Urbana | pre    | pos    |    0.089 |   -0.623 |     0.800 | 0.347 |     0.256 | 0.800 | 0.800 | ns           |
 | flow.math | Experimental | Rural  | pre    | pos    |    0.222 |   -0.427 |     0.872 | 0.317 |     0.701 | 0.489 | 0.489 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](stari-flow.math-Serie-8-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**

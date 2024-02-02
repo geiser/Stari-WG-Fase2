@@ -143,11 +143,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -172,9 +172,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | TFL.lidas.per.min | Controle     | M    | pre    | pos    |  -11.455 |  -32.162 |     9.253 | 10.287 |    -1.113 | 0.271 | 0.271 | ns           |
 | TFL.lidas.per.min | Experimental | M    | pre    | pos    |  -11.571 |  -37.529 |    14.386 | 12.896 |    -0.897 | 0.374 | 0.374 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-Serie-7-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 

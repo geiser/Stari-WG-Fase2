@@ -157,11 +157,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -195,16 +195,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -245,6 +245,6 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Controle     | 5th quintile                 | pre    | pos    |    2.000 |   -0.322 |     4.322 | 1.162 |     1.721 | 0.090 | 0.090 | ns           |
 | leitura.compreensao | Experimental | 3rd quintile                 | pre    | pos    |    0.111 |   -1.785 |     2.007 | 0.949 |     0.117 | 0.907 | 0.907 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-leitura.compreensao-Serie-9-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->

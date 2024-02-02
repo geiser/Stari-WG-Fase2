@@ -127,11 +127,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -165,16 +165,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -197,8 +197,8 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | flow.math | Controle     | Urbana | pre    | pos    |   -0.674 |   -1.219 |    -0.128 | 0.274 |    -2.462 | 0.016 | 0.016 | \*           |
 | flow.math | Experimental | Rural  | pre    | pos    |    0.178 |   -0.310 |     0.666 | 0.245 |     0.726 | 0.470 | 0.470 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](stari-flow.math-Serie-6-ano_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**

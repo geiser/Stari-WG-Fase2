@@ -151,11 +151,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -180,9 +180,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | M    | pre    | pos    |   -0.632 |   -5.063 |     3.800 | 2.214 |    -0.285 | 0.776 | 0.776 | ns           |
 | vocab | Experimental | M    | pre    | pos    |   -2.000 |  -10.638 |     6.638 | 4.315 |    -0.463 | 0.645 | 0.645 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -215,6 +215,6 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | 5th quintile   | pre    | pos    |    5.125 |   -0.065 |    10.315 | 2.584 |     1.983 | 0.053 | 0.053 | ns           |
 | vocab | Experimental | 3rd quintile   | pre    | pos    |   -1.429 |   -6.977 |     4.120 | 2.762 |    -0.517 | 0.607 | 0.607 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-vocab-Serie-9-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->

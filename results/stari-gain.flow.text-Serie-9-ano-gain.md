@@ -102,7 +102,7 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-gain.flow.text-Serie-9-ano-gain_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](stari-gain.flow.text-Serie-9-ano-gain_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 

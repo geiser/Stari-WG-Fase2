@@ -150,13 +150,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | pre    | pos    |   -2.128 |   -3.477 |    -0.779 | 0.686 |    -3.101 | 0.002 | 0.002 | \*\*         |
 | vocab | Experimental | pre    | pos    |   -0.868 |   -2.083 |     0.347 | 0.618 |    -1.404 | 0.161 | 0.161 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -187,13 +187,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Experimental | F    | pre    | pos    |   -2.367 |   -4.143 |    -0.591 | 0.903 |    -2.621 | 0.009 | 0.009 | \*\*         |
 | vocab | Experimental | M    | pre    | pos    |    0.421 |   -1.225 |     2.068 | 0.837 |     0.503 | 0.615 | 0.615 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -222,13 +222,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Experimental | Rural  | pre    | pos    |   -0.640 |   -2.281 |     1.001 | 0.834 |    -0.768 | 0.443 | 0.443 | ns           |
 | vocab | Experimental | Urbana | pre    | pos    |   -1.185 |   -3.418 |     1.048 | 1.134 |    -1.045 | 0.297 | 0.297 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -257,13 +257,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Experimental | Branca   | pre    | pos    |    4.429 |   -0.675 |     9.532 | 2.585 |     1.713 | 0.089 | 0.089 | ns           |
 | vocab | Experimental | Parda    | pre    | pos    |   -1.944 |   -4.195 |     0.306 | 1.140 |    -1.706 | 0.090 | 0.090 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
 
 ### factores: **grupo:Serie**
 
@@ -324,10 +324,10 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Experimental | 8 ano | pre    | pos    |   -1.107 |   -3.490 |     1.276 | 1.212 |    -0.914 | 0.362 | 0.362 | ns           |
 | vocab | Experimental | 9 ano | pre    | pos    |   -0.417 |   -4.057 |     3.224 | 1.851 |    -0.225 | 0.822 | 0.822 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
+![](wordgen-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->

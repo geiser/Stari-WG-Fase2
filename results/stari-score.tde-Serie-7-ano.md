@@ -146,11 +146,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -175,9 +175,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Controle     | M    | pre    | pos    |    4.667 |   -2.900 |    12.233 | 3.792 |     1.231 | 0.223 | 0.223 | ns           |
 | score.tde | Experimental | M    | pre    | pos    |    5.167 |   -6.797 |    17.130 | 5.995 |     0.862 | 0.392 | 0.392 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -204,6 +204,6 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Controle     | 3rd quintile       | pre    | pos    |    7.571 |    0.725 |    14.417 | 3.436 |     2.204 | 0.031 | 0.031 | \*           |
 | score.tde | Experimental | 2nd quintile       | pre    | pos    |    3.778 |   -4.761 |    12.316 | 4.285 |     0.882 | 0.381 | 0.381 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-score.tde-Serie-7-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->

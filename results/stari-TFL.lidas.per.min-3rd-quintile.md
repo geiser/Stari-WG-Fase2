@@ -146,13 +146,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | TFL.lidas.per.min | Controle     | pre    | pos    |  -15.467 |  -25.556 |    -5.377 | 5.028 |    -3.076 | 0.003   | 0.003   | \*\*         |
 | TFL.lidas.per.min | Experimental | pre    | pos    |  -19.308 |  -30.146 |    -8.470 | 5.401 |    -3.575 | \<0.001 | \<0.001 | \*\*\*       |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -183,13 +183,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | TFL.lidas.per.min | Experimental | F    | pre    | pos    |  -16.571 |  -31.270 |    -1.872 | 7.311 |    -2.267 | 0.028 | 0.028 | \*           |
 | TFL.lidas.per.min | Experimental | M    | pre    | pos    |  -22.500 |  -38.377 |    -6.623 | 7.896 |    -2.849 | 0.006 | 0.006 | \*\*         |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](stari-TFL.lidas.per.min-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 

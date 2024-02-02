@@ -158,11 +158,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -196,16 +196,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -230,9 +230,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | TFL.corretas.per.min | Controle     | Parda    | pre    | pos    |   -7.471 |  -22.943 |     8.001 |  7.710 |    -0.969 | 0.337 | 0.337 | ns           |
 | TFL.corretas.per.min | Experimental | Parda    | pre    | pos    |   -5.714 |  -29.826 |    18.397 | 12.016 |    -0.476 | 0.636 | 0.636 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
 
 ### factores: **grupo:TFL.corretas.per.min.quintile**
 
@@ -278,8 +278,8 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-6-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->

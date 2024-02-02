@@ -152,11 +152,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-TFL.corretas.per.min-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-TFL.corretas.per.min-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 

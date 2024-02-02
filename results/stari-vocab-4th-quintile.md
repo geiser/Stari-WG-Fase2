@@ -142,13 +142,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | pre    | pos    |   -0.889 |   -5.170 |     3.393 | 2.102 |    -0.423 | 0.675 | 0.675 | ns           |
 | vocab | Experimental | pre    | pos    |    3.667 |   -0.615 |     7.948 | 2.102 |     1.744 | 0.091 | 0.091 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-vocab-4th-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 

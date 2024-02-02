@@ -145,11 +145,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -183,16 +183,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -217,9 +217,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | Parda    | pre    | pos    |      1.0 |   -4.155 |     6.155 | 2.555 |     0.391 | 0.697 | 0.697 | ns           |
 | vocab | Experimental | Parda    | pre    | pos    |     -3.5 |  -11.089 |     4.089 | 3.760 |    -0.931 | 0.357 | 0.357 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
 
 ### factores: **grupo:vocab.quintile**
 
@@ -248,6 +248,6 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | 3rd quintile   | pre    | pos    |    2.778 |   -0.118 |     5.674 | 1.444 |     1.923 | 0.060 | 0.060 | ns           |
 | vocab | Experimental | 3rd quintile   | pre    | pos    |   -2.200 |   -6.085 |     1.685 | 1.938 |    -1.135 | 0.261 | 0.261 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-vocab-Serie-6-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->

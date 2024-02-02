@@ -144,13 +144,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | pre    | pos    |   -2.107 |   -4.821 |     0.607 | 1.360 |    -1.549 | 0.126 | 0.126 | ns           |
 | vocab | Experimental | pre    | pos    |    0.125 |   -4.953 |     5.203 | 2.545 |     0.049 | 0.961 | 0.961 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -175,13 +175,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | vocab | Controle     | M    | pre    | pos    |   -3.562 |   -7.215 |     0.090 | 1.827 |    -1.950 | 0.056 | 0.056 | ns           |
 | vocab | Experimental | M    | pre    | pos    |    0.000 |   -5.965 |     5.965 | 2.984 |     0.000 | 1.000 | 1.000 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](stari-vocab-2nd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 

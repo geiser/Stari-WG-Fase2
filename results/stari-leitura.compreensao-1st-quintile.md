@@ -143,13 +143,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Controle     | pre    | pos    |   -1.296 |    -2.41 |    -0.183 | 0.558 |    -2.325 | 0.023 | 0.023 | \*           |
 | leitura.compreensao | Experimental | pre    | pos    |   -2.125 |    -4.17 |    -0.080 | 1.024 |    -2.075 | 0.042 | 0.042 | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -174,13 +174,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Controle     | M    | pre    | pos    |   -0.889 |   -2.254 |     0.476 | 0.683 |    -1.301 | 0.198 | 0.198 | ns           |
 | leitura.compreensao | Experimental | M    | pre    | pos    |   -2.125 |   -4.172 |    -0.078 | 1.025 |    -2.074 | 0.042 | 0.042 | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -213,10 +213,10 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Controle     | 9 ano | pre    | pos    |   -1.600 |   -4.363 |     1.163 | 1.374 |    -1.164 | 0.250 | 0.250 | ns           |
 | leitura.compreensao | Experimental | 7 ano | pre    | pos    |   -1.800 |   -4.563 |     0.963 | 1.374 |    -1.310 | 0.196 | 0.196 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
+![](stari-leitura.compreensao-1st-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->

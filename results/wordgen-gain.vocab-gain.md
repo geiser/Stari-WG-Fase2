@@ -108,7 +108,7 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -131,12 +131,12 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -157,12 +157,12 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -190,9 +190,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+![](wordgen-gain.vocab-gain_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->

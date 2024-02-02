@@ -150,13 +150,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Controle     | pre    | pos    |    8.630 |    4.875 |    12.384 | 1.910 |     4.519 | \<0.001 | \<0.001 | \*\*\*\*     |
 | score.tde | Experimental | pre    | pos    |    2.511 |    0.187 |     4.834 | 1.182 |     2.125 | 0.034   | 0.034   | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -187,13 +187,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Experimental | F    | pre    | pos    |    0.623 |   -2.898 |     4.144 | 1.791 |     0.348 | 0.728 | 0.728 | ns           |
 | score.tde | Experimental | M    | pre    | pos    |    3.950 |    0.876 |     7.024 | 1.564 |     2.526 | 0.012 | 0.012 | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -222,13 +222,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Experimental | Rural  | pre    | pos    |    2.219 |   -1.055 |     5.493 | 1.663 |     1.334 | 0.183   | 0.183   | ns           |
 | score.tde | Experimental | Urbana | pre    | pos    |    4.600 |    0.459 |     8.741 | 2.104 |     2.186 | 0.03    | 0.03    | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -257,13 +257,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Experimental | Branca   | pre    | pos    |    0.200 |   -7.933 |     8.333 | 4.115 |     0.049 | 0.961 | 0.961 | ns           |
 | score.tde | Experimental | Parda    | pre    | pos    |    4.294 |   -1.108 |     9.696 | 2.733 |     1.571 | 0.118 | 0.118 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
 
 ### factores: **grupo:Serie**
 
@@ -324,10 +324,10 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Experimental | 8 ano | pre    | pos    |   -7.632 |  -13.437 |    -1.827 | 2.952 |    -2.585 | 0.01    | 0.01    | \*           |
 | score.tde | Experimental | 9 ano | pre    | pos    |   -1.594 |   -6.067 |     2.879 | 2.275 |    -0.701 | 0.484   | 0.484   | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
+![](wordgen-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->

@@ -150,13 +150,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Controle     | pre    | pos    |    2.857 |   -0.431 |     6.146 | 1.663 |     1.718 | 0.088 | 0.088 | ns           |
 | score.tde | Experimental | pre    | pos    |    4.450 |   -0.697 |     9.597 | 2.603 |     1.710 | 0.090 | 0.090 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -187,13 +187,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Experimental | F    | pre    | pos    |    2.200 |   -5.094 |     9.494 | 3.687 |     0.597 | 0.552 | 0.552 | ns           |
 | score.tde | Experimental | M    | pre    | pos    |    6.700 |   -0.594 |    13.994 | 3.687 |     1.817 | 0.071 | 0.071 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -248,10 +248,10 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Experimental | 8 ano | pre    | pos    |    6.167 |   -3.198 |    15.531 | 4.730 |     1.304 | 0.195 | 0.195 | ns           |
 | score.tde | Experimental | 9 ano | pre    | pos    |    2.500 |   -6.864 |    11.864 | 4.730 |     0.528 | 0.598 | 0.598 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
+![](stari-score.tde-3rd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->

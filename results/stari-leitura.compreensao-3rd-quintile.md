@@ -150,13 +150,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Controle     | pre    | pos    |    1.167 |    0.354 |     1.979 | 0.412 |     2.834 | 0.005 | 0.005 | \*\*         |
 | leitura.compreensao | Experimental | pre    | pos    |   -0.294 |   -1.318 |     0.730 | 0.519 |    -0.567 | 0.572 | 0.572 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -183,13 +183,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Experimental | F    | pre    | pos    |   -0.400 |   -1.950 |     1.150 | 0.785 |    -0.509 | 0.611 | 0.611 | ns           |
 | leitura.compreensao | Experimental | M    | pre    | pos    |   -0.211 |   -1.588 |     1.167 | 0.698 |    -0.302 | 0.763 | 0.763 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -214,13 +214,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Experimental | Rural  | pre    | pos    |   -1.300 |   -2.513 |    -0.087 | 0.613 |    -2.122 | 0.036   | 0.036   | \*           |
 | leitura.compreensao | Experimental | Urbana | pre    | pos    |    2.833 |    0.618 |     5.049 | 1.119 |     2.533 | 0.013   | 0.013   | \*           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
 
 ### factores: **grupo:Cor.Raca**
 
@@ -241,13 +241,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Experimental | Branca   | pre    | pos    |   -0.667 |   -3.242 |     1.908 | 1.294 |    -0.515 | 0.608 | 0.608 | ns           |
 | leitura.compreensao | Experimental | Parda    | pre    | pos    |   -1.000 |   -2.902 |     0.902 | 0.956 |    -1.046 | 0.298 | 0.298 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
 
 ### factores: **grupo:Serie**
 
@@ -292,10 +292,10 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | leitura.compreensao | Experimental | 8 ano | pre    | pos    |    0.750 |   -1.320 |     2.820 | 1.048 |     0.716 | 0.475 | 0.475 | ns           |
 | leitura.compreensao | Experimental | 9 ano | pre    | pos    |    0.111 |   -1.840 |     2.063 | 0.988 |     0.112 | 0.911 | 0.911 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-80-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
+![](stari-leitura.compreensao-3rd-quintile_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->

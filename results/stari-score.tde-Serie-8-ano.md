@@ -142,11 +142,11 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Pairwise comparisons for two factors
 
@@ -171,9 +171,9 @@ Geiser C. Challco <geiser@alumni.usp.br>
 | score.tde | Controle     | M    | pre    | pos    |    0.214 |   -7.067 |     7.496 | 3.629 |     0.059 | 0.953 | 0.953 | ns           |
 | score.tde | Experimental | M    | pre    | pos    |    3.750 |   -5.883 |    13.383 | 4.800 |     0.781 | 0.438 | 0.438 | ns           |
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 ### factores: **grupo:Zona**
 
@@ -209,13 +209,13 @@ Geiser C. Challco <geiser@alumni.usp.br>
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
-![](C:/Users/geise/OneDrive/Workspace/WordGen-Stari-2/results/stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](stari-score.tde-Serie-8-ano_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
