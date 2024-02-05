@@ -2,6 +2,8 @@
 
 ## WordGen
 
+Information for CONSORT diagram ([distribution participants](results/wordgen-descriptive.md))
+
 - Vocabulary ([general](results/wordgen-vocab.md); [6th Year Ed](results/wordgen-vocab-Serie-6-ano.md); [7th Year Ed](results/wordgen-vocab-Serie-7-ano.md); [8th Year Ed](results/wordgen-vocab-Serie-6-ano.md); [9th Year Ed](results/wordgen-vocab-Serie-9-ano.md); [1st quintile](results/wordgen-vocab-1st-quintile.md); [2nd quintile](results/wordgen-vocab-2nd-quintile.md); [3rd quintile](results/wordgen-vocab-3rd-quintile.md); [4th quintile](results/wordgen-vocab-4th-quintile.md); [5th quintile](results/wordgen-vocab-5th-quintile.md))
 - Gain Vocabulary ([general](results/wordgen-gain.vocab-gain.md); [6th Year Ed](results/wordgen-gain.vocab-Serie-6-ano-gain.md); [7th Year Ed](results/wordgen-gain.vocab-Serie-7-ano-gain.md); [8th Year Ed](results/wordgen-gain.vocab-Serie-6-ano-gain.md); [9th Year Ed](results/wordgen-gain.vocab-Serie-9-ano-gain.md); [1st quintile](results/wordgen-gain.vocab-1st-quintile-gain.md); [2nd quintile](results/wordgen-gain.vocab-2nd-quintile-gain.md); [3rd quintile](results/wordgen-gain.vocab-3rd-quintile-gain.md); [4th quintile](results/wordgen-gain.vocab-4th-quintile-gain.md); [5th quintile](results/wordgen-gain.vocab-5th-quintile-gain.md))
 

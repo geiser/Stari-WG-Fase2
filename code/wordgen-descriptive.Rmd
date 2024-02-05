@@ -1,0 +1,236 @@
+---
+title: "Basic numbers for CONSORT diagram of WordGen"
+author: Geiser C. Challco <geiser@alumni.usp.br>
+comment: Basic numbers for CONSORT diagram of WordGen.
+         
+         Author - Geiser C. Challco <geiser@alumni.usp.br>
+         
+         Shiny-Statistic is distributed in the hope that it will be useful,
+         but WITHOUT ANY WARRANTY; without even the implied warranty of
+         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+         GNU General Public License for more details.
+         
+         You should have received a copy of the GNU General Public License.
+         This file is  generate using Shiny-Statistic app (https://github.com/geiser/rshinystatistics)
+         If not, see <https://www.gnu.org/licenses/>.
+output:
+  github_document:
+    toc: true
+  word_document:
+    toc: true
+  html_document:
+    toc: true
+fontsize: 10pt
+---
+
+```{r}
+library(knitr)
+library(rmarkdown)
+
+library(readxl)
+
+get_distribution <- function(data, cnames) {
+  do.call(rbind, lapply(cnames, FUN = function(x) {
+    df = as.data.frame(table(data[[x]]))
+    n.na = nrow(data) - sum(df$Freq)
+    df$Pct = round(100*df$Freq/nrow(data), 2)
+
+    df = rbind(data.frame(Var1=paste0("",x), Freq=NA, Pct=NA), df)
+    if (n.na > 0)
+      df = rbind(df, data.frame(
+        Var1="Not declared", Freq=n.na, Pct=round(100*n.na/nrow(data), 2)))
+
+    rbind(df, data.frame(Var1=NA, Freq=NA, Pct=NA))
+  }))
+}
+```
+
+**Note**: Setting Initial Variables
+
+```{r}
+options(knitr.kable.NA = '')
+
+cname0 = c("Sexo", "Zona", "Cor.Raca", "Idade", "Escola", "Serie")
+cnames = c(cname0, "Necessidade.Deficiencia")
+
+data <- read_excel("../data/data.xlsx")
+```
+
+# Enrollment (participant distribution)
+
+```{r}
+wg.dat = data[which(!is.na(data$WG.Grupo)),]
+```
+
+Total of participants: `r nrow(wg.dat)`
+
+```{r}
+df = get_distribution(data, cnames)
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+
+# Allocation (participant distribution)
+
+## Allocation for *Controle* Group
+
+```{r}
+dat.ctr = wg.dat[which(wg.dat$WG.Grupo == "Controle"),]
+```
+
+Participants allocated to controle group: `r nrow(dat.ctr)`
+
+```{r}
+df = get_distribution(dat.ctr, cnames)
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+
+
+## Allocation for *External* Group
+
+```{r}
+dat.exp = wg.dat[which(wg.dat$WG.Grupo == "Experimental"),]
+```
+
+Participants allocated to external group: `r nrow(dat.exp)``
+
+```{r}
+df = get_distribution(dat.exp, cnames)
+```
+
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+
+
+# Follow-up (participant distribution)
+
+## Information of follow-up for *Controle* Group
+
+Lost to follow-up in the **controle** group:
+
+- Don't answer vocabulary pre- OR post-tests: `r sum(is.na(dat.ctr$vocab.pre) | is.na(dat.ctr$vocab.pos))`
+- Don't answer writing performance (TDE) pre- OR post-test: `r sum(is.na(dat.ctr$score.tde.pre) | is.na(dat.ctr$score.tde.pos))`
+
+
+```{r}
+dat.ctr.tde = dat.ctr[which(!is.na(dat.ctr$score.tde.pre) & !is.na(dat.ctr$score.tde.pos)),]
+dat.ctr.vocab = dat.ctr[which(!is.na(dat.ctr$vocab.pre) & !is.na(dat.ctr$vocab.pos)),]
+```
+
+## Information of follow-up for *Experimental* Group
+
+Lost to follow-up in the **experimental** group:
+
+- Don't answer vocabulary pre- OR post-tests: `r sum(is.na(dat.exp$vocab.pre) | is.na(dat.exp$vocab.pos))`
+- Don't answer writing performance (TDE) pre- OR post-test: `r sum(is.na(dat.exp$score.tde.pre) | is.na(dat.exp$score.tde.pos))`
+
+
+```{r}
+dat.exp.tde = dat.exp[which(!is.na(dat.exp$score.tde.pre) & !is.na(dat.exp$score.tde.pos)),]
+dat.exp.vocab = dat.exp[which(!is.na(dat.exp$vocab.pre) & !is.na(dat.exp$vocab.pos)),]
+```
+
+
+# Data Analysis (participant distribution)
+
+## Data Analysis for *Controle* Group
+
+
+### Analysis of Vocabulary for *Controle*
+
+```{r}
+df = dat.ctr.vocab[which(is.na(dat.ctr.vocab$Necessidade.Deficiencia)),]
+```
+
+Analysed of Vocabulary (n = `r nrow(df)`)
+
+- Excluded from analysis because participants declared disabilities: `r nrow(dat.ctr.vocab)-nrow(df)`
+
+
+
+```{r}
+df = get_distribution(df, cname0)
+```
+
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+
+
+
+### Analysis of Writting Performance (TDE) for *Controle*
+
+```{r}
+df = dat.ctr.tde[which(is.na(dat.ctr.tde$Necessidade.Deficiencia)),]
+```
+
+Analysed of Writting Performance (n = `r nrow(df)`)
+
+- Excluded from analysis because participants declared disabilities: `r nrow(dat.ctr.tde)-nrow(df)`
+
+
+
+```{r}
+df = get_distribution(df, cname0)
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+
+
+
+## Data Analysis for *Experimental* Group
+
+
+### Analysis of Vocabulary for *Experimental* group
+
+```{r}
+df = dat.exp.vocab[which(is.na(dat.exp.vocab$Necessidade.Deficiencia)),]
+```
+
+Analysed of Vocabulary (n = `r nrow(df)`)
+
+- Excluded from analysis because participants declared disabilities: `r nrow(dat.exp.vocab)-nrow(df)`
+
+
+
+```{r}
+df = get_distribution(df, cname0)
+```
+
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+
+
+
+### Analysis of Writting Performance (TDE) for *Experimental* group 
+
+```{r}
+df = dat.exp.tde[which(is.na(dat.exp.tde$Necessidade.Deficiencia)),]
+```
+
+Analysed of Writting Performance (n = `r nrow(df)`)
+
+- Excluded from analysis because participants declared disabilities: `r nrow(dat.exp.tde)-nrow(df)`
+
+
+
+```{r}
+df = get_distribution(df, cname0)
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 2)
+```
+

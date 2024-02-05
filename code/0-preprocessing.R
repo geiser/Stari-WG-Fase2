@@ -7,6 +7,12 @@ library(dplyr)
 
 #### Define Functions ####
 
+which.rows.na <- function(df, cnames = colnames(df), not.na = F) {
+  df.na = apply(df[,cnames], 2, is.na)
+  if (not.na) df.na = !df.na
+  which(apply(df.na, 1, sum) > 0)
+}
+
 sum2 <- function(x) {
   if (all(is.na(x))) NA else sum(x, na.rm = T)
 }
@@ -42,7 +48,7 @@ identifyGrupo <- function(df, monitor = NULL) {
       if (!is.null(monitor) && !(monitor %in% monitors))
         "Controle"
       else if (df$Turma[i] == "6 ANO A" || df$Turma[i] == "6 ANO B"
-          || df$Turma[i] == "7 ANO A" || df$Turma[i] == "8 ANO A")
+               || df$Turma[i] == "7 ANO A" || df$Turma[i] == "8 ANO A")
         "Experimental"
       else if (df$Turma[i] == "7 ANO D" || df$Turma[i] == "8 ANO D"
                || df$Turma[i] == "9 ANO B" || df$Turma[i] == "9 ANO D")
@@ -62,7 +68,7 @@ identifyGrupo <- function(df, monitor = NULL) {
       if (!is.null(monitor) && !(monitor %in% monitors))
         "Controle"
       else if (df$Turma[i] == "6 ANO B VESP 2023" || df$Turma[i] == "7 ANO B VESP 2023"
-          || df$Turma[i] == "8 ANO B VESP 2023" || df$Turma[i] == "9 ANO A MAT 2023")
+               || df$Turma[i] == "8 ANO B VESP 2023" || df$Turma[i] == "9 ANO A MAT 2023")
         "Experimental"
       else
         "Controle"
@@ -76,7 +82,7 @@ identifyGrupo <- function(df, monitor = NULL) {
       if (!is.null(monitor) && !(monitor %in% monitors))
         "Controle"
       else if (df$Turma[i] == "6 ANO B" || df$Turma[i] == "7 ANO A"
-          || df$Turma[i] == "8 ANO B" || df$Turma[i] == "9 ANO B")
+               || df$Turma[i] == "8 ANO B" || df$Turma[i] == "9 ANO B")
         "Experimental"
       else
         "Controle"
@@ -90,7 +96,7 @@ identifyGrupo <- function(df, monitor = NULL) {
       if (!is.null(monitor) && !(monitor %in% monitors))
         "Controle"
       else if (df$Turma[i] == "6 A" || df$Turma[i] == "7 A"
-          || df$Turma[i] == "8 B" || df$Turma[i] == "9 A")
+               || df$Turma[i] == "8 B" || df$Turma[i] == "9 A")
         "Experimental"
       else
         "Controle"
@@ -107,7 +113,7 @@ identifyGrupo <- function(df, monitor = NULL) {
       if (!is.null(monitor) && !(monitor %in% monitors))
         "Controle"
       else if (df$Turma[i] == "6 ANO B" || df$Turma[i] == "7 ANO E"
-          || df$Turma[i] == "8 ANO A" || df$Turma[i] == "9 ANO C")
+               || df$Turma[i] == "8 ANO A" || df$Turma[i] == "9 ANO C")
         "Experimental"
       else if (df$Turma[i] == "6 ANO A" || df$Turma[i] == "7 ANO A"
                || df$Turma[i] == "8 ANO C" || df$Turma[i] == "9 ANO B")
@@ -124,7 +130,7 @@ identifyGrupo <- function(df, monitor = NULL) {
       if (!is.null(monitor) && !(monitor %in% monitors))
         "Controle"
       else if (df$Turma[i] == "6 ANO B" || df$Turma[i] == "7 ANO B"
-          || df$Turma[i] == "8 ANO" || df$Turma[i] == "9 ANO A")
+               || df$Turma[i] == "8 ANO" || df$Turma[i] == "9 ANO A")
         "Experimental"
       else
         "Controle"
@@ -188,6 +194,7 @@ df.stari.pre <- df.stari.pre[,c(
   "cod","Grupo",
   "TFL.lidas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min","TFL.corretas.per.min",
   "TFL.lidas","TFL.erradas","TFL.omitidas","TFL.corretas","leitura.compreensao")]
+df.stari.pre <- df.stari.pre[which.rows.na(df.stari.pre, colnames(df.stari.pre)[c(-1,-2)], T),]
 
 sum(duplicated(df.stari.pre$cod))
 
@@ -223,6 +230,8 @@ df.stari.pos <- df.stari.pos[,c(
   "cod","Grupo",
   "TFL.lidas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min","TFL.corretas.per.min",
   "TFL.lidas","TFL.erradas","TFL.omitidas","TFL.corretas","leitura.compreensao")]
+df.stari.pos <- df.stari.pos[which.rows.na(df.stari.pos, colnames(df.stari.pos)[c(-1,-2)], T),]
+
 
 sum(duplicated(df.stari.pos$cod))
 
@@ -274,6 +283,10 @@ sum(duplicated(df.vocab.pre))
 sum(duplicated(df.vocab.pre$cod))
 
 df.vocab.pre <- df.vocab.pre[!df.vocab.pre$cod %in% df.vocab.pre$cod[duplicated(df.vocab.pre$cod)],]
+df.vocab.pre <- df.vocab.pre[which.rows.na(df.vocab.pre, colnames(df.vocab.pre)[-1], T),]
+
+
+
 
 library(readxl)
 
@@ -303,6 +316,7 @@ sum(duplicated(df.vocab.pos))
 sum(duplicated(df.vocab.pos$cod))
 
 df.vocab.pos <- df.vocab.pos[!df.vocab.pos$cod %in% df.vocab.pos$cod[duplicated(df.vocab.pos$cod)],]
+df.vocab.pos <- df.vocab.pos[which.rows.na(df.vocab.pos, colnames(df.vocab.pos)[-1], T),]
 
 
 #### DATA TABLE - TDE ####
@@ -335,6 +349,7 @@ sum(duplicated(df.tde.pre))
 sum(duplicated(df.tde.pre$cod))
 
 df.tde.pre <- df.tde.pre[!df.tde.pre$cod %in% df.tde.pre$cod[duplicated(df.tde.pre$cod)],]
+df.tde.pre <- df.tde.pre[which.rows.na(df.tde.pre, colnames(df.tde.pre)[-1], T),]
 
 
 library(readxl)
@@ -366,6 +381,7 @@ sum(duplicated(df.tde.pos))
 sum(duplicated(df.tde.pos$cod))
 
 df.tde.pos <- df.tde.pos[!df.tde.pos$cod %in% df.tde.pos$cod[duplicated(df.tde.pos$cod)],]
+df.tde.pos <- df.tde.pos[which.rows.na(df.tde.pos, colnames(df.tde.pos)[-1], T),]
 
 
 #### DATA TABLE - FLOW ####
@@ -401,14 +417,16 @@ df.flow <- lapply(
         df$Nome = toASCII(df$Nome)
         df$cod = sapply(paste0(df$Nome, df$Turma, df$Escola), digest)
 
-        for (coln in c("dfs1","dfs2","dfs3","dfs4","dfs5","dfs6","dfs7","dfs8","dfs9",
-                       "fss1","fss2","fss3","fss4","fss5","fss6","fss7","fss8","fss9")) {
+        cnames.flow = c("dfs1","dfs2","dfs3","dfs4","dfs5","dfs6","dfs7","dfs8","dfs9",
+                        "fss1","fss2","fss3","fss4","fss5","fss6","fss7","fss8","fss9")
+        for (coln in cnames.flow) {
           df[[coln]] = sapply(df[[coln]], FUN = function(i) {
             if (is.numeric(as.numeric(i))) as.numeric(i) else NA
           })
         }
 
-        select(df, starts_with("cod"), starts_with("Grupo"), starts_with("dfs"), starts_with("fss"))
+        df <- select(df, starts_with("cod"), starts_with("Grupo"), starts_with("dfs"), starts_with("fss"))
+        df <- df[which.rows.na(df, cnames.flow, T),]
       }, path = info$path, skip = 2))
 
     pdf$dfs.media <- apply(select(pdf, starts_with("dfs")) , 1 , mean, na.rm = T)
@@ -418,9 +436,11 @@ df.flow <- lapply(
     print(sum(duplicated(pdf$cod)))
 
     pdf <- pdf[!pdf$cod %in% pdf$cod[duplicated(pdf$cod)],]
+    pdf <- pdf[which.rows.na(pdf, colnames(pdf)[-1], T),]
+
 
     return(pdf)
-})
+  })
 
 
 #### Summary of DF ####
@@ -468,6 +488,13 @@ df.summary[["gain.flow.math"]] <- df.summary$fss.media.math - df.summary$dfs.med
 df.summary[["gain.flow.text"]] <- df.summary$fss.media.text - df.summary$dfs.media.text
 df.summary[["gain.flow.debat"]] <- df.summary$fss.media.debat - df.summary$dfs.media.debat
 
+df.summary <- df.summary[which.rows.na(
+  df.summary, do.call(c, lapply(
+    c("vocab.","score.","TFL.","leitura.","dfs.","fss.","gain."), FUN = function(cname) {
+      colnames(df.summary)[startsWith(colnames(df.summary), cname)]
+    })), T),]
+
+
 
 #### Calculating Quintiles in Summary ####
 
@@ -485,6 +512,7 @@ for (coln in str_replace_all(colnames(df.summary)[endsWith(colnames(df.summary),
 
 
 #### ------ ####
+
 
 writexl::write_xlsx(
   list(sumary = df.summary,
