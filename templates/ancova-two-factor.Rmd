@@ -1,0 +1,200 @@
+
+{{ title }}
+
+## Without remove non-normal data
+
+```{r}
+pdat = remove_group_data(dat[!is.na(dat[["{{ iv1 }}"]]) & !is.na(dat[["{{ iv2 }}"]]),], "{{ dv.pos }}", c("{{ iv1 }}","{{ iv2 }}"))
+
+pdat.long <- rbind(pdat[,c("id","{{ iv1 }}","{{ iv2 }}")], pdat[,c("id","{{ iv1 }}","{{ iv2 }}")])
+pdat.long[["{{ pivot.key }}"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
+pdat.long[["{{ pivot.key }}"]] <- factor(pdat.long[["{{ pivot.key }}"]], c("pre","pos"))
+pdat.long[["{{ pivot.value }}"]] <- c(pdat[["{{ dv.pre }}"]], pdat[["{{ dv.pos }}"]])
+
+aov = anova_test(pdat, {{ dv.pos }} ~ {{ dv.pre }} + {{ iv1 }}*{{ iv2 }})
+laov[["{{ iv1 }}:{{ iv2 }}"]] <- get_anova_table(aov)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["{{ iv2 }}"]] <- emmeans_test(
+  group_by(pdat, {{ iv1 }}), {{ dv.pos }} ~ {{ iv2 }},
+  covariate = {{ dv.pre }}, p.adjust.method = "bonferroni")
+pwcs[["{{ iv1 }}"]] <- emmeans_test(
+  group_by(pdat, {{ iv2 }}), {{ dv.pos }} ~ {{ iv1 }},
+  covariate = {{ dv.pre }}, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["{{ iv1 }}"]], pwcs[["{{ iv2 }}"]])
+pwc <- pwc[,c("{{ iv1 }}","{{ iv2 }}", colnames(pwc)[!colnames(pwc) %in% c("{{ iv1 }}","{{ iv2 }}")])]
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("{{ iv1 }}","{{ iv2 }}")),
+                         {{ pivot.value }} ~ {{ pivot.key }},
+                         p.adjust.method = "bonferroni")
+lpwc[["{{ iv1 }}:{{ iv2 }}"]] <- plyr::rbind.fill(pwc, pwc.long)
+```
+
+
+```{r}
+ds <- get.descriptives(pdat, "{{ dv.pos }}", c("{{ iv1 }}","{{ iv2 }}"), covar = "{{ dv.pre }}")
+ds <- merge(ds[ds$variable != "{{ dv.pre }}",],
+            ds[ds$variable == "{{ dv.pre }}", !colnames(ds) %in% c("variable")],
+            by = c("{{ iv1 }}","{{ iv2 }}"), all.x = T, suffixes = c("", ".{{ dv.pre }}"))
+ds <- merge(get_emmeans(pwcs[["{{ iv1 }}"]]), ds, by = c("{{ iv1 }}","{{ iv2 }}"), suffixes = c(".emms", ""))
+ds <- ds[,c("{{ iv1 }}","{{ iv2 }}","n","mean.{{ dv.pre }}","se.{{ dv.pre }}","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("{{ iv1 }}","{{ iv2 }}", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["{{ iv1 }}:{{ iv2 }}"]] <- ds
+```
+
+## Computing ANCOVA and PairWise After removing non-normal data (OK)
+
+```{r}
+wdat = pdat 
+
+res = residuals(lm({{ dv.pos }} ~ {{ dv.pre }} + {{ iv1 }}*{{ iv2 }}, data = wdat))
+non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+
+wdat = wdat[!wdat$id %in% non.normal,]
+
+wdat.long <- rbind(wdat[,c("id","{{ iv1 }}","{{ iv2 }}")], wdat[,c("id","{{ iv1 }}","{{ iv2 }}")])
+wdat.long[["{{ pivot.key }}"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+wdat.long[["{{ pivot.key }}"]] <- factor(wdat.long[["{{ pivot.key }}"]], c("pre","pos"))
+wdat.long[["{{ pivot.value }}"]] <- c(wdat[["{{ dv.pre }}"]], wdat[["{{ dv.pos }}"]])
+
+
+ldat[["{{ iv1 }}:{{ iv2 }}"]] = wdat
+
+(non.normal)
+```
+
+```{r}
+aov = anova_test(wdat, {{ dv.pos }} ~ {{ dv.pre }} + {{ iv1 }}*{{ iv2 }})
+laov[["{{ iv1 }}:{{ iv2 }}"]] <- merge(get_anova_table(aov), laov[["{{ iv1 }}:{{ iv2 }}"]], by="Effect", suffixes = c("","'"))
+
+(df = get_anova_table(aov))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["{{ iv2 }}"]] <- emmeans_test(
+  group_by(wdat, {{ iv1 }}), {{ dv.pos }} ~ {{ iv2 }},
+  covariate = {{ dv.pre }}, p.adjust.method = "bonferroni")
+pwcs[["{{ iv1 }}"]] <- emmeans_test(
+  group_by(wdat, {{ iv2 }}), {{ dv.pos }} ~ {{ iv1 }},
+  covariate = {{ dv.pre }}, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["{{ iv1 }}"]], pwcs[["{{ iv2 }}"]])
+pwc <- pwc[,c("{{ iv1 }}","{{ iv2 }}", colnames(pwc)[!colnames(pwc) %in% c("{{ iv1 }}","{{ iv2 }}")])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc, digits = 3)
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("{{ iv1 }}","{{ iv2 }}")),
+                         {{ pivot.value }} ~ {{ pivot.key }},
+                         p.adjust.method = "bonferroni")
+lpwc[["{{ iv1 }}:{{ iv2 }}"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["{{ iv1 }}:{{ iv2 }}"]], by=c("{{ iv1 }}","{{ iv2 }}","term",".y.","group1","group2"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc.long, digits = 3)
+```
+
+```{r}
+ds <- get.descriptives(wdat, "{{ dv.pos }}", c("{{ iv1 }}","{{ iv2 }}"), covar = "{{ dv.pre }}")
+ds <- merge(ds[ds$variable != "{{ dv.pre }}",],
+            ds[ds$variable == "{{ dv.pre }}", !colnames(ds) %in% c("variable")],
+            by = c("{{ iv1 }}","{{ iv2 }}"), all.x = T, suffixes = c("", ".{{ dv.pre }}"))
+ds <- merge(get_emmeans(pwcs[["{{ iv1 }}"]]), ds, by = c("{{ iv1 }}","{{ iv2 }}"), suffixes = c(".emms", ""))
+ds <- ds[,c("{{ iv1 }}","{{ iv2 }}","n","mean.{{ dv.pre }}","se.{{ dv.pre }}","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("{{ iv1 }}","{{ iv2 }}", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["{{ iv1 }}:{{ iv2 }}"]] <- merge(ds, lemms[["{{ iv1 }}:{{ iv2 }}"]], by=c("{{ iv1 }}","{{ iv2 }}"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(ds, digits = 3)
+```
+
+
+### Plots for ancova
+
+```{r}
+plots <- twoWayAncovaPlots(
+  wdat, "{{ dv.pos }}", c("{{ iv1 }}","{{ iv2 }}"), aov, pwcs, addParam = c("mean_se"),
+  font.label.size=10, step.increase=0.05, p.label="p.adj",
+  subtitle = which(aov$Effect == "{{ iv1 }}:{{ iv2 }}"))
+```
+
+```{r, dpi=300, fig.width={{ fig.width }}, fig.height={{ fig.height }}}
+if (!is.null(plots[["{{ iv1 }}"]]))
+  plots[["{{ iv1 }}"]] + ggplot2::scale_color_manual(values = color[["{{ iv2 }}"]])
+```
+
+
+```{r, dpi=300, fig.width={{ fig.width }}, fig.height={{ fig.height }}}
+if (!is.null(plots[["{{ iv2 }}"]]))
+  plots[["{{ iv2 }}"]] + ggplot2::scale_color_manual(values = color[["{{ iv1 }}"]])
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat, "{{ dv.pos }}", c("{{ iv1 }}","{{ iv2 }}"), aov, pwcs, covar = "{{ dv.pre }}",
+  theme = "classic", color = color[["{{ iv1 }}:{{ iv2 }}"]],
+  subtitle = which(aov$Effect == "{{ iv1 }}:{{ iv2 }}"))
+```
+
+```{r, dpi=300, fig.width={{ fig.width.bar }}, fig.height={{ fig.height.bar }}}
+plots[["{{ iv1 }}:{{ iv2 }}"]] + ggplot2::ylab("{{ ylab }}") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat.long, "{{ pivot.value }}", c("{{ iv1 }}","{{ iv2 }}"), aov, pwc.long, pre.post = "{{ pivot.key }}",
+  theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width={{ fig.width.pbar }}, fig.height={{ fig.height.pbar }}}
+plots[["{{ iv1 }}:{{ iv2 }}"]] + ggplot2::ylab("{{ ylab }}")
+```
+
+
+### Checking linearity assumption
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "{{ dv.pre }}", y = "{{ dv.pos }}", size = 0.5,
+          facet.by = c("{{ iv1 }}","{{ iv2 }}"), add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+  )
+```
+
+### Checking normality and homogeneity
+
+```{r}
+res <- augment(lm({{ dv.pos }} ~ {{ dv.pre }} + {{ iv1 }}*{{ iv2 }}, data = wdat))
+```
+
+```{r}
+shapiro_test(res$.resid)
+```
+
+```{r}
+levene_test(res, .resid ~ {{ iv1 }}*{{ iv2 }})
+```
+
+

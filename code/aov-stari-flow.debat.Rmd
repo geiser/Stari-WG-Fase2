@@ -1,0 +1,1240 @@
+---
+title: "ANCOVA in flow (debate) (flow (debate))"
+author: Geiser C. Challco <geiser@alumni.usp.br>
+comment: Teste ANCOVA para determinar se houve diferenças significativas
+         na flow (debate) (medido usando pre- e pos-testes).
+         
+         ANCOVA test to determine whether there were significant differences
+         in flow (debate) (measured using pre- and post-tests).
+         
+         Author - Geiser C. Challco <geiser@alumni.usp.br>
+         
+         Shiny-Statistic is distributed in the hope that it will be useful,
+         but WITHOUT ANY WARRANTY; without even the implied warranty of
+         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+         GNU General Public License for more details.
+         
+         You should have received a copy of the GNU General Public License.
+         This file is  generate using Shiny-Statistic app (https://github.com/geiser/rshinystatistics)
+         If not, see <https://www.gnu.org/licenses/>.
+output:
+  github_document:
+    toc: true
+  word_document:
+    toc: true
+  html_document:
+    toc: true
+fontsize: 10pt
+---
+
+
+**NOTE**:
+
+ - Teste ANCOVA para determinar se houve diferenças significativas
+no flow (debate) (medido usando pre- e pos-testes).
+ - ANCOVA test to determine whether there were significant differences
+in flow (debate) (measured using pre- and post-tests).
+
+
+```{r setup, include=FALSE}
+# Install and Load Packages
+if (!'remotes' %in% rownames(installed.packages())) install.packages('remotes')
+if (!"rshinystatistics" %in% rownames(installed.packages())) {
+  remotes::install_github("geiser/rshinystatistics")
+} else if (packageVersion("rshinystatistics") < "0.0.0.9900") {
+  remotes::install_github("geiser/rshinystatistics")
+}
+
+wants <- c('ggplot2','ggpubr','rshinystatistics','utils','randomcoloR')
+has <- wants %in% rownames(installed.packages())
+if (any(!has)) install.packages(wants[!has])
+
+library(readxl)
+
+library(shiny)
+library(esquisse)
+library(scales)
+library(knitr)
+library(rmarkdown)
+
+library(utils)
+library(ggpubr)
+library(ggplot2)
+library(randomcoloR)
+
+library(dplyr)
+
+library(rstatix)
+library(rshinystatistics)
+```
+
+```{r, include=FALSE, purl=FALSE}
+options(knitr.kable.NA = '')
+```
+
+```{r, include=FALSE}
+# Setting Initial Variables
+dv = "flow.debat"
+dv.pos = "fss.media.debat"
+dv.pre = "dfs.media.debat"
+
+fatores2 <- c("Sexo","Zona","Cor.Raca","Serie")
+lfatores2 <- as.list(fatores2)
+names(lfatores2) <- fatores2
+
+fatores1 <- c("grupo", fatores2)
+lfatores1 <- as.list(fatores1)
+names(lfatores1) <- fatores1
+
+lfatores <- c(lfatores1)
+
+# ..
+
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$Stari.Grupo)),]
+
+
+
+dat <- gdat
+dat$grupo <- factor(dat[["Stari.Grupo"]], c("Controle","Experimental"))
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], sort(unique(dat[[coln]])[!is.na(unique(dat[[coln]]))]))
+}
+dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
+dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
+
+dat.long <- rbind(dat, dat)
+dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
+dat.long$time <- factor(dat.long$time, c("pre","pos"))
+dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
+
+color <- list()
+color[["prepost"]] = c("#ffee65","#f28e2B")
+color[["grupo"]] = c("#bcbd22","#fd7f6f")
+color[["Sexo"]] = c("#FF007F","#4D4DFF")
+color[["Zona"]] = c("#AA00FF","#00CCCC")
+color[["Cor.Raca"]] = c(
+  "Parda"="#b97100","Indígena"="#9F262F",
+  "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
+)
+
+color[["grupo:Sexo"]] = c(
+  "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
+  "Experimental:F"="#FF007F", "Experimental:M"="#4D4DFF",
+  "Controle.F"="#ff99cb", "Controle.M"="#b7b7ff",
+  "Experimental.F"="#FF007F", "Experimental.M"="#4D4DFF"
+)
+color[["grupo:Zona"]] = c(
+  "Controle:Rural"="#b2efef","Controle:Urbana"="#e5b2ff",
+  "Experimental:Rural"="#00CCCC", "Experimental:Urbana"="#AA00FF",
+  "Controle.Rural"="#b2efef","Controle.Urbana"="#e5b2ff",
+  "Experimental.Rural"="#00CCCC", "Experimental.Urbana"="#AA00FF"
+)
+color[["grupo:Cor.Raca"]] = c(
+    "Controle:Parda"="#e3c699", "Experimental:Parda"="#b97100",
+    "Controle:Indígena"="#e2bdc0", "Experimental:Indígena"="#9F262F",
+    "Controle:Branca"="#c0e8cb", "Experimental:Branca"="#87c498",
+    "Controle:Preta"="#dad9d9", "Experimental:Preta"="#848283",
+    "Controle:Amarela"="#eee3a4", "Experimental:Amarela"="#D6B91C",
+    
+    "Controle.Parda"="#e3c699", "Experimental.Parda"="#b97100",
+    "Controle.Indígena"="#e2bdc0", "Experimental.Indígena"="#9F262F",
+    "Controle.Branca"="#c0e8cb", "Experimental.Branca"="#87c498",
+    "Controle.Preta"="#dad9d9", "Experimental.Preta"="#848283",
+    "Controle.Amarela"="#eee3a4", "Experimental.Amarela"="#D6B91C"
+)
+
+
+for (coln in c("vocab","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","leitura.compreensao")) {
+  color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  color[[paste0("grupo:",coln,".quintile")]] = c(
+    "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
+    "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
+    "Experimental.3rd quintile"="#8fce00", "Controle.3rd quintile"="#ddf0b2",
+    "Experimental.4th quintile"="#0000FF", "Controle.4th quintile"="#b2b2ff",
+    "Experimental.5th quintile"="#4000BF", "Controle.5th quintile"="#b299e5",
+    
+    "Experimental:1st quintile"="#BF0040", "Controle:1st quintile"="#d8668c",
+    "Experimental:2nd quintile"="#FF0000", "Controle:2nd quintile"="#ff7f7f",
+    "Experimental:3rd quintile"="#8fce00", "Controle:3rd quintile"="#ddf0b2",
+    "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
+    "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
+}
+
+
+for (f in c("grupo", names(lfatores))) {
+  if (is.null(color[[f]]) && length(unique(dat[[f]])) > 0) 
+      color[[f]] <- distinctColorPalette(length(unique(dat[[f]])))
+}
+for (f in c(fatores2)) {
+  if (is.null(color[[paste0("grupo:",f)]]) && length(unique(dat[[f]])) > 0)
+    color[[paste0("grupo:",f)]] <- distinctColorPalette(length(unique(dat[["grupo"]]))*length(unique(dat[[f]])))
+}
+
+ldat <- list()
+laov <- list()
+lpwc <- list()
+lemms <- list()
+```
+
+# Descriptive Statistics of Initial Data
+
+```{r}
+df <- get.descriptives(dat, c(dv.pre, dv.pos), c("grupo"), 
+                       include.global = T, symmetry.test = T, normality.test = F)
+df <- plyr::rbind.fill(
+  df, do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
+    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+      get.descriptives(dat, c(dv.pre,dv.pos), c("grupo", f),
+                       symmetry.test = T, normality.test = F)
+    }))
+)
+(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+
+
+
+# ANCOVA and Pairwise for one factor: **grupo**
+
+## Without remove non-normal data
+
+```{r}
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]),], "fss.media.debat", "grupo")
+
+pdat.long <- rbind(pdat[,c("id","grupo")], pdat[,c("id","grupo")])
+pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
+pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
+pdat.long[["flow.debat"]] <- c(pdat[["dfs.media.debat"]], pdat[["fss.media.debat"]])
+
+aov = anova_test(pdat, fss.media.debat ~ dfs.media.debat + grupo)
+laov[["grupo"]] <- get_anova_table(aov)
+```
+
+
+```{r}
+pwc <- emmeans_test(pdat, fss.media.debat ~ grupo, covariate = dfs.media.debat,
+                    p.adjust.method = "bonferroni")
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, "grupo"),
+                          flow.debat ~ time,
+                          p.adjust.method = "bonferroni")
+lpwc[["grupo"]] <- plyr::rbind.fill(pwc, pwc.long)
+```
+
+```{r}
+ds <- get.descriptives(pdat, "fss.media.debat", "grupo", covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = "grupo", all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo"]] <- ds
+```
+
+## Computing ANCOVA and PairWise After removing non-normal data (OK)
+
+```{r}
+wdat = pdat 
+
+res = residuals(lm(fss.media.debat ~ dfs.media.debat + grupo, data = wdat))
+non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+
+wdat = wdat[!wdat$id %in% non.normal,]
+
+wdat.long <- rbind(wdat[,c("id","grupo")], wdat[,c("id","grupo")])
+wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+wdat.long[["flow.debat"]] <- c(wdat[["dfs.media.debat"]], wdat[["fss.media.debat"]])
+
+ldat[["grupo"]] = wdat
+
+(non.normal)
+```
+
+```{r}
+aov = anova_test(wdat, fss.media.debat ~ dfs.media.debat + grupo)
+laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suffixes = c("","'"))
+
+(df = get_anova_table(aov))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+```{r, echo=FALSE}
+pwc <- emmeans_test(wdat, fss.media.debat ~ grupo, covariate = dfs.media.debat,
+                    p.adjust.method = "bonferroni")
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc, digits = 3)
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "grupo"),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]], by=c("grupo","term",".y.","group1","group2"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc.long, digits = 3)
+```
+
+
+```{r}
+ds <- get.descriptives(wdat, "fss.media.debat", "grupo", covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = "grupo", all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo"]] <- merge(ds, lemms[["grupo"]], by=c("grupo"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(ds, digits = 3)
+```
+
+
+### Plots for ancova
+
+```{r}
+plots <- oneWayAncovaPlots(
+  wdat, "fss.media.debat", "grupo", aov, list("grupo"=pwc), addParam = c("mean_se"),
+  font.label.size=10, step.increase=0.05, p.label="p.adj",
+  subtitle = which(aov$Effect == "grupo"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(nrow(plots[["grupo"]]$data)))
+  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+plots <- oneWayAncovaBoxPlots(
+  wdat, "fss.media.debat", "grupo", aov, pwc, covar = "dfs.media.debat",
+  theme = "classic", color = color[["grupo"]],
+  subtitle = which(aov$Effect == "grupo"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+if (length(unique(wdat[["grupo"]])) > 1)
+  plots[["grupo"]] + ggplot2::ylab("flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+if (length(unique(wdat.long[["grupo"]])) > 1)
+  plots <- oneWayAncovaBoxPlots(
+    wdat.long, "flow.debat", "grupo", aov, pwc.long, pre.post = "time",
+    theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width=10, fig.height=6}
+if (length(unique(wdat.long[["grupo"]])) > 1)
+  plots[["grupo"]] + ggplot2::ylab("flow (debate)")
+```
+
+
+### Checking linearity assumption
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "dfs.media.debat", y = "fss.media.debat", size = 0.5,
+          color = "grupo", add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+  )
+```
+
+### Checking normality and homogeneity
+
+```{r}
+res <- augment(lm(fss.media.debat ~ dfs.media.debat + grupo, data = wdat))
+```
+
+```{r}
+shapiro_test(res$.resid)
+```
+
+```{r}
+levene_test(res, .resid ~ grupo)
+```
+
+
+# ANCOVA and Pairwise for two factors **grupo:Sexo**
+
+## Without remove non-normal data
+
+```{r}
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),], "fss.media.debat", c("grupo","Sexo"))
+
+pdat.long <- rbind(pdat[,c("id","grupo","Sexo")], pdat[,c("id","grupo","Sexo")])
+pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
+pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
+pdat.long[["flow.debat"]] <- c(pdat[["dfs.media.debat"]], pdat[["fss.media.debat"]])
+
+aov = anova_test(pdat, fss.media.debat ~ dfs.media.debat + grupo*Sexo)
+laov[["grupo:Sexo"]] <- get_anova_table(aov)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Sexo"]] <- emmeans_test(
+  group_by(pdat, grupo), fss.media.debat ~ Sexo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(pdat, Sexo), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+```
+
+
+```{r}
+ds <- get.descriptives(pdat, "fss.media.debat", c("grupo","Sexo"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Sexo","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Sexo"]] <- ds
+```
+
+## Computing ANCOVA and PairWise After removing non-normal data (OK)
+
+```{r}
+wdat = pdat 
+
+res = residuals(lm(fss.media.debat ~ dfs.media.debat + grupo*Sexo, data = wdat))
+non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+
+wdat = wdat[!wdat$id %in% non.normal,]
+
+wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
+wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+wdat.long[["flow.debat"]] <- c(wdat[["dfs.media.debat"]], wdat[["fss.media.debat"]])
+
+
+ldat[["grupo:Sexo"]] = wdat
+
+(non.normal)
+```
+
+```{r}
+aov = anova_test(wdat, fss.media.debat ~ dfs.media.debat + grupo*Sexo)
+laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Effect", suffixes = c("","'"))
+
+(df = get_anova_table(aov))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Sexo"]] <- emmeans_test(
+  group_by(wdat, grupo), fss.media.debat ~ Sexo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(wdat, Sexo), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc, digits = 3)
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo"]], by=c("grupo","Sexo","term",".y.","group1","group2"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc.long, digits = 3)
+```
+
+```{r}
+ds <- get.descriptives(wdat, "fss.media.debat", c("grupo","Sexo"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Sexo","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]], by=c("grupo","Sexo"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(ds, digits = 3)
+```
+
+
+### Plots for ancova
+
+```{r}
+plots <- twoWayAncovaPlots(
+  wdat, "fss.media.debat", c("grupo","Sexo"), aov, pwcs, addParam = c("mean_se"),
+  font.label.size=10, step.increase=0.05, p.label="p.adj",
+  subtitle = which(aov$Effect == "grupo:Sexo"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["grupo"]]))
+  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Sexo"]])
+```
+
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["Sexo"]]))
+  plots[["Sexo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat, "fss.media.debat", c("grupo","Sexo"), aov, pwcs, covar = "dfs.media.debat",
+  theme = "classic", color = color[["grupo:Sexo"]],
+  subtitle = which(aov$Effect == "grupo:Sexo"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+plots[["grupo:Sexo"]] + ggplot2::ylab("flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat.long, "flow.debat", c("grupo","Sexo"), aov, pwc.long, pre.post = "time",
+  theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width=14, fig.height=6}
+plots[["grupo:Sexo"]] + ggplot2::ylab("flow (debate)")
+```
+
+
+### Checking linearity assumption
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "dfs.media.debat", y = "fss.media.debat", size = 0.5,
+          facet.by = c("grupo","Sexo"), add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+  )
+```
+
+### Checking normality and homogeneity
+
+```{r}
+res <- augment(lm(fss.media.debat ~ dfs.media.debat + grupo*Sexo, data = wdat))
+```
+
+```{r}
+shapiro_test(res$.resid)
+```
+
+```{r}
+levene_test(res, .resid ~ grupo*Sexo)
+```
+
+
+# ANCOVA and Pairwise for two factors **grupo:Zona**
+
+## Without remove non-normal data
+
+```{r}
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),], "fss.media.debat", c("grupo","Zona"))
+
+pdat.long <- rbind(pdat[,c("id","grupo","Zona")], pdat[,c("id","grupo","Zona")])
+pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
+pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
+pdat.long[["flow.debat"]] <- c(pdat[["dfs.media.debat"]], pdat[["fss.media.debat"]])
+
+aov = anova_test(pdat, fss.media.debat ~ dfs.media.debat + grupo*Zona)
+laov[["grupo:Zona"]] <- get_anova_table(aov)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Zona"]] <- emmeans_test(
+  group_by(pdat, grupo), fss.media.debat ~ Zona,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(pdat, Zona), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+```
+
+
+```{r}
+ds <- get.descriptives(pdat, "fss.media.debat", c("grupo","Zona"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Zona","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Zona"]] <- ds
+```
+
+## Computing ANCOVA and PairWise After removing non-normal data (OK)
+
+```{r}
+wdat = pdat 
+
+res = residuals(lm(fss.media.debat ~ dfs.media.debat + grupo*Zona, data = wdat))
+non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+
+wdat = wdat[!wdat$id %in% non.normal,]
+
+wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
+wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+wdat.long[["flow.debat"]] <- c(wdat[["dfs.media.debat"]], wdat[["fss.media.debat"]])
+
+
+ldat[["grupo:Zona"]] = wdat
+
+(non.normal)
+```
+
+```{r}
+aov = anova_test(wdat, fss.media.debat ~ dfs.media.debat + grupo*Zona)
+laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Effect", suffixes = c("","'"))
+
+(df = get_anova_table(aov))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Zona"]] <- emmeans_test(
+  group_by(wdat, grupo), fss.media.debat ~ Zona,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(wdat, Zona), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc, digits = 3)
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona"]], by=c("grupo","Zona","term",".y.","group1","group2"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc.long, digits = 3)
+```
+
+```{r}
+ds <- get.descriptives(wdat, "fss.media.debat", c("grupo","Zona"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Zona","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]], by=c("grupo","Zona"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(ds, digits = 3)
+```
+
+
+### Plots for ancova
+
+```{r}
+plots <- twoWayAncovaPlots(
+  wdat, "fss.media.debat", c("grupo","Zona"), aov, pwcs, addParam = c("mean_se"),
+  font.label.size=10, step.increase=0.05, p.label="p.adj",
+  subtitle = which(aov$Effect == "grupo:Zona"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["grupo"]]))
+  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Zona"]])
+```
+
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["Zona"]]))
+  plots[["Zona"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat, "fss.media.debat", c("grupo","Zona"), aov, pwcs, covar = "dfs.media.debat",
+  theme = "classic", color = color[["grupo:Zona"]],
+  subtitle = which(aov$Effect == "grupo:Zona"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+plots[["grupo:Zona"]] + ggplot2::ylab("flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat.long, "flow.debat", c("grupo","Zona"), aov, pwc.long, pre.post = "time",
+  theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width=14, fig.height=6}
+plots[["grupo:Zona"]] + ggplot2::ylab("flow (debate)")
+```
+
+
+### Checking linearity assumption
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "dfs.media.debat", y = "fss.media.debat", size = 0.5,
+          facet.by = c("grupo","Zona"), add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+  )
+```
+
+### Checking normality and homogeneity
+
+```{r}
+res <- augment(lm(fss.media.debat ~ dfs.media.debat + grupo*Zona, data = wdat))
+```
+
+```{r}
+shapiro_test(res$.resid)
+```
+
+```{r}
+levene_test(res, .resid ~ grupo*Zona)
+```
+
+
+# ANCOVA and Pairwise for two factors **grupo:Cor.Raca**
+
+## Without remove non-normal data
+
+```{r}
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),], "fss.media.debat", c("grupo","Cor.Raca"))
+
+pdat.long <- rbind(pdat[,c("id","grupo","Cor.Raca")], pdat[,c("id","grupo","Cor.Raca")])
+pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
+pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
+pdat.long[["flow.debat"]] <- c(pdat[["dfs.media.debat"]], pdat[["fss.media.debat"]])
+
+aov = anova_test(pdat, fss.media.debat ~ dfs.media.debat + grupo*Cor.Raca)
+laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Cor.Raca"]] <- emmeans_test(
+  group_by(pdat, grupo), fss.media.debat ~ Cor.Raca,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(pdat, Cor.Raca), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+```
+
+
+```{r}
+ds <- get.descriptives(pdat, "fss.media.debat", c("grupo","Cor.Raca"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Cor.Raca","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Cor.Raca"]] <- ds
+```
+
+## Computing ANCOVA and PairWise After removing non-normal data (OK)
+
+```{r}
+wdat = pdat 
+
+res = residuals(lm(fss.media.debat ~ dfs.media.debat + grupo*Cor.Raca, data = wdat))
+non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+
+wdat = wdat[!wdat$id %in% non.normal,]
+
+wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
+wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+wdat.long[["flow.debat"]] <- c(wdat[["dfs.media.debat"]], wdat[["fss.media.debat"]])
+
+
+ldat[["grupo:Cor.Raca"]] = wdat
+
+(non.normal)
+```
+
+```{r}
+aov = anova_test(wdat, fss.media.debat ~ dfs.media.debat + grupo*Cor.Raca)
+laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]], by="Effect", suffixes = c("","'"))
+
+(df = get_anova_table(aov))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Cor.Raca"]] <- emmeans_test(
+  group_by(wdat, grupo), fss.media.debat ~ Cor.Raca,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(wdat, Cor.Raca), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc, digits = 3)
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca","term",".y.","group1","group2"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc.long, digits = 3)
+```
+
+```{r}
+ds <- get.descriptives(wdat, "fss.media.debat", c("grupo","Cor.Raca"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Cor.Raca","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(ds, digits = 3)
+```
+
+
+### Plots for ancova
+
+```{r}
+plots <- twoWayAncovaPlots(
+  wdat, "fss.media.debat", c("grupo","Cor.Raca"), aov, pwcs, addParam = c("mean_se"),
+  font.label.size=10, step.increase=0.05, p.label="p.adj",
+  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["grupo"]]))
+  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Cor.Raca"]])
+```
+
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["Cor.Raca"]]))
+  plots[["Cor.Raca"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat, "fss.media.debat", c("grupo","Cor.Raca"), aov, pwcs, covar = "dfs.media.debat",
+  theme = "classic", color = color[["grupo:Cor.Raca"]],
+  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+plots[["grupo:Cor.Raca"]] + ggplot2::ylab("flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat.long, "flow.debat", c("grupo","Cor.Raca"), aov, pwc.long, pre.post = "time",
+  theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width=14, fig.height=6}
+plots[["grupo:Cor.Raca"]] + ggplot2::ylab("flow (debate)")
+```
+
+
+### Checking linearity assumption
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "dfs.media.debat", y = "fss.media.debat", size = 0.5,
+          facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+  )
+```
+
+### Checking normality and homogeneity
+
+```{r}
+res <- augment(lm(fss.media.debat ~ dfs.media.debat + grupo*Cor.Raca, data = wdat))
+```
+
+```{r}
+shapiro_test(res$.resid)
+```
+
+```{r}
+levene_test(res, .resid ~ grupo*Cor.Raca)
+```
+
+
+# ANCOVA and Pairwise for two factors **grupo:Serie**
+
+## Without remove non-normal data
+
+```{r}
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),], "fss.media.debat", c("grupo","Serie"))
+
+pdat.long <- rbind(pdat[,c("id","grupo","Serie")], pdat[,c("id","grupo","Serie")])
+pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
+pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
+pdat.long[["flow.debat"]] <- c(pdat[["dfs.media.debat"]], pdat[["fss.media.debat"]])
+
+aov = anova_test(pdat, fss.media.debat ~ dfs.media.debat + grupo*Serie)
+laov[["grupo:Serie"]] <- get_anova_table(aov)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Serie"]] <- emmeans_test(
+  group_by(pdat, grupo), fss.media.debat ~ Serie,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(pdat, Serie), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+```
+
+
+```{r}
+ds <- get.descriptives(pdat, "fss.media.debat", c("grupo","Serie"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Serie","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Serie"]] <- ds
+```
+
+## Computing ANCOVA and PairWise After removing non-normal data (OK)
+
+```{r}
+wdat = pdat 
+
+res = residuals(lm(fss.media.debat ~ dfs.media.debat + grupo*Serie, data = wdat))
+non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+
+wdat = wdat[!wdat$id %in% non.normal,]
+
+wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
+wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+wdat.long[["flow.debat"]] <- c(wdat[["dfs.media.debat"]], wdat[["fss.media.debat"]])
+
+
+ldat[["grupo:Serie"]] = wdat
+
+(non.normal)
+```
+
+```{r}
+aov = anova_test(wdat, fss.media.debat ~ dfs.media.debat + grupo*Serie)
+laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="Effect", suffixes = c("","'"))
+
+(df = get_anova_table(aov))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+```{r}
+pwcs <- list()
+pwcs[["Serie"]] <- emmeans_test(
+  group_by(wdat, grupo), fss.media.debat ~ Serie,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+pwcs[["grupo"]] <- emmeans_test(
+  group_by(wdat, Serie), fss.media.debat ~ grupo,
+  covariate = dfs.media.debat, p.adjust.method = "bonferroni")
+
+pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc, digits = 3)
+```
+
+```{r}
+pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
+                         flow.debat ~ time,
+                         p.adjust.method = "bonferroni")
+lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Serie"]], by=c("grupo","Serie","term",".y.","group1","group2"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(pwc.long, digits = 3)
+```
+
+```{r}
+ds <- get.descriptives(wdat, "fss.media.debat", c("grupo","Serie"), covar = "dfs.media.debat")
+ds <- merge(ds[ds$variable != "dfs.media.debat",],
+            ds[ds$variable == "dfs.media.debat", !colnames(ds) %in% c("variable")],
+            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".dfs.media.debat"))
+ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
+ds <- ds[,c("grupo","Serie","n","mean.dfs.media.debat","se.dfs.media.debat","mean","se","emmean","se.emms")]
+
+colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+
+lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]], by=c("grupo","Serie"), suffixes = c("","'"))
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(ds, digits = 3)
+```
+
+
+### Plots for ancova
+
+```{r}
+plots <- twoWayAncovaPlots(
+  wdat, "fss.media.debat", c("grupo","Serie"), aov, pwcs, addParam = c("mean_se"),
+  font.label.size=10, step.increase=0.05, p.label="p.adj",
+  subtitle = which(aov$Effect == "grupo:Serie"))
+```
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["grupo"]]))
+  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Serie"]])
+```
+
+
+```{r, dpi=300, fig.width=7, fig.height=7}
+if (!is.null(plots[["Serie"]]))
+  plots[["Serie"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat, "fss.media.debat", c("grupo","Serie"), aov, pwcs, covar = "dfs.media.debat",
+  theme = "classic", color = color[["grupo:Serie"]],
+  subtitle = which(aov$Effect == "grupo:Serie"))
+```
+
+```{r, dpi=300, fig.width=8, fig.height=6}
+plots[["grupo:Serie"]] + ggplot2::ylab("flow (debate)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+```
+
+
+```{r}
+plots <- twoWayAncovaBoxPlots(
+  wdat.long, "flow.debat", c("grupo","Serie"), aov, pwc.long, pre.post = "time",
+  theme = "classic", color = color$prepost)
+```
+
+```{r, dpi=300, fig.width=14, fig.height=6}
+plots[["grupo:Serie"]] + ggplot2::ylab("flow (debate)")
+```
+
+
+### Checking linearity assumption
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "dfs.media.debat", y = "fss.media.debat", size = 0.5,
+          facet.by = c("grupo","Serie"), add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+  )
+```
+
+### Checking normality and homogeneity
+
+```{r}
+res <- augment(lm(fss.media.debat ~ dfs.media.debat + grupo*Serie, data = wdat))
+```
+
+```{r}
+shapiro_test(res$.resid)
+```
+
+```{r}
+levene_test(res, .resid ~ grupo*Serie)
+```
+
+
+
+# Summary of Results
+
+## Descriptive Statistics
+
+```{r}
+df <- get.descriptives(ldat[["grupo"]], c(dv.pre, dv.pos), c("grupo"), 
+                       include.global = T, symmetry.test = T, normality.test = F)
+df <- plyr::rbind.fill(
+  df, do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
+    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+      get.descriptives(ldat[[paste0("grupo:",f)]], c(dv.pre,dv.pos), c("grupo", f),
+                       symmetry.test = T, normality.test = F)
+    }))
+)
+(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+
+## ANCOVA Table Comparison
+
+```{r}
+df <- do.call(plyr::rbind.fill, laov)
+(df <- df[!duplicated(df$Effect),])
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+
+## PairWise Table Comparison
+
+```{r}
+df <- do.call(plyr::rbind.fill, lpwc)
+df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+
+## EMMS Table Comparison
+
+```{r}
+df <- do.call(plyr::rbind.fill, lemms)
+df[["N-N'"]] <- df[["N"]] - df[["N'"]]
+df <- df[,c(names(lfatores), names(df)[!names(df) %in% names(lfatores)])]
+```
+
+```{r, echo=FALSE, purl=FALSE}
+kable(df, digits = 3)
+```
+
+
