@@ -217,7 +217,7 @@ generate_stari(other.factors = other.factors, fig.size = fig.size)
 
 
 for (filter.val in unique(data$Serie)[!is.na(unique(data$Serie))]){
-  #if (filter.val %in% c("8 ano")) next
+  if (filter.val %in% c("8 ano","6 ano", "9 ano", "7 ano")) next
   suffix = paste0('-Serie-',filter.val)
   dat.filter = paste0('gdat <- gdat[which(gdat$Serie == "',filter.val,'"),]')
   generate_stari(dat.filter = dat.filter, suffix = suffix,

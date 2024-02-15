@@ -90,7 +90,7 @@ lfatores <- c(lfatores1)
 
 # ..
 
-gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- read_excel("data/data.xlsx", sheet = "sumary")
 gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat${{ grupo }})),]
 
 {{ dat.filter }}
