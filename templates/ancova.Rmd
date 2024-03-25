@@ -72,8 +72,9 @@ library(rshinystatistics)
 options(knitr.kable.NA = '')
 ```
 
-```{r, include=FALSE}
 # Setting Initial Variables
+
+```{r}
 dv = "{{ dv }}"
 dv.pos = "{{ dv.pos }}"
 dv.pre = "{{ dv.pre }}"
@@ -88,26 +89,6 @@ names(lfatores1) <- fatores1
 
 lfatores <- c(lfatores1)
 
-# ..
-
-gdat <- read_excel("data/data.xlsx", sheet = "sumary")
-gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat${{ grupo }})),]
-
-{{ dat.filter }}
-
-dat <- gdat
-dat$grupo <- factor(dat[["{{ grupo }}"]], c("Controle","Experimental"))
-for (coln in c(names(lfatores))) {
-  dat[[coln]] <- factor(dat[[coln]], sort(unique(dat[[coln]])[!is.na(unique(dat[[coln]]))]))
-}
-dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
-dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
-
-dat.long <- rbind(dat, dat)
-dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
-dat.long$time <- factor(dat.long$time, c("pre","pos"))
-dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
-
 color <- list()
 color[["prepost"]] = c("#ffee65","#f28e2B")
 color[["grupo"]] = c("#bcbd22","{{ exp.color }}")
@@ -117,6 +98,22 @@ color[["Cor.Raca"]] = c(
   "Parda"="#b97100","Indígena"="#9F262F",
   "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
 )
+
+level <- list()
+level[["grupo"]] = c("Controle","Experimental")
+level[["Sexo"]] = c("F","M")
+level[["Zona"]] = c("Rural","Urbana")
+level[["Cor.Raca"]] = c("Parda","Indígena","Branca", "Preta","Amarela")
+level[["Serie"]] = c("6 ano","7 ano","8 ano","9 ano")
+
+# ..
+
+ymin <- {{ ymin }}
+ymax <- {{ ymax }}
+
+ymin.ci <- {{ ymin.ci }}
+ymax.ci <- {{ ymax.ci }}
+
 
 color[["grupo:Sexo"]] = c(
   "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
@@ -145,9 +142,11 @@ color[["grupo:Cor.Raca"]] = c(
 )
 
 
-for (coln in c("vocab","score.tde",
-               "TFL.lidas.per.min","TFL.corretas.per.min","leitura.compreensao")) {
+for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min",
+               "leitura.compreensao")) {
   color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  level[[paste0(coln,".quintile")]] = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile")
   color[[paste0("grupo:",coln,".quintile")]] = c(
     "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
     "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
@@ -161,6 +160,25 @@ for (coln in c("vocab","score.tde",
     "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
     "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
 }
+
+
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat${{ grupo }})),]
+
+{{ dat.filter }}
+
+dat <- gdat
+dat$grupo <- factor(dat[["{{ grupo }}"]], level[["grupo"]])
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], level[[coln]][level[[coln]] %in% unique(dat[[coln]])])
+}
+dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
+dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
+
+dat.long <- rbind(dat, dat)
+dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
+dat.long$time <- factor(dat.long$time, c("pre","pos"))
+dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
 
 
 for (f in c("grupo", names(lfatores))) {
@@ -190,14 +208,11 @@ df <- plyr::rbind.fill(
                        symmetry.test = T, normality.test = F)
     }))
 )
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+            colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
 kable(df, digits = 3)
 ```
-
-
-
 

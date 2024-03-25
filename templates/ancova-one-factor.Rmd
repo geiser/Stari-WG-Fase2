@@ -34,10 +34,12 @@ ds <- merge(ds[ds$variable != "{{ dv.pre }}",],
             ds[ds$variable == "{{ dv.pre }}", !colnames(ds) %in% c("variable")],
             by = "{{ iv }}", all.x = T, suffixes = c("", ".{{ dv.pre }}"))
 ds <- merge(get_emmeans(pwc), ds, by = "{{ iv }}", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.{{ dv.pre }}","se.{{ dv.pre }}","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.{{ dv.pre }}","se.{{ dv.pre }}","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["{{ iv }}"]] <- ds
 ```
@@ -64,7 +66,8 @@ ldat[["{{ iv }}"]] = wdat
 
 ```{r}
 aov = anova_test(wdat, {{ dv.pos }} ~ {{ dv.pre }} + {{ iv }})
-laov[["{{ iv }}"]] <- merge(get_anova_table(aov), laov[["{{ iv }}"]], by="Effect", suffixes = c("","'"))
+laov[["{{ iv }}"]] <- merge(get_anova_table(aov), laov[["{{ iv }}"]],
+                            by="Effect", suffixes = c("","'"))
 
 (df = get_anova_table(aov))
 ```
@@ -73,7 +76,7 @@ laov[["{{ iv }}"]] <- merge(get_anova_table(aov), laov[["{{ iv }}"]], by="Effect
 kable(df, digits = 3)
 ```
 
-```{r, echo=FALSE}
+```{r}
 pwc <- emmeans_test(wdat, {{ dv.pos }} ~ {{ iv }}, covariate = {{ dv.pre }},
                     p.adjust.method = "bonferroni")
 ```
@@ -86,7 +89,9 @@ kable(pwc, digits = 3)
 pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "{{ iv }}"),
                          {{ pivot.value }} ~ {{ pivot.key }},
                          p.adjust.method = "bonferroni")
-lpwc[["{{ iv }}"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["{{ iv }}"]], by=c("{{ iv }}","term",".y.","group1","group2"), suffixes = c("","'"))
+lpwc[["{{ iv }}"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["{{ iv }}"]],
+                            by=c("{{ iv }}","term",".y.","group1","group2"),
+                            suffixes = c("","'"))
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
@@ -100,10 +105,12 @@ ds <- merge(ds[ds$variable != "{{ dv.pre }}",],
             ds[ds$variable == "{{ dv.pre }}", !colnames(ds) %in% c("variable")],
             by = "{{ iv }}", all.x = T, suffixes = c("", ".{{ dv.pre }}"))
 ds <- merge(get_emmeans(pwc), ds, by = "{{ iv }}", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.{{ dv.pre }}","se.{{ dv.pre }}","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.{{ dv.pre }}","se.{{ dv.pre }}","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("{{ iv }}", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["{{ iv }}"]] <- merge(ds, lemms[["{{ iv }}"]], by=c("{{ iv }}"), suffixes = c("","'"))
 ```
@@ -117,14 +124,15 @@ kable(ds, digits = 3)
 
 ```{r}
 plots <- oneWayAncovaPlots(
-  wdat, "{{ dv.pos }}", "{{ iv }}", aov, list("{{ iv }}"=pwc), addParam = c("mean_se"),
+  wdat, "{{ dv.pos }}", "{{ iv }}", aov, list("{{ iv }}"=pwc), addParam = c("mean_ci"),
   font.label.size=10, step.increase=0.05, p.label="p.adj",
   subtitle = which(aov$Effect == "{{ iv }}"))
 ```
 
 ```{r, dpi=300, fig.width={{ fig.width }}, fig.height={{ fig.height }}}
 if (!is.null(nrow(plots[["{{ iv }}"]]$data)))
-  plots[["{{ iv }}"]] + ggplot2::scale_color_manual(values = color[["{{ iv }}"]])
+  plots[["{{ iv }}"]] +
+  if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
 
 
@@ -137,20 +145,23 @@ plots <- oneWayAncovaBoxPlots(
 
 ```{r, dpi=300, fig.width={{ fig.width.bar }}, fig.height={{ fig.height.bar }}}
 if (length(unique(wdat[["{{ iv }}"]])) > 1)
-  plots[["{{ iv }}"]] + ggplot2::ylab("{{ ylab }}") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+  plots[["{{ iv }}"]] + ggplot2::ylab("{{ ylab }}") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ```{r}
 if (length(unique(wdat.long[["{{ iv }}"]])) > 1)
   plots <- oneWayAncovaBoxPlots(
-    wdat.long, "{{ pivot.value }}", "{{ iv }}", aov, pwc.long, pre.post = "{{ pivot.key }}",
-    theme = "classic", color = color$prepost)
+    wdat.long, "{{ pivot.value }}", "{{ iv }}", aov, pwc.long,
+    pre.post = "{{ pivot.key }}", theme = "classic", color = color$prepost)
 ```
 
 ```{r, dpi=300, fig.width={{ fig.width.pbar }}, fig.height={{ fig.height.pbar }}}
 if (length(unique(wdat.long[["{{ iv }}"]])) > 1)
-  plots[["{{ iv }}"]] + ggplot2::ylab("{{ ylab }}")
+  plots[["{{ iv }}"]] + ggplot2::ylab("{{ ylab }}") +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax) 
 ```
 
 
@@ -161,7 +172,10 @@ ggscatter(wdat, x = "{{ dv.pre }}", y = "{{ dv.pos }}", size = 0.5,
           color = "{{ iv }}", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = {{ iv }})
-  )
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "{{ iv }}"))) +
+  ggplot2::scale_color_manual(values = color[["{{ iv }}"]]) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ### Checking normality and homogeneity

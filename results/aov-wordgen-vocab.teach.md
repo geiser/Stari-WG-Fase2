@@ -1,7 +1,8 @@
-ANCOVA in Vocabulario Ensinado (Vocabulario Ensinado)
+ANCOVA in Vocabulary taught (Vocabulary taught)
 ================
 Geiser C. Challco <geiser@alumni.usp.br>
 
+- [Setting Initial Variables](#setting-initial-variables)
 - [Descriptive Statistics of Initial
   Data](#descriptive-statistics-of-initial-data)
 - [ANCOVA and Pairwise for one factor:
@@ -67,9 +68,133 @@ Geiser C. Challco <geiser@alumni.usp.br>
 **NOTE**:
 
 - Teste ANCOVA para determinar se houve diferenças significativas no
-  Vocabulario Ensinado (medido usando pre- e pos-testes).
+  Vocabulary taught (medido usando pre- e pos-testes).
 - ANCOVA test to determine whether there were significant differences in
-  Vocabulario Ensinado (measured using pre- and post-tests).
+  Vocabulary taught (measured using pre- and post-tests).
+
+# Setting Initial Variables
+
+``` r
+dv = "vocab.teach"
+dv.pos = "vocab.teach.pos"
+dv.pre = "vocab.teach.pre"
+
+fatores2 <- c("Sexo","Zona","Cor.Raca","Serie","vocab.teach.quintile")
+lfatores2 <- as.list(fatores2)
+names(lfatores2) <- fatores2
+
+fatores1 <- c("grupo", fatores2)
+lfatores1 <- as.list(fatores1)
+names(lfatores1) <- fatores1
+
+lfatores <- c(lfatores1)
+
+color <- list()
+color[["prepost"]] = c("#ffee65","#f28e2B")
+color[["grupo"]] = c("#bcbd22","#008000")
+color[["Sexo"]] = c("#FF007F","#4D4DFF")
+color[["Zona"]] = c("#AA00FF","#00CCCC")
+color[["Cor.Raca"]] = c(
+  "Parda"="#b97100","Indígena"="#9F262F",
+  "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
+)
+
+level <- list()
+level[["grupo"]] = c("Controle","Experimental")
+level[["Sexo"]] = c("F","M")
+level[["Zona"]] = c("Rural","Urbana")
+level[["Cor.Raca"]] = c("Parda","Indígena","Branca", "Preta","Amarela")
+level[["Serie"]] = c("6 ano","7 ano","8 ano","9 ano")
+
+# ..
+
+ymin <- 0
+ymax <- 0
+
+ymin.ci <- 0
+ymax.ci <- 0
+
+
+color[["grupo:Sexo"]] = c(
+  "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
+  "Experimental:F"="#FF007F", "Experimental:M"="#4D4DFF",
+  "Controle.F"="#ff99cb", "Controle.M"="#b7b7ff",
+  "Experimental.F"="#FF007F", "Experimental.M"="#4D4DFF"
+)
+color[["grupo:Zona"]] = c(
+  "Controle:Rural"="#b2efef","Controle:Urbana"="#e5b2ff",
+  "Experimental:Rural"="#00CCCC", "Experimental:Urbana"="#AA00FF",
+  "Controle.Rural"="#b2efef","Controle.Urbana"="#e5b2ff",
+  "Experimental.Rural"="#00CCCC", "Experimental.Urbana"="#AA00FF"
+)
+color[["grupo:Cor.Raca"]] = c(
+    "Controle:Parda"="#e3c699", "Experimental:Parda"="#b97100",
+    "Controle:Indígena"="#e2bdc0", "Experimental:Indígena"="#9F262F",
+    "Controle:Branca"="#c0e8cb", "Experimental:Branca"="#87c498",
+    "Controle:Preta"="#dad9d9", "Experimental:Preta"="#848283",
+    "Controle:Amarela"="#eee3a4", "Experimental:Amarela"="#D6B91C",
+    
+    "Controle.Parda"="#e3c699", "Experimental.Parda"="#b97100",
+    "Controle.Indígena"="#e2bdc0", "Experimental.Indígena"="#9F262F",
+    "Controle.Branca"="#c0e8cb", "Experimental.Branca"="#87c498",
+    "Controle.Preta"="#dad9d9", "Experimental.Preta"="#848283",
+    "Controle.Amarela"="#eee3a4", "Experimental.Amarela"="#D6B91C"
+)
+
+
+for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min",
+               "leitura.compreensao")) {
+  color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  level[[paste0(coln,".quintile")]] = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile")
+  color[[paste0("grupo:",coln,".quintile")]] = c(
+    "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
+    "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
+    "Experimental.3rd quintile"="#8fce00", "Controle.3rd quintile"="#ddf0b2",
+    "Experimental.4th quintile"="#0000FF", "Controle.4th quintile"="#b2b2ff",
+    "Experimental.5th quintile"="#4000BF", "Controle.5th quintile"="#b299e5",
+    
+    "Experimental:1st quintile"="#BF0040", "Controle:1st quintile"="#d8668c",
+    "Experimental:2nd quintile"="#FF0000", "Controle:2nd quintile"="#ff7f7f",
+    "Experimental:3rd quintile"="#8fce00", "Controle:3rd quintile"="#ddf0b2",
+    "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
+    "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
+}
+
+
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
+
+
+
+dat <- gdat
+dat$grupo <- factor(dat[["WG.Grupo"]], level[["grupo"]])
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], level[[coln]][level[[coln]] %in% unique(dat[[coln]])])
+}
+dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
+dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
+
+dat.long <- rbind(dat, dat)
+dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
+dat.long$time <- factor(dat.long$time, c("pre","pos"))
+dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
+
+
+for (f in c("grupo", names(lfatores))) {
+  if (is.null(color[[f]]) && length(unique(dat[[f]])) > 0) 
+      color[[f]] <- distinctColorPalette(length(unique(dat[[f]])))
+}
+for (f in c(fatores2)) {
+  if (is.null(color[[paste0("grupo:",f)]]) && length(unique(dat[[f]])) > 0)
+    color[[paste0("grupo:",f)]] <- distinctColorPalette(length(unique(dat[["grupo"]]))*length(unique(dat[[f]])))
+}
+
+ldat <- list()
+laov <- list()
+lpwc <- list()
+lemms <- list()
+```
 
 # Descriptive Statistics of Initial Data
 
@@ -105,117 +230,9 @@ df <- plyr::rbind.fill(
     ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.
 
 ``` r
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+            colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
-
-    ##           grupo Sexo   Zona Cor.Raca Serie vocab.teach.quintile        variable    n  mean median min max    sd
-    ## 1      Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  516 4.506    4.0   0  13 2.164
-    ## 2  Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  713 4.759    5.0   0  13 2.018
-    ## 3          <NA> <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre 1229 4.653    4.0   0  13 2.083
-    ## 4      Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  516 4.919    5.0   0  15 2.294
-    ## 5  Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  713 5.401    5.0   0  12 2.273
-    ## 6          <NA> <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos 1229 5.199    5.0   0  15 2.293
-    ## 7      Controle    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  259 4.587    5.0   0  10 2.032
-    ## 8      Controle    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  257 4.424    4.0   0  13 2.290
-    ## 9  Experimental    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  368 4.777    5.0   0  13 2.063
-    ## 10 Experimental    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  345 4.739    5.0   1  11 1.971
-    ## 11     Controle    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  259 5.058    5.0   0  15 2.303
-    ## 12     Controle    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  257 4.778    5.0   0  11 2.281
-    ## 13 Experimental    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  368 5.698    6.0   0  12 2.249
-    ## 14 Experimental    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  345 5.084    5.0   0  12 2.258
-    ## 15     Controle <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pre  253 4.462    4.0   0  11 2.069
-    ## 16     Controle <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pre  114 4.412    4.0   0  10 1.968
-    ## 17     Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  149 4.651    5.0   0  13 2.452
-    ## 18 Experimental <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pre  294 4.694    5.0   0  11 2.068
-    ## 19 Experimental <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pre  189 4.815    5.0   1  13 2.127
-    ## 20 Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  230 4.796    4.5   1  10 1.861
-    ## 21     Controle <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pos  253 5.016    5.0   0  15 2.384
-    ## 22     Controle <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pos  114 4.833    5.0   0  10 2.052
-    ## 23     Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  149 4.819    5.0   0  11 2.322
-    ## 24 Experimental <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pos  294 5.374    5.0   0  12 2.358
-    ## 25 Experimental <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pos  189 5.487    6.0   1  11 2.163
-    ## 26 Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  230 5.365    5.0   1  12 2.258
-    ## 27     Controle <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pre   54 4.352    4.0   1  11 2.267
-    ## 28     Controle <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pre   13 4.615    4.0   1   7 1.660
-    ## 29     Controle <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pre  168 4.458    4.0   0  13 2.166
-    ## 30     Controle <NA>   <NA>    Preta  <NA>                 <NA> vocab.teach.pre    1 3.000    3.0   3   3    NA
-    ## 31     Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  280 4.564    4.0   0  10 2.173
-    ## 32 Experimental <NA>   <NA>  Amarela  <NA>                 <NA> vocab.teach.pre    1 3.000    3.0   3   3    NA
-    ## 33 Experimental <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pre   62 5.000    5.0   1   8 1.765
-    ## 34 Experimental <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pre   18 4.167    4.0   1   7 1.654
-    ## 35 Experimental <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pre  201 4.478    4.0   0  10 2.057
-    ## 36 Experimental <NA>   <NA>    Preta  <NA>                 <NA> vocab.teach.pre    1 1.000    1.0   1   1    NA
-    ## 37 Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  430 4.893    5.0   1  13 2.028
-    ## 38     Controle <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pos   54 4.889    5.0   1  11 2.408
-    ## 39     Controle <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pos   13 5.923    6.0   2   9 2.100
-    ## 40     Controle <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pos  168 5.006    5.0   0  10 2.265
-    ## 41     Controle <NA>   <NA>    Preta  <NA>                 <NA> vocab.teach.pos    1 6.000    6.0   6   6    NA
-    ## 42     Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  280 4.821    5.0   0  15 2.299
-    ## 43 Experimental <NA>   <NA>  Amarela  <NA>                 <NA> vocab.teach.pos    1 6.000    6.0   6   6    NA
-    ## 44 Experimental <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pos   62 5.387    6.0   1  10 2.335
-    ## 45 Experimental <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pos   18 5.111    5.0   2   9 2.026
-    ## 46 Experimental <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pos  201 5.318    5.0   0  12 2.364
-    ## 47 Experimental <NA>   <NA>    Preta  <NA>                 <NA> vocab.teach.pos    1 4.000    4.0   4   4    NA
-    ## 48 Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  430 5.456    5.0   0  11 2.239
-    ## 49     Controle <NA>   <NA>     <NA> 6 ano                 <NA> vocab.teach.pre  146 3.925    4.0   0  10 1.901
-    ## 50     Controle <NA>   <NA>     <NA> 7 ano                 <NA> vocab.teach.pre  152 4.013    4.0   1  11 1.919
-    ## 51     Controle <NA>   <NA>     <NA> 8 ano                 <NA> vocab.teach.pre  100 4.560    4.5   0  10 2.298
-    ## 52     Controle <NA>   <NA>     <NA> 9 ano                 <NA> vocab.teach.pre  118 5.814    6.0   1  13 2.108
-    ##       se    ci  iqr symmetry    skewness    kurtosis
-    ## 1  0.095 0.187 3.00      YES  0.35771856 -0.15577499
-    ## 2  0.076 0.148 3.00      YES  0.38277176 -0.02065402
-    ## 3  0.059 0.117 3.00      YES  0.35760257 -0.07308874
-    ## 4  0.101 0.198 3.00      YES  0.29502024  0.10620184
-    ## 5  0.085 0.167 3.00      YES  0.20610900 -0.38973903
-    ## 6  0.065 0.128 3.00      YES  0.23725723 -0.18794933
-    ## 7  0.126 0.249 3.00      YES  0.13858805 -0.53185528
-    ## 8  0.143 0.281 3.00       NO  0.53085177  0.05759821
-    ## 9  0.108 0.211 3.00      YES  0.37520154  0.13663723
-    ## 10 0.106 0.209 3.00      YES  0.38685409 -0.25657372
-    ## 11 0.143 0.282 2.00      YES  0.33744395  0.67456840
-    ## 12 0.142 0.280 3.00      YES  0.24916594 -0.53588055
-    ## 13 0.117 0.230 3.00      YES  0.21229293 -0.39376242
-    ## 14 0.122 0.239 4.00      YES  0.21447584 -0.42576819
-    ## 15 0.130 0.256 3.00      YES  0.32355988 -0.38828818
-    ## 16 0.184 0.365 2.75      YES  0.30585896 -0.02355444
-    ## 17 0.201 0.397 3.00      YES  0.34323810 -0.28871757
-    ## 18 0.121 0.237 3.00      YES  0.28889966 -0.36550865
-    ## 19 0.155 0.305 3.00       NO  0.53815030  0.42862317
-    ## 20 0.123 0.242 2.00      YES  0.35419163 -0.23514810
-    ## 21 0.150 0.295 4.00      YES  0.37178477  0.26323753
-    ## 22 0.192 0.381 2.00      YES  0.12531471 -0.17332969
-    ## 23 0.190 0.376 3.00      YES  0.20566987 -0.32752311
-    ## 24 0.138 0.271 3.00      YES  0.16823491 -0.45520880
-    ## 25 0.157 0.310 3.00      YES  0.22509556 -0.40434146
-    ## 26 0.149 0.293 3.00      YES  0.25606610 -0.36337016
-    ## 27 0.308 0.619 3.75       NO  0.59023675 -0.05556365
-    ## 28 0.460 1.003 2.00      YES -0.33777059 -0.46442286
-    ## 29 0.167 0.330 3.00       NO  0.54641224  0.61875156
-    ## 30    NA   NaN 0.00 few data  0.00000000  0.00000000
-    ## 31 0.130 0.256 3.00      YES  0.20356561 -0.67177246
-    ## 32    NA   NaN 0.00 few data  0.00000000  0.00000000
-    ## 33 0.224 0.448 2.00      YES -0.12323156 -0.78887946
-    ## 34 0.390 0.822 1.75      YES -0.24970660 -1.00411630
-    ## 35 0.145 0.286 3.00      YES  0.45377371 -0.35637072
-    ## 36    NA   NaN 0.00 few data  0.00000000  0.00000000
-    ## 37 0.098 0.192 2.75      YES  0.42439409  0.18613627
-    ## 38 0.328 0.657 4.00      YES  0.29510170 -0.65382268
-    ## 39 0.582 1.269 3.00      YES -0.30548169 -1.13409295
-    ## 40 0.175 0.345 2.50      YES  0.07869782 -0.37687419
-    ## 41    NA   NaN 0.00 few data  0.00000000  0.00000000
-    ## 42 0.137 0.270 3.00      YES  0.45766060  0.61971334
-    ## 43    NA   NaN 0.00 few data  0.00000000  0.00000000
-    ## 44 0.297 0.593 4.00      YES -0.03034945 -1.01207541
-    ## 45 0.478 1.007 3.50      YES  0.09831424 -1.06668721
-    ## 46 0.167 0.329 3.00      YES  0.38111677 -0.14444204
-    ## 47    NA   NaN 0.00 few data  0.00000000  0.00000000
-    ## 48 0.108 0.212 3.00      YES  0.15008004 -0.45200435
-    ## 49 0.157 0.311 3.00      YES  0.41808273 -0.03890132
-    ## 50 0.156 0.308 2.00       NO  0.68540893  0.54683471
-    ## 51 0.230 0.456 3.00      YES  0.04979764 -0.76910925
-    ## 52 0.194 0.384 3.00      YES  0.04302473  0.24765920
-    ##  [ reached 'max' / getOption("max.print") -- omitted 32 rows ]
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | vocab.teach.quintile | variable        |    n |  mean | median | min | max |    sd |    se |    ci |  iqr | symmetry | skewness | kurtosis |
 |:-------------|:-----|:-------|:---------|:------|:---------------------|:----------------|-----:|------:|-------:|----:|----:|------:|------:|------:|-----:|:---------|---------:|---------:|
@@ -245,27 +262,27 @@ df <- plyr::rbind.fill(
 | Experimental |      | Rural  |          |       |                      | vocab.teach.pos |  294 | 5.374 |    5.0 |   0 |  12 | 2.358 | 0.138 | 0.271 | 3.00 | YES      |    0.168 |   -0.455 |
 | Experimental |      | Urbana |          |       |                      | vocab.teach.pos |  189 | 5.487 |    6.0 |   1 |  11 | 2.163 | 0.157 | 0.310 | 3.00 | YES      |    0.225 |   -0.404 |
 | Experimental |      |        |          |       |                      | vocab.teach.pos |  230 | 5.365 |    5.0 |   1 |  12 | 2.258 | 0.149 | 0.293 | 3.00 | YES      |    0.256 |   -0.363 |
-| Controle     |      |        | Branca   |       |                      | vocab.teach.pre |   54 | 4.352 |    4.0 |   1 |  11 | 2.267 | 0.308 | 0.619 | 3.75 | NO       |    0.590 |   -0.056 |
-| Controle     |      |        | Indígena |       |                      | vocab.teach.pre |   13 | 4.615 |    4.0 |   1 |   7 | 1.660 | 0.460 | 1.003 | 2.00 | YES      |   -0.338 |   -0.464 |
 | Controle     |      |        | Parda    |       |                      | vocab.teach.pre |  168 | 4.458 |    4.0 |   0 |  13 | 2.166 | 0.167 | 0.330 | 3.00 | NO       |    0.546 |    0.619 |
+| Controle     |      |        | Indígena |       |                      | vocab.teach.pre |   13 | 4.615 |    4.0 |   1 |   7 | 1.660 | 0.460 | 1.003 | 2.00 | YES      |   -0.338 |   -0.464 |
+| Controle     |      |        | Branca   |       |                      | vocab.teach.pre |   54 | 4.352 |    4.0 |   1 |  11 | 2.267 | 0.308 | 0.619 | 3.75 | NO       |    0.590 |   -0.056 |
 | Controle     |      |        | Preta    |       |                      | vocab.teach.pre |    1 | 3.000 |    3.0 |   3 |   3 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
 | Controle     |      |        |          |       |                      | vocab.teach.pre |  280 | 4.564 |    4.0 |   0 |  10 | 2.173 | 0.130 | 0.256 | 3.00 | YES      |    0.204 |   -0.672 |
-| Experimental |      |        | Amarela  |       |                      | vocab.teach.pre |    1 | 3.000 |    3.0 |   3 |   3 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
-| Experimental |      |        | Branca   |       |                      | vocab.teach.pre |   62 | 5.000 |    5.0 |   1 |   8 | 1.765 | 0.224 | 0.448 | 2.00 | YES      |   -0.123 |   -0.789 |
-| Experimental |      |        | Indígena |       |                      | vocab.teach.pre |   18 | 4.167 |    4.0 |   1 |   7 | 1.654 | 0.390 | 0.822 | 1.75 | YES      |   -0.250 |   -1.004 |
 | Experimental |      |        | Parda    |       |                      | vocab.teach.pre |  201 | 4.478 |    4.0 |   0 |  10 | 2.057 | 0.145 | 0.286 | 3.00 | YES      |    0.454 |   -0.356 |
+| Experimental |      |        | Indígena |       |                      | vocab.teach.pre |   18 | 4.167 |    4.0 |   1 |   7 | 1.654 | 0.390 | 0.822 | 1.75 | YES      |   -0.250 |   -1.004 |
+| Experimental |      |        | Branca   |       |                      | vocab.teach.pre |   62 | 5.000 |    5.0 |   1 |   8 | 1.765 | 0.224 | 0.448 | 2.00 | YES      |   -0.123 |   -0.789 |
 | Experimental |      |        | Preta    |       |                      | vocab.teach.pre |    1 | 1.000 |    1.0 |   1 |   1 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
+| Experimental |      |        | Amarela  |       |                      | vocab.teach.pre |    1 | 3.000 |    3.0 |   3 |   3 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
 | Experimental |      |        |          |       |                      | vocab.teach.pre |  430 | 4.893 |    5.0 |   1 |  13 | 2.028 | 0.098 | 0.192 | 2.75 | YES      |    0.424 |    0.186 |
-| Controle     |      |        | Branca   |       |                      | vocab.teach.pos |   54 | 4.889 |    5.0 |   1 |  11 | 2.408 | 0.328 | 0.657 | 4.00 | YES      |    0.295 |   -0.654 |
-| Controle     |      |        | Indígena |       |                      | vocab.teach.pos |   13 | 5.923 |    6.0 |   2 |   9 | 2.100 | 0.582 | 1.269 | 3.00 | YES      |   -0.305 |   -1.134 |
 | Controle     |      |        | Parda    |       |                      | vocab.teach.pos |  168 | 5.006 |    5.0 |   0 |  10 | 2.265 | 0.175 | 0.345 | 2.50 | YES      |    0.079 |   -0.377 |
+| Controle     |      |        | Indígena |       |                      | vocab.teach.pos |   13 | 5.923 |    6.0 |   2 |   9 | 2.100 | 0.582 | 1.269 | 3.00 | YES      |   -0.305 |   -1.134 |
+| Controle     |      |        | Branca   |       |                      | vocab.teach.pos |   54 | 4.889 |    5.0 |   1 |  11 | 2.408 | 0.328 | 0.657 | 4.00 | YES      |    0.295 |   -0.654 |
 | Controle     |      |        | Preta    |       |                      | vocab.teach.pos |    1 | 6.000 |    6.0 |   6 |   6 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
 | Controle     |      |        |          |       |                      | vocab.teach.pos |  280 | 4.821 |    5.0 |   0 |  15 | 2.299 | 0.137 | 0.270 | 3.00 | YES      |    0.458 |    0.620 |
-| Experimental |      |        | Amarela  |       |                      | vocab.teach.pos |    1 | 6.000 |    6.0 |   6 |   6 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
-| Experimental |      |        | Branca   |       |                      | vocab.teach.pos |   62 | 5.387 |    6.0 |   1 |  10 | 2.335 | 0.297 | 0.593 | 4.00 | YES      |   -0.030 |   -1.012 |
-| Experimental |      |        | Indígena |       |                      | vocab.teach.pos |   18 | 5.111 |    5.0 |   2 |   9 | 2.026 | 0.478 | 1.007 | 3.50 | YES      |    0.098 |   -1.067 |
 | Experimental |      |        | Parda    |       |                      | vocab.teach.pos |  201 | 5.318 |    5.0 |   0 |  12 | 2.364 | 0.167 | 0.329 | 3.00 | YES      |    0.381 |   -0.144 |
+| Experimental |      |        | Indígena |       |                      | vocab.teach.pos |   18 | 5.111 |    5.0 |   2 |   9 | 2.026 | 0.478 | 1.007 | 3.50 | YES      |    0.098 |   -1.067 |
+| Experimental |      |        | Branca   |       |                      | vocab.teach.pos |   62 | 5.387 |    6.0 |   1 |  10 | 2.335 | 0.297 | 0.593 | 4.00 | YES      |   -0.030 |   -1.012 |
 | Experimental |      |        | Preta    |       |                      | vocab.teach.pos |    1 | 4.000 |    4.0 |   4 |   4 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
+| Experimental |      |        | Amarela  |       |                      | vocab.teach.pos |    1 | 6.000 |    6.0 |   6 |   6 |       |       |       | 0.00 | few data |    0.000 |    0.000 |
 | Experimental |      |        |          |       |                      | vocab.teach.pos |  430 | 5.456 |    5.0 |   0 |  11 | 2.239 | 0.108 | 0.212 | 3.00 | YES      |    0.150 |   -0.452 |
 | Controle     |      |        |          | 6 ano |                      | vocab.teach.pre |  146 | 3.925 |    4.0 |   0 |  10 | 1.901 | 0.157 | 0.311 | 3.00 | YES      |    0.418 |   -0.039 |
 | Controle     |      |        |          | 7 ano |                      | vocab.teach.pre |  152 | 4.013 |    4.0 |   1 |  11 | 1.919 | 0.156 | 0.308 | 2.00 | NO       |    0.685 |    0.547 |
@@ -338,10 +355,12 @@ ds <- merge(ds[ds$variable != "vocab.teach.pre",],
             ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".vocab.teach.pre"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- ds
 ```
@@ -370,7 +389,8 @@ ldat[["grupo"]] = wdat
 
 ``` r
 aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo)
-laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suffixes = c("","'"))
+laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]],
+                            by="Effect", suffixes = c("","'"))
 
 (df = get_anova_table(aov))
 ```
@@ -386,6 +406,11 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 | vocab.teach.pre |   1 | 1225 | 380.801 | 0.000 | \*     | 0.237 |
 | grupo           |   1 | 1225 |  10.282 | 0.001 | \*     | 0.008 |
 
+``` r
+pwc <- emmeans_test(wdat, vocab.teach.pos ~ grupo, covariate = vocab.teach.pre,
+                    p.adjust.method = "bonferroni")
+```
+
 | term                   | .y.             | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
 |:-----------------------|:----------------|:---------|:-------------|-----:|----------:|------:|------:|:-------------|
 | vocab.teach.pre\*grupo | vocab.teach.pos | Controle | Experimental | 1225 |    -3.207 | 0.001 | 0.001 | \*\*         |
@@ -394,7 +419,9 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "grupo"),
                          vocab.teach ~ time,
                          p.adjust.method = "bonferroni")
-lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]], by=c("grupo","term",".y.","group1","group2"), suffixes = c("","'"))
+lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]],
+                            by=c("grupo","term",".y.","group1","group2"),
+                            suffixes = c("","'"))
 ```
 
 | grupo        | term | .y.         | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -408,35 +435,35 @@ ds <- merge(ds[ds$variable != "vocab.teach.pre",],
             ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".vocab.teach.pre"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- merge(ds, lemms[["grupo"]], by=c("grupo"), suffixes = c("","'"))
 ```
 
-| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 515 |   4.505 |    0.095 |     4.899 |      0.099 |   4.977 |    0.087 |
-| Experimental | 713 |   4.759 |    0.076 |     5.401 |      0.085 |   5.345 |    0.074 |
+| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 515 |   4.505 |    0.095 |     4.899 |      0.099 |   4.977 |    0.087 |    4.806 |     5.148 |
+| Experimental | 713 |   4.759 |    0.076 |     5.401 |      0.085 |   5.345 |    0.074 |    5.199 |     5.490 |
 
 ### Plots for ancova
 
 ``` r
 plots <- oneWayAncovaPlots(
-  wdat, "vocab.teach.pos", "grupo", aov, list("grupo"=pwc), addParam = c("mean_se"),
+  wdat, "vocab.teach.pos", "grupo", aov, list("grupo"=pwc), addParam = c("mean_ci"),
   font.label.size=10, step.increase=0.05, p.label="p.adj",
   subtitle = which(aov$Effect == "grupo"))
 ```
 
 ``` r
 if (!is.null(nrow(plots[["grupo"]]$data)))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+  plots[["grupo"]] +
+  if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
@@ -449,7 +476,9 @@ plots <- oneWayAncovaBoxPlots(
 
 ``` r
 if (length(unique(wdat[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("Vocabulario Ensinado") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+  plots[["grupo"]] + ggplot2::ylab("Vocabulary taught") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
@@ -457,13 +486,14 @@ if (length(unique(wdat[["grupo"]])) > 1)
 ``` r
 if (length(unique(wdat.long[["grupo"]])) > 1)
   plots <- oneWayAncovaBoxPlots(
-    wdat.long, "vocab.teach", "grupo", aov, pwc.long, pre.post = "time",
-    theme = "classic", color = color$prepost)
+    wdat.long, "vocab.teach", "grupo", aov, pwc.long,
+    pre.post = "time", theme = "classic", color = color$prepost)
 ```
 
 ``` r
 if (length(unique(wdat.long[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("Vocabulario Ensinado")
+  plots[["grupo"]] + ggplot2::ylab("Vocabulary taught") +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax) 
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
@@ -475,7 +505,10 @@ ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
-  )
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
@@ -509,88 +542,104 @@ levene_test(res, .resid ~ grupo)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),], "vocab.teach.pos", c("grupo","Sexo"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),],
+                         "vocab.teach.pos", c("grupo","Sexo"))
+pdat = pdat[pdat[["Sexo"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Sexo"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Sexo"]] = factor(
+  pdat[["Sexo"]],
+  level[["Sexo"]][level[["Sexo"]] %in% unique(pdat[["Sexo"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Sexo")], pdat[,c("id","grupo","Sexo")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["vocab.teach"]] <- c(pdat[["vocab.teach.pre"]], pdat[["vocab.teach.pos"]])
 
-aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo)
-laov[["grupo:Sexo"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(pdat, grupo), vocab.teach.pos ~ Sexo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Sexo), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(pdat, grupo), vocab.teach.pos ~ Sexo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Sexo), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Sexo"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- ds
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Sexo"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
-
-
-ldat[["grupo:Sexo"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
+  
+  
+  ldat[["grupo:Sexo"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P3709"
 
 ``` r
-aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo)
-laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##            Effect DFn  DFd       F        p p<.05   ges
-    ## 1 vocab.teach.pre   1 1223 383.236 1.89e-74     * 0.239
-    ## 2           grupo   1 1223  10.087 2.00e-03     * 0.008
-    ## 3            Sexo   1 1223  13.356 2.68e-04     * 0.011
-    ## 4      grupo:Sexo   1 1223   3.710 5.40e-02       0.003
 
 | Effect          | DFn |  DFd |       F |     p | p\<.05 |   ges |
 |:----------------|----:|-----:|--------:|------:|:-------|------:|
@@ -600,16 +649,18 @@ laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Ef
 | grupo:Sexo      |   1 | 1223 |   3.710 | 0.054 |        | 0.003 |
 
 ``` r
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(wdat, grupo), vocab.teach.pos ~ Sexo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Sexo), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(wdat, grupo), vocab.teach.pos ~ Sexo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Sexo), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 | grupo        | Sexo | term                   | .y.             | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -620,10 +671,15 @@ pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo"
 | Experimental |      | vocab.teach.pre\*Sexo  | vocab.teach.pos | F        | M            | 1223 |     4.032 | 0.000 | 0.000 | \*\*\*\*     |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo"]], by=c("grupo","Sexo","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Sexo"]],
+                                         by=c("grupo","Sexo","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Sexo | term | .y.         | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -634,38 +690,55 @@ lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo
 | Experimental | M    | time | vocab.teach | pre    | pos    | 2448 |    -2.089 | 0.037 | 0.037 | \*           |
 
 ``` r
-ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Sexo"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]], by=c("grupo","Sexo"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Sexo"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.vocab.teach.pre","se.vocab.teach.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]],
+                                          by=c("grupo","Sexo"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | F    | 258 |   4.585 |    0.127 |     5.019 |      0.138 |   5.055 |    0.122 |
-| Controle     | M    | 257 |   4.424 |    0.143 |     4.778 |      0.142 |   4.899 |    0.123 |
-| Experimental | F    | 368 |   4.777 |    0.108 |     5.698 |      0.117 |   5.632 |    0.103 |
-| Experimental | M    | 345 |   4.739 |    0.106 |     5.084 |      0.122 |   5.038 |    0.106 |
+| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | F    | 258 |   4.585 |    0.127 |     5.019 |      0.138 |   5.055 |    0.122 |    4.815 |     5.295 |
+| Controle     | M    | 257 |   4.424 |    0.143 |     4.778 |      0.142 |   4.899 |    0.123 |    4.658 |     5.140 |
+| Experimental | F    | 368 |   4.777 |    0.108 |     5.698 |      0.117 |   5.632 |    0.103 |    5.431 |     5.834 |
+| Experimental | M    | 345 |   4.739 |    0.106 |     5.084 |      0.122 |   5.038 |    0.106 |    4.830 |     5.246 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "vocab.teach.pos", c("grupo","Sexo"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Vocabulary taught",
+             subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
+
 ``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Sexo"]])
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Sexo", "grupo", aov, ylab = "Vocabulary taught",
+               subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -674,60 +747,99 @@ if (!is.null(plots[["grupo"]]))
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Sexo"]]))
-  plots[["Sexo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "vocab.teach.pos", c("grupo","Sexo"), aov, pwcs, covar = "vocab.teach.pre",
-  theme = "classic", color = color[["grupo:Sexo"]],
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "vocab.teach.pos", c("grupo","Sexo"), aov, pwcs, covar = "vocab.teach.pre",
+    theme = "classic", color = color[["grupo:Sexo"]],
+    subtitle = which(aov$Effect == "grupo:Sexo"))
+}
 ```
 
 ``` r
-plots[["grupo:Sexo"]] + ggplot2::ylab("Vocabulario Ensinado") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots[["grupo:Sexo"]] + ggplot2::ylab("Vocabulary taught") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "vocab.teach", c("grupo","Sexo"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "vocab.teach", c("grupo","Sexo"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Sexo"]] + ggplot2::ylab("Vocabulario Ensinado")
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  plots[["grupo:Sexo"]] + ggplot2::ylab("Vocabulary taught") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
 
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
-          facet.by = c("grupo","Sexo"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            facet.by = c("grupo","Sexo"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "grupo", facet.by = "Sexo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "Sexo", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Sexo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo, data = wdat))
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Sexo, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Sexo"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -736,7 +848,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.999   0.459
 
 ``` r
-levene_test(res, .resid ~ grupo*Sexo)
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Sexo)
 ```
 
     ## # A tibble: 1 × 4
@@ -749,88 +862,104 @@ levene_test(res, .resid ~ grupo*Sexo)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),], "vocab.teach.pos", c("grupo","Zona"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),],
+                         "vocab.teach.pos", c("grupo","Zona"))
+pdat = pdat[pdat[["Zona"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Zona"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Zona"]] = factor(
+  pdat[["Zona"]],
+  level[["Zona"]][level[["Zona"]] %in% unique(pdat[["Zona"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Zona")], pdat[,c("id","grupo","Zona")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["vocab.teach"]] <- c(pdat[["vocab.teach.pre"]], pdat[["vocab.teach.pos"]])
 
-aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Zona)
-laov[["grupo:Zona"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Zona)
+  laov[["grupo:Zona"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(pdat, grupo), vocab.teach.pos ~ Zona,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Zona), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(pdat, grupo), vocab.teach.pos ~ Zona,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Zona), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Zona"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- ds
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Zona"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Zona, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
-
-
-ldat[["grupo:Zona"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Zona, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
+  
+  
+  ldat[["grupo:Zona"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P3709"
 
 ``` r
-aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Zona)
-laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Zona)
+  laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##            Effect DFn DFd       F        p p<.05      ges
-    ## 1 vocab.teach.pre   1 844 287.941 8.66e-56     * 2.54e-01
-    ## 2           grupo   1 844   5.704 1.70e-02     * 7.00e-03
-    ## 3            Zona   1 844   0.020 8.87e-01       2.38e-05
-    ## 4      grupo:Zona   1 844   0.323 5.70e-01       3.82e-04
 
 | Effect          | DFn | DFd |       F |     p | p\<.05 |   ges |
 |:----------------|----:|----:|--------:|------:|:-------|------:|
@@ -840,16 +969,18 @@ laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Ef
 | grupo:Zona      |   1 | 844 |   0.323 | 0.570 |        | 0.000 |
 
 ``` r
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(wdat, grupo), vocab.teach.pos ~ Zona,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Zona), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(wdat, grupo), vocab.teach.pos ~ Zona,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Zona), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 | grupo        | Zona   | term                   | .y.             | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
@@ -860,10 +991,15 @@ pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona"
 | Experimental |        | vocab.teach.pre\*Zona  | vocab.teach.pos | Rural    | Urbana       | 844 |    -0.253 | 0.801 | 0.801 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona"]], by=c("grupo","Zona","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Zona"]],
+                                         by=c("grupo","Zona","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Zona   | term | .y.         | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -874,38 +1010,41 @@ lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona
 | Experimental | Urbana | time | vocab.teach | pre    | pos    | 1690 |    -3.015 | 0.003 | 0.003 | \*\*         |
 
 ``` r
-ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Zona"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]], by=c("grupo","Zona"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Zona"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.vocab.teach.pre","se.vocab.teach.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]],
+                                          by=c("grupo","Zona"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | Rural  | 252 |   4.460 |    0.131 |     4.976 |      0.145 |   5.061 |    0.123 |
-| Controle     | Urbana | 114 |   4.412 |    0.184 |     4.833 |      0.192 |   4.944 |    0.183 |
-| Experimental | Rural  | 294 |   4.694 |    0.121 |     5.374 |      0.138 |   5.330 |    0.114 |
-| Experimental | Urbana | 189 |   4.815 |    0.155 |     5.487 |      0.157 |   5.376 |    0.142 |
+| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | Rural  | 252 |   4.460 |    0.131 |     4.976 |      0.145 |   5.061 |    0.123 |    4.819 |     5.302 |
+| Controle     | Urbana | 114 |   4.412 |    0.184 |     4.833 |      0.192 |   4.944 |    0.183 |    4.585 |     5.303 |
+| Experimental | Rural  | 294 |   4.694 |    0.121 |     5.374 |      0.138 |   5.330 |    0.114 |    5.106 |     5.554 |
+| Experimental | Urbana | 189 |   4.815 |    0.155 |     5.487 |      0.157 |   5.376 |    0.142 |    5.097 |     5.655 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "vocab.teach.pos", c("grupo","Zona"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Zona"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Zona"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Zona", aov, ylab = "Vocabulary taught",
+             subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -914,8 +1053,12 @@ if (!is.null(plots[["grupo"]]))
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Zona"]]))
-  plots[["Zona"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "Vocabulary taught",
+               subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -924,26 +1067,40 @@ if (!is.null(plots[["Zona"]]))
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-67-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "vocab.teach.pos", c("grupo","Zona"), aov, pwcs, covar = "vocab.teach.pre",
-  theme = "classic", color = color[["grupo:Zona"]],
-  subtitle = which(aov$Effect == "grupo:Zona"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "vocab.teach.pos", c("grupo","Zona"), aov, pwcs, covar = "vocab.teach.pre",
+    theme = "classic", color = color[["grupo:Zona"]],
+    subtitle = which(aov$Effect == "grupo:Zona"))
+}
 ```
 
 ``` r
-plots[["grupo:Zona"]] + ggplot2::ylab("Vocabulario Ensinado") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots[["grupo:Zona"]] + ggplot2::ylab("Vocabulary taught") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
+
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "vocab.teach", c("grupo","Zona"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "vocab.teach", c("grupo","Zona"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Zona"]] + ggplot2::ylab("Vocabulario Ensinado")
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  plots[["grupo:Zona"]] + ggplot2::ylab("Vocabulary taught") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
@@ -951,23 +1108,58 @@ plots[["grupo:Zona"]] + ggplot2::ylab("Vocabulario Ensinado")
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
-          facet.by = c("grupo","Zona"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            facet.by = c("grupo","Zona"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "grupo", facet.by = "Zona", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "Zona", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Zona)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Zona, data = wdat))
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Zona, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Zona"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -976,7 +1168,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998   0.498
 
 ``` r
-levene_test(res, .resid ~ grupo*Zona)
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Zona)
 ```
 
     ## # A tibble: 1 × 4
@@ -989,7 +1182,8 @@ levene_test(res, .resid ~ grupo*Zona)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),], "vocab.teach.pos", c("grupo","Cor.Raca"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),],
+                         "vocab.teach.pos", c("grupo","Cor.Raca"))
 ```
 
     ## Warning: There were 3 warnings in `mutate()`.
@@ -1003,86 +1197,102 @@ pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),
     ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.
 
 ``` r
+pdat = pdat[pdat[["Cor.Raca"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Cor.Raca"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Cor.Raca"]] = factor(
+  pdat[["Cor.Raca"]],
+  level[["Cor.Raca"]][level[["Cor.Raca"]] %in% unique(pdat[["Cor.Raca"]])])
+
 pdat.long <- rbind(pdat[,c("id","grupo","Cor.Raca")], pdat[,c("id","grupo","Cor.Raca")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["vocab.teach"]] <- c(pdat[["vocab.teach.pre"]], pdat[["vocab.teach.pos"]])
 
-aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(pdat, grupo), vocab.teach.pos ~ Cor.Raca,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Cor.Raca), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(pdat, grupo), vocab.teach.pos ~ Cor.Raca,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Cor.Raca), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Cor.Raca"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- ds
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Cor.Raca"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
-
-
-ldat[["grupo:Cor.Raca"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
+  
+  
+  ldat[["grupo:Cor.Raca"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## NULL
 
 ``` r
-aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##            Effect DFn DFd       F        p p<.05   ges
-    ## 1 vocab.teach.pre   1 509 188.846 8.97e-37     * 0.271
-    ## 2           grupo   1 509   1.436 2.31e-01       0.003
-    ## 3        Cor.Raca   2 509   0.773 4.62e-01       0.003
-    ## 4  grupo:Cor.Raca   2 509   0.683 5.06e-01       0.003
 
 | Effect          | DFn | DFd |       F |     p | p\<.05 |   ges |
 |:----------------|----:|----:|--------:|------:|:-------|------:|
@@ -1092,91 +1302,91 @@ laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]]
 | grupo:Cor.Raca  |   2 | 509 |   0.683 | 0.506 |        | 0.003 |
 
 ``` r
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(wdat, grupo), vocab.teach.pos ~ Cor.Raca,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Cor.Raca), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(wdat, grupo), vocab.teach.pos ~ Cor.Raca,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Cor.Raca), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 | grupo        | Cor.Raca | term                      | .y.             | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
 |:-------------|:---------|:--------------------------|:----------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | Branca   | vocab.teach.pre\*grupo    | vocab.teach.pos | Controle | Experimental | 509 |    -0.324 | 0.746 | 0.746 | ns           |
-|              | Indígena | vocab.teach.pre\*grupo    | vocab.teach.pos | Controle | Experimental | 509 |     0.763 | 0.446 | 0.446 | ns           |
 |              | Parda    | vocab.teach.pre\*grupo    | vocab.teach.pos | Controle | Experimental | 509 |    -1.455 | 0.146 | 0.146 | ns           |
-| Controle     |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Branca   | Indígena     | 509 |    -1.438 | 0.151 | 0.453 | ns           |
-| Controle     |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Branca   | Parda        | 509 |    -0.177 | 0.860 | 1.000 | ns           |
-| Controle     |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Indígena | Parda        | 509 |     1.448 | 0.148 | 0.445 | ns           |
-| Experimental |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Branca   | Indígena     | 509 |    -0.396 | 0.692 | 1.000 | ns           |
-| Experimental |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Branca   | Parda        | 509 |    -0.819 | 0.413 | 1.000 | ns           |
-| Experimental |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Indígena | Parda        | 509 |    -0.053 | 0.958 | 1.000 | ns           |
+|              | Indígena | vocab.teach.pre\*grupo    | vocab.teach.pos | Controle | Experimental | 509 |     0.763 | 0.446 | 0.446 | ns           |
+|              | Branca   | vocab.teach.pre\*grupo    | vocab.teach.pos | Controle | Experimental | 509 |    -0.324 | 0.746 | 0.746 | ns           |
+| Controle     |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Parda    | Indígena     | 509 |    -1.448 | 0.148 | 0.445 | ns           |
+| Controle     |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Parda    | Branca       | 509 |     0.177 | 0.860 | 1.000 | ns           |
+| Controle     |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Indígena | Branca       | 509 |     1.438 | 0.151 | 0.453 | ns           |
+| Experimental |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Parda    | Indígena     | 509 |     0.053 | 0.958 | 1.000 | ns           |
+| Experimental |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Parda    | Branca       | 509 |     0.819 | 0.413 | 1.000 | ns           |
+| Experimental |          | vocab.teach.pre\*Cor.Raca | vocab.teach.pos | Indígena | Branca       | 509 |     0.396 | 0.692 | 1.000 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Cor.Raca"]],
+                                         by=c("grupo","Cor.Raca","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Cor.Raca | term | .y.         | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
 |:-------------|:---------|:-----|:------------|:-------|:-------|-----:|----------:|------:|------:|:-------------|
-| Controle     | Branca   | time | vocab.teach | pre    | pos    | 1020 |    -1.272 | 0.204 | 0.204 | ns           |
-| Controle     | Indígena | time | vocab.teach | pre    | pos    | 1020 |    -1.520 | 0.129 | 0.129 | ns           |
 | Controle     | Parda    | time | vocab.teach | pre    | pos    | 1020 |    -2.288 | 0.022 | 0.022 | \*           |
-| Experimental | Branca   | time | vocab.teach | pre    | pos    | 1020 |    -0.982 | 0.326 | 0.326 | ns           |
-| Experimental | Indígena | time | vocab.teach | pre    | pos    | 1020 |    -1.292 | 0.197 | 0.197 | ns           |
+| Controle     | Indígena | time | vocab.teach | pre    | pos    | 1020 |    -1.520 | 0.129 | 0.129 | ns           |
+| Controle     | Branca   | time | vocab.teach | pre    | pos    | 1020 |    -1.272 | 0.204 | 0.204 | ns           |
 | Experimental | Parda    | time | vocab.teach | pre    | pos    | 1020 |    -3.842 | 0.000 | 0.000 | \*\*\*       |
+| Experimental | Indígena | time | vocab.teach | pre    | pos    | 1020 |    -1.292 | 0.197 | 0.197 | ns           |
+| Experimental | Branca   | time | vocab.teach | pre    | pos    | 1020 |    -0.982 | 0.326 | 0.326 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Cor.Raca"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Cor.Raca"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.vocab.teach.pre","se.vocab.teach.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]],
+                                          by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | Branca   |  54 |   4.352 |    0.308 |     4.889 |      0.328 |   4.983 |    0.270 |
-| Controle     | Indígena |  13 |   4.615 |    0.460 |     5.923 |      0.582 |   5.864 |    0.549 |
-| Controle     | Parda    | 168 |   4.458 |    0.167 |     5.006 |      0.175 |   5.038 |    0.153 |
-| Experimental | Branca   |  62 |   5.000 |    0.224 |     5.387 |      0.297 |   5.103 |    0.252 |
-| Experimental | Indígena |  18 |   4.167 |    0.390 |     5.111 |      0.478 |   5.314 |    0.467 |
-| Experimental | Parda    | 201 |   4.478 |    0.145 |     5.318 |      0.167 |   5.339 |    0.140 |
+| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | Branca   |  54 |   4.352 |    0.308 |     4.889 |      0.328 |   4.983 |    0.270 |    4.454 |     5.513 |
+| Controle     | Indígena |  13 |   4.615 |    0.460 |     5.923 |      0.582 |   5.864 |    0.549 |    4.784 |     6.943 |
+| Controle     | Parda    | 168 |   4.458 |    0.167 |     5.006 |      0.175 |   5.038 |    0.153 |    4.738 |     5.338 |
+| Experimental | Branca   |  62 |   5.000 |    0.224 |     5.387 |      0.297 |   5.103 |    0.252 |    4.607 |     5.599 |
+| Experimental | Indígena |  18 |   4.167 |    0.390 |     5.111 |      0.478 |   5.314 |    0.467 |    4.396 |     6.231 |
+| Experimental | Parda    | 201 |   4.478 |    0.145 |     5.318 |      0.167 |   5.339 |    0.140 |    5.065 |     5.614 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "vocab.teach.pos", c("grupo","Cor.Raca"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Cor.Raca"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-90-1.png)<!-- -->
-
-``` r
-if (!is.null(plots[["Cor.Raca"]]))
-  plots[["Cor.Raca"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Cor.Raca", aov, ylab = "Vocabulary taught",
+             subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -1185,50 +1395,113 @@ if (!is.null(plots[["Cor.Raca"]]))
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "vocab.teach.pos", c("grupo","Cor.Raca"), aov, pwcs, covar = "vocab.teach.pre",
-  theme = "classic", color = color[["grupo:Cor.Raca"]],
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Cor.Raca", "grupo", aov, ylab = "Vocabulary taught",
+               subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
+```
+
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "vocab.teach.pos", c("grupo","Cor.Raca"), aov, pwcs, covar = "vocab.teach.pre",
+    theme = "classic", color = color[["grupo:Cor.Raca"]],
+    subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+}
 ```
 
 ``` r
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Vocabulario Ensinado") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Vocabulary taught") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-93-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "vocab.teach", c("grupo","Cor.Raca"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "vocab.teach", c("grupo","Cor.Raca"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Vocabulario Ensinado")
-```
-
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
-
-### Checking linearity assumption
-
-``` r
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
-          facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Vocabulary taught") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
 
+### Checking linearity assumption
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "grupo", facet.by = "Cor.Raca", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "Cor.Raca", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Cor.Raca)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca, data = wdat))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Cor.Raca, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1237,7 +1510,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998   0.919
 
 ``` r
-levene_test(res, .resid ~ grupo*Cor.Raca)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Cor.Raca)
 ```
 
     ## # A tibble: 1 × 4
@@ -1250,88 +1524,104 @@ levene_test(res, .resid ~ grupo*Cor.Raca)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),], "vocab.teach.pos", c("grupo","Serie"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),],
+                         "vocab.teach.pos", c("grupo","Serie"))
+pdat = pdat[pdat[["Serie"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Serie"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Serie"]] = factor(
+  pdat[["Serie"]],
+  level[["Serie"]][level[["Serie"]] %in% unique(pdat[["Serie"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Serie")], pdat[,c("id","grupo","Serie")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["vocab.teach"]] <- c(pdat[["vocab.teach.pre"]], pdat[["vocab.teach.pos"]])
 
-aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Serie)
-laov[["grupo:Serie"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Serie)
+  laov[["grupo:Serie"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(pdat, grupo), vocab.teach.pos ~ Serie,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Serie), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(pdat, grupo), vocab.teach.pos ~ Serie,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Serie), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Serie"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- ds
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","Serie"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Serie, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
-
-
-ldat[["grupo:Serie"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Serie, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
+  
+  
+  ldat[["grupo:Serie"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P3709"
 
 ``` r
-aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Serie)
-laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*Serie)
+  laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##            Effect DFn  DFd       F        p p<.05   ges
-    ## 1 vocab.teach.pre   1 1219 325.734 1.02e-64     * 0.211
-    ## 2           grupo   1 1219  10.035 2.00e-03     * 0.008
-    ## 3           Serie   3 1219  11.129 3.30e-07     * 0.027
-    ## 4     grupo:Serie   3 1219   3.860 9.00e-03     * 0.009
 
 | Effect          | DFn |  DFd |       F |     p | p\<.05 |   ges |
 |:----------------|----:|-----:|--------:|------:|:-------|------:|
@@ -1341,16 +1631,18 @@ laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="
 | grupo:Serie     |   3 | 1219 |   3.860 | 0.009 | \*     | 0.009 |
 
 ``` r
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(wdat, grupo), vocab.teach.pos ~ Serie,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Serie), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(wdat, grupo), vocab.teach.pos ~ Serie,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Serie), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 | grupo        | Serie | term                   | .y.             | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1373,10 +1665,15 @@ pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Seri
 | Experimental |       | vocab.teach.pre\*Serie | vocab.teach.pos | 8 ano    | 9 ano        | 1219 |    -4.290 | 0.000 | 0.000 | \*\*\*       |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Serie"]], by=c("grupo","Serie","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Serie"]],
+                                         by=c("grupo","Serie","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Serie | term | .y.         | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1391,106 +1688,157 @@ lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Ser
 | Experimental | 9 ano | time | vocab.teach | pre    | pos    | 2440 |    -4.806 | 0.000 | 0.000 | \*\*\*\*     |
 
 ``` r
-ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Serie"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]], by=c("grupo","Serie"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","Serie"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.vocab.teach.pre","se.vocab.teach.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]],
+                                          by=c("grupo","Serie"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 6 ano | 146 |   3.925 |    0.157 |     4.158 |      0.162 |   4.521 |    0.162 |
-| Controle     | 7 ano | 152 |   4.013 |    0.156 |     4.658 |      0.165 |   4.978 |    0.159 |
-| Controle     | 8 ano | 100 |   4.560 |    0.230 |     5.070 |      0.251 |   5.116 |    0.195 |
-| Controle     | 9 ano | 117 |   5.821 |    0.196 |     5.991 |      0.205 |   5.407 |    0.183 |
-| Experimental | 6 ano | 165 |   4.255 |    0.148 |     5.164 |      0.183 |   5.363 |    0.152 |
-| Experimental | 7 ano | 196 |   4.745 |    0.154 |     4.980 |      0.152 |   4.933 |    0.139 |
-| Experimental | 8 ano | 181 |   4.796 |    0.145 |     5.210 |      0.163 |   5.138 |    0.145 |
-| Experimental | 9 ano | 171 |   5.222 |    0.147 |     6.316 |      0.169 |   6.031 |    0.150 |
+| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 6 ano | 146 |   3.925 |    0.157 |     4.158 |      0.162 |   4.521 |    0.162 |    4.203 |     4.840 |
+| Controle     | 7 ano | 152 |   4.013 |    0.156 |     4.658 |      0.165 |   4.978 |    0.159 |    4.666 |     5.289 |
+| Controle     | 8 ano | 100 |   4.560 |    0.230 |     5.070 |      0.251 |   5.116 |    0.195 |    4.734 |     5.498 |
+| Controle     | 9 ano | 117 |   5.821 |    0.196 |     5.991 |      0.205 |   5.407 |    0.183 |    5.048 |     5.766 |
+| Experimental | 6 ano | 165 |   4.255 |    0.148 |     5.164 |      0.183 |   5.363 |    0.152 |    5.064 |     5.661 |
+| Experimental | 7 ano | 196 |   4.745 |    0.154 |     4.980 |      0.152 |   4.933 |    0.139 |    4.660 |     5.206 |
+| Experimental | 8 ano | 181 |   4.796 |    0.145 |     5.210 |      0.163 |   5.138 |    0.145 |    4.854 |     5.422 |
+| Experimental | 9 ano | 171 |   5.222 |    0.147 |     6.316 |      0.169 |   6.031 |    0.150 |    5.737 |     6.325 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "vocab.teach.pos", c("grupo","Serie"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Serie"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "Vocabulary taught",
+             subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-114-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-116-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Serie"]]))
-  plots[["Serie"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "Vocabulary taught",
+               subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
-
-    ## Warning: `position_dodge()` requires non-overlapping x intervals
-
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-115-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "vocab.teach.pos", c("grupo","Serie"), aov, pwcs, covar = "vocab.teach.pre",
-  theme = "classic", color = color[["grupo:Serie"]],
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
-``` r
-plots[["grupo:Serie"]] + ggplot2::ylab("Vocabulario Ensinado") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
-```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-117-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "vocab.teach", c("grupo","Serie"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "vocab.teach.pos", c("grupo","Serie"), aov, pwcs, covar = "vocab.teach.pre",
+    theme = "classic", color = color[["grupo:Serie"]],
+    subtitle = which(aov$Effect == "grupo:Serie"))
+}
 ```
 
 ``` r
-plots[["grupo:Serie"]] + ggplot2::ylab("Vocabulario Ensinado")
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots[["grupo:Serie"]] + ggplot2::ylab("Vocabulary taught") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-119-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "vocab.teach", c("grupo","Serie"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
+```
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  plots[["grupo:Serie"]] + ggplot2::ylab("Vocabulary taught") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-121-1.png)<!-- -->
+
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
-          facet.by = c("grupo","Serie"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            facet.by = c("grupo","Serie"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-120-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-122-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "grupo", facet.by = "Serie", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "Serie", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Serie)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-124-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Serie, data = wdat))
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*Serie, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Serie"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1499,7 +1847,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998   0.364
 
 ``` r
-levene_test(res, .resid ~ grupo*Serie)
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Serie)
 ```
 
     ## # A tibble: 1 × 4
@@ -1512,88 +1861,104 @@ levene_test(res, .resid ~ grupo*Serie)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["vocab.teach.quintile"]]),], "vocab.teach.pos", c("grupo","vocab.teach.quintile"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["vocab.teach.quintile"]]),],
+                         "vocab.teach.pos", c("grupo","vocab.teach.quintile"))
+pdat = pdat[pdat[["vocab.teach.quintile"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["vocab.teach.quintile"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["vocab.teach.quintile"]] = factor(
+  pdat[["vocab.teach.quintile"]],
+  level[["vocab.teach.quintile"]][level[["vocab.teach.quintile"]] %in% unique(pdat[["vocab.teach.quintile"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","vocab.teach.quintile")], pdat[,c("id","grupo","vocab.teach.quintile")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["vocab.teach"]] <- c(pdat[["vocab.teach.pre"]], pdat[["vocab.teach.pos"]])
 
-aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile)
-laov[["grupo:vocab.teach.quintile"]] <- get_anova_table(aov)
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  aov = anova_test(pdat, vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile)
+  laov[["grupo:vocab.teach.quintile"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["vocab.teach.quintile"]] <- emmeans_test(
-  group_by(pdat, grupo), vocab.teach.pos ~ vocab.teach.quintile,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, vocab.teach.quintile), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["vocab.teach.quintile"]])
-pwc <- pwc[,c("grupo","vocab.teach.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","vocab.teach.quintile")])]
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["vocab.teach.quintile"]] <- emmeans_test(
+    group_by(pdat, grupo), vocab.teach.pos ~ vocab.teach.quintile,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, vocab.teach.quintile), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["vocab.teach.quintile"]])
+  pwc <- pwc[,c("grupo","vocab.teach.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","vocab.teach.quintile")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","vocab.teach.quintile")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:vocab.teach.quintile"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","vocab.teach.quintile")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:vocab.teach.quintile"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","vocab.teach.quintile"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","vocab.teach.quintile"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","vocab.teach.quintile","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","vocab.teach.quintile", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:vocab.teach.quintile"]] <- ds
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ds <- get.descriptives(pdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","vocab.teach.quintile"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","vocab.teach.quintile"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","vocab.teach.quintile","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","vocab.teach.quintile", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:vocab.teach.quintile"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","vocab.teach.quintile")], wdat[,c("id","grupo","vocab.teach.quintile")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
-
-
-ldat[["grupo:vocab.teach.quintile"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","vocab.teach.quintile")], wdat[,c("id","grupo","vocab.teach.quintile")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["vocab.teach"]] <- c(wdat[["vocab.teach.pre"]], wdat[["vocab.teach.pos"]])
+  
+  
+  ldat[["grupo:vocab.teach.quintile"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P3709"
 
 ``` r
-aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile)
-laov[["grupo:vocab.teach.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:vocab.teach.quintile"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  aov = anova_test(wdat, vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile)
+  laov[["grupo:vocab.teach.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:vocab.teach.quintile"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##                       Effect DFn  DFd      F        p p<.05   ges
-    ## 1            vocab.teach.pre   1 1217 20.967 5.15e-06     * 0.017
-    ## 2                      grupo   1 1217 10.914 9.82e-04     * 0.009
-    ## 3       vocab.teach.quintile   4 1217  1.750 1.37e-01       0.006
-    ## 4 grupo:vocab.teach.quintile   4 1217  0.986 4.14e-01       0.003
 
 | Effect                     | DFn |  DFd |      F |     p | p\<.05 |   ges |
 |:---------------------------|----:|-----:|-------:|------:|:-------|------:|
@@ -1603,16 +1968,18 @@ laov[["grupo:vocab.teach.quintile"]] <- merge(get_anova_table(aov), laov[["grupo
 | grupo:vocab.teach.quintile |   4 | 1217 |  0.986 | 0.414 |        | 0.003 |
 
 ``` r
-pwcs <- list()
-pwcs[["vocab.teach.quintile"]] <- emmeans_test(
-  group_by(wdat, grupo), vocab.teach.pos ~ vocab.teach.quintile,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, vocab.teach.quintile), vocab.teach.pos ~ grupo,
-  covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["vocab.teach.quintile"]])
-pwc <- pwc[,c("grupo","vocab.teach.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","vocab.teach.quintile")])]
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["vocab.teach.quintile"]] <- emmeans_test(
+    group_by(wdat, grupo), vocab.teach.pos ~ vocab.teach.quintile,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, vocab.teach.quintile), vocab.teach.pos ~ grupo,
+    covariate = vocab.teach.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["vocab.teach.quintile"]])
+  pwc <- pwc[,c("grupo","vocab.teach.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","vocab.teach.quintile")])]
+}
 ```
 
 | grupo        | vocab.teach.quintile | term                                  | .y.             | group1       | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1644,10 +2011,15 @@ pwc <- pwc[,c("grupo","vocab.teach.quintile", colnames(pwc)[!colnames(pwc) %in% 
 | Experimental |                      | vocab.teach.pre\*vocab.teach.quintile | vocab.teach.pos | 4th quintile | 5th quintile | 1217 |    -1.893 | 0.059 | 0.585 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","vocab.teach.quintile")),
-                         vocab.teach ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:vocab.teach.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:vocab.teach.quintile"]], by=c("grupo","vocab.teach.quintile","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","vocab.teach.quintile")),
+                           vocab.teach ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:vocab.teach.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:vocab.teach.quintile"]],
+                                         by=c("grupo","vocab.teach.quintile","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | vocab.teach.quintile | term | .y.         | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1664,106 +2036,162 @@ lpwc[["grupo:vocab.teach.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long), l
 | Experimental | 5th quintile         | time | vocab.teach | pre    | pos    | 2436 |     3.621 | 0.000 | 0.000 | \*\*\*       |
 
 ``` r
-ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), covar = "vocab.teach.pre")
-ds <- merge(ds[ds$variable != "vocab.teach.pre",],
-            ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","vocab.teach.quintile"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","vocab.teach.quintile"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","vocab.teach.quintile","n","mean.vocab.teach.pre","se.vocab.teach.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","vocab.teach.quintile", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:vocab.teach.quintile"]] <- merge(ds, lemms[["grupo:vocab.teach.quintile"]], by=c("grupo","vocab.teach.quintile"), suffixes = c("","'"))
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ds <- get.descriptives(wdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), covar = "vocab.teach.pre")
+  ds <- merge(ds[ds$variable != "vocab.teach.pre",],
+              ds[ds$variable == "vocab.teach.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","vocab.teach.quintile"), all.x = T, suffixes = c("", ".vocab.teach.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","vocab.teach.quintile"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","vocab.teach.quintile","n","mean.vocab.teach.pre","se.vocab.teach.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","vocab.teach.quintile", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:vocab.teach.quintile"]] <- merge(ds, lemms[["grupo:vocab.teach.quintile"]],
+                                          by=c("grupo","vocab.teach.quintile"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | vocab.teach.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:---------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 1st quintile         | 102 |   1.618 |    0.059 |     3.431 |      0.191 |   4.759 |    0.350 |
-| Controle     | 2nd quintile         |  80 |   3.000 |    0.000 |     4.138 |      0.187 |   4.861 |    0.272 |
-| Controle     | 3rd quintile         | 172 |   4.506 |    0.038 |     4.634 |      0.144 |   4.698 |    0.151 |
-| Controle     | 4th quintile         |  64 |   6.000 |    0.000 |     5.922 |      0.266 |   5.332 |    0.279 |
-| Controle     | 5th quintile         |  97 |   7.794 |    0.108 |     6.866 |      0.206 |   5.491 |    0.361 |
-| Experimental | 1st quintile         |  93 |   1.710 |    0.050 |     3.871 |      0.202 |   5.159 |    0.348 |
-| Experimental | 2nd quintile         | 105 |   3.000 |    0.000 |     4.686 |      0.168 |   5.409 |    0.249 |
-| Experimental | 3rd quintile         | 273 |   4.451 |    0.030 |     5.154 |      0.125 |   5.242 |    0.121 |
-| Experimental | 4th quintile         |  99 |   6.000 |    0.000 |     5.778 |      0.219 |   5.188 |    0.237 |
-| Experimental | 5th quintile         | 143 |   7.762 |    0.086 |     7.133 |      0.182 |   5.772 |    0.340 |
+| grupo        | vocab.teach.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:---------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 1st quintile         | 102 |   1.618 |    0.059 |     3.431 |      0.191 |   4.759 |    0.350 |    4.073 |     5.446 |
+| Controle     | 2nd quintile         |  80 |   3.000 |    0.000 |     4.138 |      0.187 |   4.861 |    0.272 |    4.328 |     5.393 |
+| Controle     | 3rd quintile         | 172 |   4.506 |    0.038 |     4.634 |      0.144 |   4.698 |    0.151 |    4.401 |     4.995 |
+| Controle     | 4th quintile         |  64 |   6.000 |    0.000 |     5.922 |      0.266 |   5.332 |    0.279 |    4.786 |     5.879 |
+| Controle     | 5th quintile         |  97 |   7.794 |    0.108 |     6.866 |      0.206 |   5.491 |    0.361 |    4.783 |     6.200 |
+| Experimental | 1st quintile         |  93 |   1.710 |    0.050 |     3.871 |      0.202 |   5.159 |    0.348 |    4.476 |     5.841 |
+| Experimental | 2nd quintile         | 105 |   3.000 |    0.000 |     4.686 |      0.168 |   5.409 |    0.249 |    4.920 |     5.898 |
+| Experimental | 3rd quintile         | 273 |   4.451 |    0.030 |     5.154 |      0.125 |   5.242 |    0.121 |    5.004 |     5.480 |
+| Experimental | 4th quintile         |  99 |   6.000 |    0.000 |     5.778 |      0.219 |   5.188 |    0.237 |    4.724 |     5.652 |
+| Experimental | 5th quintile         | 143 |   7.762 |    0.086 |     7.133 |      0.182 |   5.772 |    0.340 |    5.105 |     6.439 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]])
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "vocab.teach.quintile", aov, ylab = "Vocabulary taught",
+             subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-138-1.png)<!-- -->
-
-``` r
-if (!is.null(plots[["vocab.teach.quintile"]]))
-  plots[["vocab.teach.quintile"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-139-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), aov, pwcs, covar = "vocab.teach.pre",
-  theme = "classic", color = color[["grupo:vocab.teach.quintile"]],
-  subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"))
-```
-
-``` r
-plots[["grupo:vocab.teach.quintile"]] + ggplot2::ylab("Vocabulario Ensinado") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
-```
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-141-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "vocab.teach", c("grupo","vocab.teach.quintile"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ggPlotAoC2(pwcs, "vocab.teach.quintile", "grupo", aov, ylab = "Vocabulary taught",
+               subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
+```
+
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-142-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "vocab.teach.pos", c("grupo","vocab.teach.quintile"), aov, pwcs, covar = "vocab.teach.pre",
+    theme = "classic", color = color[["grupo:vocab.teach.quintile"]],
+    subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"))
+}
 ```
 
 ``` r
-plots[["grupo:vocab.teach.quintile"]] + ggplot2::ylab("Vocabulario Ensinado")
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  plots[["grupo:vocab.teach.quintile"]] + ggplot2::ylab("Vocabulary taught") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-143-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-144-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "vocab.teach", c("grupo","vocab.teach.quintile"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
+```
+
+``` r
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) 
+  plots[["grupo:vocab.teach.quintile"]] + ggplot2::ylab("Vocabulary taught") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-146-1.png)<!-- -->
 
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
-          facet.by = c("grupo","vocab.teach.quintile"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            facet.by = c("grupo","vocab.teach.quintile"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-144-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-147-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "grupo", facet.by = "vocab.teach.quintile", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:vocab.teach.quintile"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-148-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+            color = "vocab.teach.quintile", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = vocab.teach.quintile)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:vocab.teach.quintile"))) +
+    ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-149-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile, data = wdat))
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) 
+  res <- augment(lm(vocab.teach.pos ~ vocab.teach.pre + grupo*vocab.teach.quintile, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1772,7 +2200,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998   0.287
 
 ``` r
-levene_test(res, .resid ~ grupo*vocab.teach.quintile)
+if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*vocab.teach.quintile)
 ```
 
     ## # A tibble: 1 × 4
@@ -1789,122 +2218,14 @@ df <- get.descriptives(ldat[["grupo"]], c(dv.pre, dv.pos), c("grupo"),
                        include.global = T, symmetry.test = T, normality.test = F)
 df <- plyr::rbind.fill(
   df, do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
-    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1 && paste0("grupo:",f) %in% names(ldat))
       get.descriptives(ldat[[paste0("grupo:",f)]], c(dv.pre,dv.pos), c("grupo", f),
                        symmetry.test = T, normality.test = F)
     }))
 )
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
-
-    ##           grupo Sexo   Zona Cor.Raca Serie vocab.teach.quintile        variable    n  mean median min max    sd
-    ## 1      Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  515 4.505    4.0   0  13 2.166
-    ## 2  Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  713 4.759    5.0   0  13 2.018
-    ## 3          <NA> <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre 1228 4.652    4.0   0  13 2.084
-    ## 4      Controle <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  515 4.899    5.0   0  11 2.253
-    ## 5  Experimental <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  713 5.401    5.0   0  12 2.273
-    ## 6          <NA> <NA>   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos 1228 5.191    5.0   0  12 2.277
-    ## 7      Controle    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  258 4.585    5.0   0  10 2.035
-    ## 8      Controle    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  257 4.424    4.0   0  13 2.290
-    ## 9  Experimental    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  368 4.777    5.0   0  13 2.063
-    ## 10 Experimental    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pre  345 4.739    5.0   1  11 1.971
-    ## 11     Controle    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  258 5.019    5.0   0  10 2.222
-    ## 12     Controle    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  257 4.778    5.0   0  11 2.281
-    ## 13 Experimental    F   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  368 5.698    6.0   0  12 2.249
-    ## 14 Experimental    M   <NA>     <NA>  <NA>                 <NA> vocab.teach.pos  345 5.084    5.0   0  12 2.258
-    ## 15     Controle <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pre  252 4.460    4.0   0  11 2.073
-    ## 16     Controle <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pre  114 4.412    4.0   0  10 1.968
-    ## 17 Experimental <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pre  294 4.694    5.0   0  11 2.068
-    ## 18 Experimental <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pre  189 4.815    5.0   1  13 2.127
-    ## 19     Controle <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pos  252 4.976    5.0   0  10 2.304
-    ## 20     Controle <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pos  114 4.833    5.0   0  10 2.052
-    ## 21 Experimental <NA>  Rural     <NA>  <NA>                 <NA> vocab.teach.pos  294 5.374    5.0   0  12 2.358
-    ## 22 Experimental <NA> Urbana     <NA>  <NA>                 <NA> vocab.teach.pos  189 5.487    6.0   1  11 2.163
-    ## 23     Controle <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pre   54 4.352    4.0   1  11 2.267
-    ## 24     Controle <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pre   13 4.615    4.0   1   7 1.660
-    ## 25     Controle <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pre  168 4.458    4.0   0  13 2.166
-    ## 26 Experimental <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pre   62 5.000    5.0   1   8 1.765
-    ## 27 Experimental <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pre   18 4.167    4.0   1   7 1.654
-    ## 28 Experimental <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pre  201 4.478    4.0   0  10 2.057
-    ## 29     Controle <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pos   54 4.889    5.0   1  11 2.408
-    ## 30     Controle <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pos   13 5.923    6.0   2   9 2.100
-    ## 31     Controle <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pos  168 5.006    5.0   0  10 2.265
-    ## 32 Experimental <NA>   <NA>   Branca  <NA>                 <NA> vocab.teach.pos   62 5.387    6.0   1  10 2.335
-    ## 33 Experimental <NA>   <NA> Indígena  <NA>                 <NA> vocab.teach.pos   18 5.111    5.0   2   9 2.026
-    ## 34 Experimental <NA>   <NA>    Parda  <NA>                 <NA> vocab.teach.pos  201 5.318    5.0   0  12 2.364
-    ## 35     Controle <NA>   <NA>     <NA> 6 ano                 <NA> vocab.teach.pre  146 3.925    4.0   0  10 1.901
-    ## 36     Controle <NA>   <NA>     <NA> 7 ano                 <NA> vocab.teach.pre  152 4.013    4.0   1  11 1.919
-    ## 37     Controle <NA>   <NA>     <NA> 8 ano                 <NA> vocab.teach.pre  100 4.560    4.5   0  10 2.298
-    ## 38     Controle <NA>   <NA>     <NA> 9 ano                 <NA> vocab.teach.pre  117 5.821    6.0   1  13 2.116
-    ## 39 Experimental <NA>   <NA>     <NA> 6 ano                 <NA> vocab.teach.pre  165 4.255    4.0   1  11 1.902
-    ## 40 Experimental <NA>   <NA>     <NA> 7 ano                 <NA> vocab.teach.pre  196 4.745    5.0   1  13 2.157
-    ## 41 Experimental <NA>   <NA>     <NA> 8 ano                 <NA> vocab.teach.pre  181 4.796    5.0   1   9 1.954
-    ## 42 Experimental <NA>   <NA>     <NA> 9 ano                 <NA> vocab.teach.pre  171 5.222    5.0   0  11 1.927
-    ## 43     Controle <NA>   <NA>     <NA> 6 ano                 <NA> vocab.teach.pos  146 4.158    4.0   0   9 1.957
-    ## 44     Controle <NA>   <NA>     <NA> 7 ano                 <NA> vocab.teach.pos  152 4.658    5.0   0  10 2.040
-    ## 45     Controle <NA>   <NA>     <NA> 8 ano                 <NA> vocab.teach.pos  100 5.070    5.0   0  10 2.508
-    ## 46     Controle <NA>   <NA>     <NA> 9 ano                 <NA> vocab.teach.pos  117 5.991    6.0   1  11 2.219
-    ## 47 Experimental <NA>   <NA>     <NA> 6 ano                 <NA> vocab.teach.pos  165 5.164    5.0   0  11 2.346
-    ## 48 Experimental <NA>   <NA>     <NA> 7 ano                 <NA> vocab.teach.pos  196 4.980    5.0   0  11 2.134
-    ## 49 Experimental <NA>   <NA>     <NA> 8 ano                 <NA> vocab.teach.pos  181 5.210    5.0   1  11 2.188
-    ## 50 Experimental <NA>   <NA>     <NA> 9 ano                 <NA> vocab.teach.pos  171 6.316    6.0   0  12 2.211
-    ## 51     Controle <NA>   <NA>     <NA>  <NA>         1st quintile vocab.teach.pre  102 1.618    2.0   0   2 0.598
-    ## 52     Controle <NA>   <NA>     <NA>  <NA>         2nd quintile vocab.teach.pre   80 3.000    3.0   3   3 0.000
-    ##       se    ci  iqr symmetry    skewness    kurtosis
-    ## 1  0.095 0.187 3.00      YES  0.35872777 -0.16010281
-    ## 2  0.076 0.148 3.00      YES  0.38277176 -0.02065402
-    ## 3  0.059 0.117 3.00      YES  0.35787206 -0.07514794
-    ## 4  0.099 0.195 3.00      YES  0.16417406 -0.42647593
-    ## 5  0.085 0.167 3.00      YES  0.20610900 -0.38973903
-    ## 6  0.065 0.127 3.00      YES  0.18811030 -0.38170830
-    ## 7  0.127 0.250 3.00      YES  0.14066919 -0.54023487
-    ## 8  0.143 0.281 3.00       NO  0.53085177  0.05759821
-    ## 9  0.108 0.211 3.00      YES  0.37520154  0.13663723
-    ## 10 0.106 0.209 3.00      YES  0.38685409 -0.25657372
-    ## 11 0.138 0.272 2.00      YES  0.08169049 -0.29446836
-    ## 12 0.142 0.280 3.00      YES  0.24916594 -0.53588055
-    ## 13 0.117 0.230 3.00      YES  0.21229293 -0.39376242
-    ## 14 0.122 0.239 4.00      YES  0.21447584 -0.42576819
-    ## 15 0.131 0.257 3.00      YES  0.32604808 -0.39597581
-    ## 16 0.184 0.365 2.75      YES  0.30585896 -0.02355444
-    ## 17 0.121 0.237 3.00      YES  0.28889966 -0.36550865
-    ## 18 0.155 0.305 3.00       NO  0.53815030  0.42862317
-    ## 19 0.145 0.286 4.00      YES  0.14191889 -0.63544972
-    ## 20 0.192 0.381 2.00      YES  0.12531471 -0.17332969
-    ## 21 0.138 0.271 3.00      YES  0.16823491 -0.45520880
-    ## 22 0.157 0.310 3.00      YES  0.22509556 -0.40434146
-    ## 23 0.308 0.619 3.75       NO  0.59023675 -0.05556365
-    ## 24 0.460 1.003 2.00      YES -0.33777059 -0.46442286
-    ## 25 0.167 0.330 3.00       NO  0.54641224  0.61875156
-    ## 26 0.224 0.448 2.00      YES -0.12323156 -0.78887946
-    ## 27 0.390 0.822 1.75      YES -0.24970660 -1.00411630
-    ## 28 0.145 0.286 3.00      YES  0.45377371 -0.35637072
-    ## 29 0.328 0.657 4.00      YES  0.29510170 -0.65382268
-    ## 30 0.582 1.269 3.00      YES -0.30548169 -1.13409295
-    ## 31 0.175 0.345 2.50      YES  0.07869782 -0.37687419
-    ## 32 0.297 0.593 4.00      YES -0.03034945 -1.01207541
-    ## 33 0.478 1.007 3.50      YES  0.09831424 -1.06668721
-    ## 34 0.167 0.329 3.00      YES  0.38111677 -0.14444204
-    ## 35 0.157 0.311 3.00      YES  0.41808273 -0.03890132
-    ## 36 0.156 0.308 2.00       NO  0.68540893  0.54683471
-    ## 37 0.230 0.456 3.00      YES  0.04979764 -0.76910925
-    ## 38 0.196 0.387 3.00      YES  0.03363028  0.22725683
-    ## 39 0.148 0.292 2.00       NO  0.61847911  0.55341026
-    ## 40 0.154 0.304 3.00       NO  0.54885981  0.32305820
-    ## 41 0.145 0.287 3.00      YES  0.17479137 -0.64262327
-    ## 42 0.147 0.291 3.00      YES  0.17075985 -0.23794069
-    ## 43 0.162 0.320 3.00      YES  0.16991408 -0.45127075
-    ## 44 0.165 0.327 3.00      YES  0.28749933 -0.26698176
-    ## 45 0.251 0.498 4.00      YES -0.16601178 -0.78596888
-    ## 46 0.205 0.406 2.00      YES  0.06232937 -0.52456447
-    ## 47 0.183 0.361 4.00      YES  0.24371342 -0.62009351
-    ## 48 0.152 0.301 3.00      YES  0.40451280 -0.06760878
-    ## 49 0.163 0.321 3.00      YES  0.35604903 -0.34279745
-    ## 50 0.169 0.334 3.00      YES -0.20163128  0.11730758
-    ## 51 0.059 0.117 1.00 few data  0.00000000  0.00000000
-    ## 52 0.000 0.000 0.00 few data  0.00000000  0.00000000
-    ##  [ reached 'max' / getOption("max.print") -- omitted 18 rows ]
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | vocab.teach.quintile | variable        |    n |  mean | median | min | max |    sd |    se |    ci |  iqr | symmetry | skewness | kurtosis |
 |:-------------|:-----|:-------|:---------|:------|:---------------------|:----------------|-----:|------:|-------:|----:|----:|------:|------:|------:|-----:|:---------|---------:|---------:|
@@ -1930,18 +2251,18 @@ df <- plyr::rbind.fill(
 | Controle     |      | Urbana |          |       |                      | vocab.teach.pos |  114 | 4.833 |    5.0 |   0 |  10 | 2.052 | 0.192 | 0.381 | 2.00 | YES      |    0.125 |   -0.173 |
 | Experimental |      | Rural  |          |       |                      | vocab.teach.pos |  294 | 5.374 |    5.0 |   0 |  12 | 2.358 | 0.138 | 0.271 | 3.00 | YES      |    0.168 |   -0.455 |
 | Experimental |      | Urbana |          |       |                      | vocab.teach.pos |  189 | 5.487 |    6.0 |   1 |  11 | 2.163 | 0.157 | 0.310 | 3.00 | YES      |    0.225 |   -0.404 |
-| Controle     |      |        | Branca   |       |                      | vocab.teach.pre |   54 | 4.352 |    4.0 |   1 |  11 | 2.267 | 0.308 | 0.619 | 3.75 | NO       |    0.590 |   -0.056 |
-| Controle     |      |        | Indígena |       |                      | vocab.teach.pre |   13 | 4.615 |    4.0 |   1 |   7 | 1.660 | 0.460 | 1.003 | 2.00 | YES      |   -0.338 |   -0.464 |
 | Controle     |      |        | Parda    |       |                      | vocab.teach.pre |  168 | 4.458 |    4.0 |   0 |  13 | 2.166 | 0.167 | 0.330 | 3.00 | NO       |    0.546 |    0.619 |
-| Experimental |      |        | Branca   |       |                      | vocab.teach.pre |   62 | 5.000 |    5.0 |   1 |   8 | 1.765 | 0.224 | 0.448 | 2.00 | YES      |   -0.123 |   -0.789 |
-| Experimental |      |        | Indígena |       |                      | vocab.teach.pre |   18 | 4.167 |    4.0 |   1 |   7 | 1.654 | 0.390 | 0.822 | 1.75 | YES      |   -0.250 |   -1.004 |
+| Controle     |      |        | Indígena |       |                      | vocab.teach.pre |   13 | 4.615 |    4.0 |   1 |   7 | 1.660 | 0.460 | 1.003 | 2.00 | YES      |   -0.338 |   -0.464 |
+| Controle     |      |        | Branca   |       |                      | vocab.teach.pre |   54 | 4.352 |    4.0 |   1 |  11 | 2.267 | 0.308 | 0.619 | 3.75 | NO       |    0.590 |   -0.056 |
 | Experimental |      |        | Parda    |       |                      | vocab.teach.pre |  201 | 4.478 |    4.0 |   0 |  10 | 2.057 | 0.145 | 0.286 | 3.00 | YES      |    0.454 |   -0.356 |
-| Controle     |      |        | Branca   |       |                      | vocab.teach.pos |   54 | 4.889 |    5.0 |   1 |  11 | 2.408 | 0.328 | 0.657 | 4.00 | YES      |    0.295 |   -0.654 |
-| Controle     |      |        | Indígena |       |                      | vocab.teach.pos |   13 | 5.923 |    6.0 |   2 |   9 | 2.100 | 0.582 | 1.269 | 3.00 | YES      |   -0.305 |   -1.134 |
+| Experimental |      |        | Indígena |       |                      | vocab.teach.pre |   18 | 4.167 |    4.0 |   1 |   7 | 1.654 | 0.390 | 0.822 | 1.75 | YES      |   -0.250 |   -1.004 |
+| Experimental |      |        | Branca   |       |                      | vocab.teach.pre |   62 | 5.000 |    5.0 |   1 |   8 | 1.765 | 0.224 | 0.448 | 2.00 | YES      |   -0.123 |   -0.789 |
 | Controle     |      |        | Parda    |       |                      | vocab.teach.pos |  168 | 5.006 |    5.0 |   0 |  10 | 2.265 | 0.175 | 0.345 | 2.50 | YES      |    0.079 |   -0.377 |
-| Experimental |      |        | Branca   |       |                      | vocab.teach.pos |   62 | 5.387 |    6.0 |   1 |  10 | 2.335 | 0.297 | 0.593 | 4.00 | YES      |   -0.030 |   -1.012 |
-| Experimental |      |        | Indígena |       |                      | vocab.teach.pos |   18 | 5.111 |    5.0 |   2 |   9 | 2.026 | 0.478 | 1.007 | 3.50 | YES      |    0.098 |   -1.067 |
+| Controle     |      |        | Indígena |       |                      | vocab.teach.pos |   13 | 5.923 |    6.0 |   2 |   9 | 2.100 | 0.582 | 1.269 | 3.00 | YES      |   -0.305 |   -1.134 |
+| Controle     |      |        | Branca   |       |                      | vocab.teach.pos |   54 | 4.889 |    5.0 |   1 |  11 | 2.408 | 0.328 | 0.657 | 4.00 | YES      |    0.295 |   -0.654 |
 | Experimental |      |        | Parda    |       |                      | vocab.teach.pos |  201 | 5.318 |    5.0 |   0 |  12 | 2.364 | 0.167 | 0.329 | 3.00 | YES      |    0.381 |   -0.144 |
+| Experimental |      |        | Indígena |       |                      | vocab.teach.pos |   18 | 5.111 |    5.0 |   2 |   9 | 2.026 | 0.478 | 1.007 | 3.50 | YES      |    0.098 |   -1.067 |
+| Experimental |      |        | Branca   |       |                      | vocab.teach.pos |   62 | 5.387 |    6.0 |   1 |  10 | 2.335 | 0.297 | 0.593 | 4.00 | YES      |   -0.030 |   -1.012 |
 | Controle     |      |        |          | 6 ano |                      | vocab.teach.pre |  146 | 3.925 |    4.0 |   0 |  10 | 1.901 | 0.157 | 0.311 | 3.00 | YES      |    0.418 |   -0.039 |
 | Controle     |      |        |          | 7 ano |                      | vocab.teach.pre |  152 | 4.013 |    4.0 |   1 |  11 | 1.919 | 0.156 | 0.308 | 2.00 | NO       |    0.685 |    0.547 |
 | Controle     |      |        |          | 8 ano |                      | vocab.teach.pre |  100 | 4.560 |    4.5 |   0 |  10 | 2.298 | 0.230 | 0.456 | 3.00 | YES      |    0.050 |   -0.769 |
@@ -1983,35 +2304,8 @@ df <- plyr::rbind.fill(
 
 ``` r
 df <- do.call(plyr::rbind.fill, laov)
-(df <- df[!duplicated(df$Effect),])
+df <- df[!duplicated(df$Effect),]
 ```
-
-    ##                        Effect DFn  DFd       F        p p<.05      ges DFn' DFd'      F'       p' p<.05'
-    ## 1                       grupo   1 1225  10.282 1.00e-03     * 8.00e-03    1 1226   9.066 3.00e-03      *
-    ## 2             vocab.teach.pre   1 1225 380.801 4.64e-74     * 2.37e-01    1 1226 374.895 4.38e-73      *
-    ## 4                  grupo:Sexo   1 1223   3.710 5.40e-02       3.00e-03    1 1224   3.045 8.10e-02       
-    ## 5                        Sexo   1 1223  13.356 2.68e-04     * 1.10e-02    1 1224  14.128 1.79e-04      *
-    ## 8                  grupo:Zona   1  844   0.323 5.70e-01       3.82e-04    1  845   0.479 4.89e-01       
-    ## 10                       Zona   1  844   0.020 8.87e-01       2.38e-05    1  845   0.063 8.02e-01       
-    ## 11                   Cor.Raca   2  509   0.773 4.62e-01       3.00e-03    2  509   0.773 4.62e-01       
-    ## 13             grupo:Cor.Raca   2  509   0.683 5.06e-01       3.00e-03    2  509   0.683 5.06e-01       
-    ## 16                grupo:Serie   3 1219   3.860 9.00e-03     * 9.00e-03    3 1220   3.564 1.40e-02      *
-    ## 17                      Serie   3 1219  11.129 3.30e-07     * 2.70e-02    3 1220  11.904 1.10e-07      *
-    ## 20 grupo:vocab.teach.quintile   4 1217   0.986 4.14e-01       3.00e-03    4 1218   0.853 4.91e-01       
-    ## 22       vocab.teach.quintile   4 1217   1.750 1.37e-01       6.00e-03    4 1218   1.465 2.10e-01       
-    ##        ges'
-    ## 1  7.00e-03
-    ## 2  2.34e-01
-    ## 4  2.00e-03
-    ## 5  1.10e-02
-    ## 8  5.67e-04
-    ## 10 7.41e-05
-    ## 11 3.00e-03
-    ## 13 3.00e-03
-    ## 16 9.00e-03
-    ## 17 2.80e-02
-    ## 20 3.00e-03
-    ## 22 5.00e-03
 
 |     | Effect                     | DFn |  DFd |       F |     p | p\<.05 |   ges | DFn’ | DFd’ |      F’ |    p’ | p\<.05’ |  ges’ |
 |:----|:---------------------------|----:|-----:|--------:|------:|:-------|------:|-----:|-----:|--------:|------:|:--------|------:|
@@ -2032,7 +2326,8 @@ df <- do.call(plyr::rbind.fill, laov)
 
 ``` r
 df <- do.call(plyr::rbind.fill, lpwc)
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
 ```
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | vocab.teach.quintile | group1       | group2       |   df | statistic |     p | p.adj | p.adj.signif |  df’ | statistic’ |    p’ | p.adj’ | p.adj.signif’ |
@@ -2058,15 +2353,15 @@ df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",
 |              |      | Urbana |          |       |                      | Controle     | Experimental |  844 |    -1.862 | 0.063 | 0.063 | ns           |  845 |     -1.834 | 0.067 |  0.067 | ns            |
 | Controle     |      |        | Branca   |       |                      | pre          | pos          | 1020 |    -1.272 | 0.204 | 0.204 | ns           | 1020 |     -1.272 | 0.204 |  0.204 | ns            |
 | Controle     |      |        | Indígena |       |                      | pre          | pos          | 1020 |    -1.520 | 0.129 | 0.129 | ns           | 1020 |     -1.520 | 0.129 |  0.129 | ns            |
-| Controle     |      |        |          |       |                      | Branca       | Indígena     |  509 |    -1.438 | 0.151 | 0.453 | ns           |  509 |     -1.438 | 0.151 |  0.453 | ns            |
-| Controle     |      |        |          |       |                      | Branca       | Parda        |  509 |    -0.177 | 0.860 | 1.000 | ns           |  509 |     -0.177 | 0.860 |  1.000 | ns            |
-| Controle     |      |        |          |       |                      | Indígena     | Parda        |  509 |     1.448 | 0.148 | 0.445 | ns           |  509 |      1.448 | 0.148 |  0.445 | ns            |
+| Controle     |      |        |          |       |                      | Indígena     | Branca       |  509 |     1.438 | 0.151 | 0.453 | ns           |  509 |      1.438 | 0.151 |  0.453 | ns            |
+| Controle     |      |        |          |       |                      | Parda        | Branca       |  509 |     0.177 | 0.860 | 1.000 | ns           |  509 |      0.177 | 0.860 |  1.000 | ns            |
+| Controle     |      |        |          |       |                      | Parda        | Indígena     |  509 |    -1.448 | 0.148 | 0.445 | ns           |  509 |     -1.448 | 0.148 |  0.445 | ns            |
 | Controle     |      |        | Parda    |       |                      | pre          | pos          | 1020 |    -2.288 | 0.022 | 0.022 | \*           | 1020 |     -2.288 | 0.022 |  0.022 | \*            |
 | Experimental |      |        | Branca   |       |                      | pre          | pos          | 1020 |    -0.982 | 0.326 | 0.326 | ns           | 1020 |     -0.982 | 0.326 |  0.326 | ns            |
 | Experimental |      |        | Indígena |       |                      | pre          | pos          | 1020 |    -1.292 | 0.197 | 0.197 | ns           | 1020 |     -1.292 | 0.197 |  0.197 | ns            |
-| Experimental |      |        |          |       |                      | Branca       | Indígena     |  509 |    -0.396 | 0.692 | 1.000 | ns           |  509 |     -0.396 | 0.692 |  1.000 | ns            |
-| Experimental |      |        |          |       |                      | Branca       | Parda        |  509 |    -0.819 | 0.413 | 1.000 | ns           |  509 |     -0.819 | 0.413 |  1.000 | ns            |
-| Experimental |      |        |          |       |                      | Indígena     | Parda        |  509 |    -0.053 | 0.958 | 1.000 | ns           |  509 |     -0.053 | 0.958 |  1.000 | ns            |
+| Experimental |      |        |          |       |                      | Indígena     | Branca       |  509 |     0.396 | 0.692 | 1.000 | ns           |  509 |      0.396 | 0.692 |  1.000 | ns            |
+| Experimental |      |        |          |       |                      | Parda        | Branca       |  509 |     0.819 | 0.413 | 1.000 | ns           |  509 |      0.819 | 0.413 |  1.000 | ns            |
+| Experimental |      |        |          |       |                      | Parda        | Indígena     |  509 |     0.053 | 0.958 | 1.000 | ns           |  509 |      0.053 | 0.958 |  1.000 | ns            |
 | Experimental |      |        | Parda    |       |                      | pre          | pos          | 1020 |    -3.842 | 0.000 | 0.000 | \*\*\*       | 1020 |     -3.842 | 0.000 |  0.000 | \*\*\*        |
 |              |      |        | Branca   |       |                      | Controle     | Experimental |  509 |    -0.324 | 0.746 | 0.746 | ns           |  509 |     -0.324 | 0.746 |  0.746 | ns            |
 |              |      |        | Indígena |       |                      | Controle     | Experimental |  509 |     0.763 | 0.446 | 0.446 | ns           |  509 |      0.763 | 0.446 |  0.446 | ns            |
@@ -2136,42 +2431,43 @@ df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",
 ``` r
 df <- do.call(plyr::rbind.fill, lemms)
 df[["N-N'"]] <- df[["N"]] - df[["N'"]]
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% names(lfatores)])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% names(lfatores)])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie | vocab.teach.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | N-N’ |
-|:-------------|:-----|:-------|:---------|:------|:---------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|-----:|
-| Controle     |      |        |          |       |                      | 515 |   4.505 |    0.095 |     4.899 |      0.099 |   4.977 |    0.087 | 516 |    4.506 |     0.095 |      4.919 |       0.101 |    4.996 |     0.088 |   -1 |
-| Experimental |      |        |          |       |                      | 713 |   4.759 |    0.076 |     5.401 |      0.085 |   5.345 |    0.074 | 713 |    4.759 |     0.076 |      5.401 |       0.085 |    5.345 |     0.075 |    0 |
-| Controle     | F    |        |          |       |                      | 258 |   4.585 |    0.127 |     5.019 |      0.138 |   5.055 |    0.122 | 259 |    4.587 |     0.126 |      5.058 |       0.143 |    5.093 |     0.123 |   -1 |
-| Controle     | M    |        |          |       |                      | 257 |   4.424 |    0.143 |     4.778 |      0.142 |   4.899 |    0.123 | 257 |    4.424 |     0.143 |      4.778 |       0.142 |    4.899 |     0.124 |    0 |
-| Experimental | F    |        |          |       |                      | 368 |   4.777 |    0.108 |     5.698 |      0.117 |   5.632 |    0.103 | 368 |    4.777 |     0.108 |      5.698 |       0.117 |    5.632 |     0.104 |    0 |
-| Experimental | M    |        |          |       |                      | 345 |   4.739 |    0.106 |     5.084 |      0.122 |   5.038 |    0.106 | 345 |    4.739 |     0.106 |      5.084 |       0.122 |    5.038 |     0.107 |    0 |
-| Controle     |      | Rural  |          |       |                      | 252 |   4.460 |    0.131 |     4.976 |      0.145 |   5.061 |    0.123 | 253 |    4.462 |     0.130 |      5.016 |       0.150 |    5.100 |     0.125 |   -1 |
-| Controle     |      | Urbana |          |       |                      | 114 |   4.412 |    0.184 |     4.833 |      0.192 |   4.944 |    0.183 | 114 |    4.412 |     0.184 |      4.833 |       0.192 |    4.945 |     0.186 |    0 |
-| Experimental |      | Rural  |          |       |                      | 294 |   4.694 |    0.121 |     5.374 |      0.138 |   5.330 |    0.114 | 294 |    4.694 |     0.121 |      5.374 |       0.138 |    5.330 |     0.115 |    0 |
-| Experimental |      | Urbana |          |       |                      | 189 |   4.815 |    0.155 |     5.487 |      0.157 |   5.376 |    0.142 | 189 |    4.815 |     0.155 |      5.487 |       0.157 |    5.376 |     0.144 |    0 |
-| Controle     |      |        | Branca   |       |                      |  54 |   4.352 |    0.308 |     4.889 |      0.328 |   4.983 |    0.270 |  54 |    4.352 |     0.308 |      4.889 |       0.328 |    4.983 |     0.270 |    0 |
-| Controle     |      |        | Indígena |       |                      |  13 |   4.615 |    0.460 |     5.923 |      0.582 |   5.864 |    0.549 |  13 |    4.615 |     0.460 |      5.923 |       0.582 |    5.864 |     0.549 |    0 |
-| Controle     |      |        | Parda    |       |                      | 168 |   4.458 |    0.167 |     5.006 |      0.175 |   5.038 |    0.153 | 168 |    4.458 |     0.167 |      5.006 |       0.175 |    5.038 |     0.153 |    0 |
-| Experimental |      |        | Branca   |       |                      |  62 |   5.000 |    0.224 |     5.387 |      0.297 |   5.103 |    0.252 |  62 |    5.000 |     0.224 |      5.387 |       0.297 |    5.103 |     0.252 |    0 |
-| Experimental |      |        | Indígena |       |                      |  18 |   4.167 |    0.390 |     5.111 |      0.478 |   5.314 |    0.467 |  18 |    4.167 |     0.390 |      5.111 |       0.478 |    5.314 |     0.467 |    0 |
-| Experimental |      |        | Parda    |       |                      | 201 |   4.478 |    0.145 |     5.318 |      0.167 |   5.339 |    0.140 | 201 |    4.478 |     0.145 |      5.318 |       0.167 |    5.339 |     0.140 |    0 |
-| Controle     |      |        |          | 6 ano |                      | 146 |   3.925 |    0.157 |     4.158 |      0.162 |   4.521 |    0.162 | 146 |    3.925 |     0.157 |      4.158 |       0.162 |    4.520 |     0.164 |    0 |
-| Controle     |      |        |          | 7 ano |                      | 152 |   4.013 |    0.156 |     4.658 |      0.165 |   4.978 |    0.159 | 152 |    4.013 |     0.156 |      4.658 |       0.165 |    4.977 |     0.160 |    0 |
-| Controle     |      |        |          | 8 ano |                      | 100 |   4.560 |    0.230 |     5.070 |      0.251 |   5.116 |    0.195 | 100 |    4.560 |     0.230 |      5.070 |       0.251 |    5.116 |     0.197 |    0 |
-| Controle     |      |        |          | 9 ano |                      | 117 |   5.821 |    0.196 |     5.991 |      0.205 |   5.407 |    0.183 | 118 |    5.814 |     0.194 |      6.068 |       0.217 |    5.489 |     0.184 |   -1 |
-| Experimental |      |        |          | 6 ano |                      | 165 |   4.255 |    0.148 |     5.164 |      0.183 |   5.363 |    0.152 | 165 |    4.255 |     0.148 |      5.164 |       0.183 |    5.362 |     0.153 |    0 |
-| Experimental |      |        |          | 7 ano |                      | 196 |   4.745 |    0.154 |     4.980 |      0.152 |   4.933 |    0.139 | 196 |    4.745 |     0.154 |      4.980 |       0.152 |    4.934 |     0.140 |    0 |
-| Experimental |      |        |          | 8 ano |                      | 181 |   4.796 |    0.145 |     5.210 |      0.163 |   5.138 |    0.145 | 181 |    4.796 |     0.145 |      5.210 |       0.163 |    5.139 |     0.146 |    0 |
-| Experimental |      |        |          | 9 ano |                      | 171 |   5.222 |    0.147 |     6.316 |      0.169 |   6.031 |    0.150 | 171 |    5.222 |     0.147 |      6.316 |       0.169 |    6.032 |     0.151 |    0 |
-| Controle     |      |        |          |       | 1st quintile         | 102 |   1.618 |    0.059 |     3.431 |      0.191 |   4.759 |    0.350 | 102 |    1.618 |     0.059 |      3.431 |       0.191 |    4.795 |     0.353 |    0 |
-| Controle     |      |        |          |       | 2nd quintile         |  80 |   3.000 |    0.000 |     4.138 |      0.187 |   4.861 |    0.272 |  80 |    3.000 |     0.000 |      4.138 |       0.187 |    4.880 |     0.274 |    0 |
-| Controle     |      |        |          |       | 3rd quintile         | 172 |   4.506 |    0.038 |     4.634 |      0.144 |   4.698 |    0.151 | 173 |    4.509 |     0.038 |      4.694 |       0.156 |    4.758 |     0.152 |   -1 |
-| Controle     |      |        |          |       | 4th quintile         |  64 |   6.000 |    0.000 |     5.922 |      0.266 |   5.332 |    0.279 |  64 |    6.000 |     0.000 |      5.922 |       0.266 |    5.317 |     0.281 |    0 |
-| Controle     |      |        |          |       | 5th quintile         |  97 |   7.794 |    0.108 |     6.866 |      0.206 |   5.491 |    0.361 |  97 |    7.794 |     0.108 |      6.866 |       0.206 |    5.455 |     0.365 |    0 |
-| Experimental |      |        |          |       | 1st quintile         |  93 |   1.710 |    0.050 |     3.871 |      0.202 |   5.159 |    0.348 |  93 |    1.710 |     0.050 |      3.871 |       0.202 |    5.193 |     0.351 |    0 |
-| Experimental |      |        |          |       | 2nd quintile         | 105 |   3.000 |    0.000 |     4.686 |      0.168 |   5.409 |    0.249 | 105 |    3.000 |     0.000 |      4.686 |       0.168 |    5.428 |     0.252 |    0 |
-| Experimental |      |        |          |       | 3rd quintile         | 273 |   4.451 |    0.030 |     5.154 |      0.125 |   5.242 |    0.121 | 273 |    4.451 |     0.030 |      5.154 |       0.125 |    5.245 |     0.122 |    0 |
-| Experimental |      |        |          |       | 4th quintile         |  99 |   6.000 |    0.000 |     5.778 |      0.219 |   5.188 |    0.237 |  99 |    6.000 |     0.000 |      5.778 |       0.219 |    5.172 |     0.239 |    0 |
-| Experimental |      |        |          |       | 5th quintile         | 143 |   7.762 |    0.086 |     7.133 |      0.182 |   5.772 |    0.340 | 143 |    7.762 |     0.086 |      7.133 |       0.182 |    5.736 |     0.343 |    0 |
+| grupo        | Sexo | Zona   | Cor.Raca | Serie | vocab.teach.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | conf.low’ | conf.high’ | N-N’ |
+|:-------------|:-----|:-------|:---------|:------|:---------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|----------:|-----------:|-----:|
+| Controle     |      |        |          |       |                      | 515 |   4.505 |    0.095 |     4.899 |      0.099 |   4.977 |    0.087 |    4.806 |     5.148 | 516 |    4.506 |     0.095 |      4.919 |       0.101 |    4.996 |     0.088 |     4.824 |      5.169 |   -1 |
+| Experimental |      |        |          |       |                      | 713 |   4.759 |    0.076 |     5.401 |      0.085 |   5.345 |    0.074 |    5.199 |     5.490 | 713 |    4.759 |     0.076 |      5.401 |       0.085 |    5.345 |     0.075 |     5.198 |      5.492 |    0 |
+| Controle     | F    |        |          |       |                      | 258 |   4.585 |    0.127 |     5.019 |      0.138 |   5.055 |    0.122 |    4.815 |     5.295 | 259 |    4.587 |     0.126 |      5.058 |       0.143 |    5.093 |     0.123 |     4.851 |      5.335 |   -1 |
+| Controle     | M    |        |          |       |                      | 257 |   4.424 |    0.143 |     4.778 |      0.142 |   4.899 |    0.123 |    4.658 |     5.140 | 257 |    4.424 |     0.143 |      4.778 |       0.142 |    4.899 |     0.124 |     4.656 |      5.142 |    0 |
+| Experimental | F    |        |          |       |                      | 368 |   4.777 |    0.108 |     5.698 |      0.117 |   5.632 |    0.103 |    5.431 |     5.834 | 368 |    4.777 |     0.108 |      5.698 |       0.117 |    5.632 |     0.104 |     5.429 |      5.836 |    0 |
+| Experimental | M    |        |          |       |                      | 345 |   4.739 |    0.106 |     5.084 |      0.122 |   5.038 |    0.106 |    4.830 |     5.246 | 345 |    4.739 |     0.106 |      5.084 |       0.122 |    5.038 |     0.107 |     4.828 |      5.248 |    0 |
+| Controle     |      | Rural  |          |       |                      | 252 |   4.460 |    0.131 |     4.976 |      0.145 |   5.061 |    0.123 |    4.819 |     5.302 | 253 |    4.462 |     0.130 |      5.016 |       0.150 |    5.100 |     0.125 |     4.855 |      5.344 |   -1 |
+| Controle     |      | Urbana |          |       |                      | 114 |   4.412 |    0.184 |     4.833 |      0.192 |   4.944 |    0.183 |    4.585 |     5.303 | 114 |    4.412 |     0.184 |      4.833 |       0.192 |    4.945 |     0.186 |     4.581 |      5.309 |    0 |
+| Experimental |      | Rural  |          |       |                      | 294 |   4.694 |    0.121 |     5.374 |      0.138 |   5.330 |    0.114 |    5.106 |     5.554 | 294 |    4.694 |     0.121 |      5.374 |       0.138 |    5.330 |     0.115 |     5.103 |      5.557 |    0 |
+| Experimental |      | Urbana |          |       |                      | 189 |   4.815 |    0.155 |     5.487 |      0.157 |   5.376 |    0.142 |    5.097 |     5.655 | 189 |    4.815 |     0.155 |      5.487 |       0.157 |    5.376 |     0.144 |     5.093 |      5.659 |    0 |
+| Controle     |      |        | Branca   |       |                      |  54 |   4.352 |    0.308 |     4.889 |      0.328 |   4.983 |    0.270 |    4.454 |     5.513 |  54 |    4.352 |     0.308 |      4.889 |       0.328 |    4.983 |     0.270 |     4.454 |      5.513 |    0 |
+| Controle     |      |        | Indígena |       |                      |  13 |   4.615 |    0.460 |     5.923 |      0.582 |   5.864 |    0.549 |    4.784 |     6.943 |  13 |    4.615 |     0.460 |      5.923 |       0.582 |    5.864 |     0.549 |     4.784 |      6.943 |    0 |
+| Controle     |      |        | Parda    |       |                      | 168 |   4.458 |    0.167 |     5.006 |      0.175 |   5.038 |    0.153 |    4.738 |     5.338 | 168 |    4.458 |     0.167 |      5.006 |       0.175 |    5.038 |     0.153 |     4.738 |      5.338 |    0 |
+| Experimental |      |        | Branca   |       |                      |  62 |   5.000 |    0.224 |     5.387 |      0.297 |   5.103 |    0.252 |    4.607 |     5.599 |  62 |    5.000 |     0.224 |      5.387 |       0.297 |    5.103 |     0.252 |     4.607 |      5.599 |    0 |
+| Experimental |      |        | Indígena |       |                      |  18 |   4.167 |    0.390 |     5.111 |      0.478 |   5.314 |    0.467 |    4.396 |     6.231 |  18 |    4.167 |     0.390 |      5.111 |       0.478 |    5.314 |     0.467 |     4.396 |      6.231 |    0 |
+| Experimental |      |        | Parda    |       |                      | 201 |   4.478 |    0.145 |     5.318 |      0.167 |   5.339 |    0.140 |    5.065 |     5.614 | 201 |    4.478 |     0.145 |      5.318 |       0.167 |    5.339 |     0.140 |     5.065 |      5.614 |    0 |
+| Controle     |      |        |          | 6 ano |                      | 146 |   3.925 |    0.157 |     4.158 |      0.162 |   4.521 |    0.162 |    4.203 |     4.840 | 146 |    3.925 |     0.157 |      4.158 |       0.162 |    4.520 |     0.164 |     4.199 |      4.842 |    0 |
+| Controle     |      |        |          | 7 ano |                      | 152 |   4.013 |    0.156 |     4.658 |      0.165 |   4.978 |    0.159 |    4.666 |     5.289 | 152 |    4.013 |     0.156 |      4.658 |       0.165 |    4.977 |     0.160 |     4.662 |      5.291 |    0 |
+| Controle     |      |        |          | 8 ano |                      | 100 |   4.560 |    0.230 |     5.070 |      0.251 |   5.116 |    0.195 |    4.734 |     5.498 | 100 |    4.560 |     0.230 |      5.070 |       0.251 |    5.116 |     0.197 |     4.731 |      5.502 |    0 |
+| Controle     |      |        |          | 9 ano |                      | 117 |   5.821 |    0.196 |     5.991 |      0.205 |   5.407 |    0.183 |    5.048 |     5.766 | 118 |    5.814 |     0.194 |      6.068 |       0.217 |    5.489 |     0.184 |     5.128 |      5.850 |   -1 |
+| Experimental |      |        |          | 6 ano |                      | 165 |   4.255 |    0.148 |     5.164 |      0.183 |   5.363 |    0.152 |    5.064 |     5.661 | 165 |    4.255 |     0.148 |      5.164 |       0.183 |    5.362 |     0.153 |     5.061 |      5.663 |    0 |
+| Experimental |      |        |          | 7 ano |                      | 196 |   4.745 |    0.154 |     4.980 |      0.152 |   4.933 |    0.139 |    4.660 |     5.206 | 196 |    4.745 |     0.154 |      4.980 |       0.152 |    4.934 |     0.140 |     4.658 |      5.209 |    0 |
+| Experimental |      |        |          | 8 ano |                      | 181 |   4.796 |    0.145 |     5.210 |      0.163 |   5.138 |    0.145 |    4.854 |     5.422 | 181 |    4.796 |     0.145 |      5.210 |       0.163 |    5.139 |     0.146 |     4.852 |      5.425 |    0 |
+| Experimental |      |        |          | 9 ano |                      | 171 |   5.222 |    0.147 |     6.316 |      0.169 |   6.031 |    0.150 |    5.737 |     6.325 | 171 |    5.222 |     0.147 |      6.316 |       0.169 |    6.032 |     0.151 |     5.735 |      6.328 |    0 |
+| Controle     |      |        |          |       | 1st quintile         | 102 |   1.618 |    0.059 |     3.431 |      0.191 |   4.759 |    0.350 |    4.073 |     5.446 | 102 |    1.618 |     0.059 |      3.431 |       0.191 |    4.795 |     0.353 |     4.101 |      5.488 |    0 |
+| Controle     |      |        |          |       | 2nd quintile         |  80 |   3.000 |    0.000 |     4.138 |      0.187 |   4.861 |    0.272 |    4.328 |     5.393 |  80 |    3.000 |     0.000 |      4.138 |       0.187 |    4.880 |     0.274 |     4.342 |      5.418 |    0 |
+| Controle     |      |        |          |       | 3rd quintile         | 172 |   4.506 |    0.038 |     4.634 |      0.144 |   4.698 |    0.151 |    4.401 |     4.995 | 173 |    4.509 |     0.038 |      4.694 |       0.156 |    4.758 |     0.152 |     4.459 |      5.057 |   -1 |
+| Controle     |      |        |          |       | 4th quintile         |  64 |   6.000 |    0.000 |     5.922 |      0.266 |   5.332 |    0.279 |    4.786 |     5.879 |  64 |    6.000 |     0.000 |      5.922 |       0.266 |    5.317 |     0.281 |     4.764 |      5.869 |    0 |
+| Controle     |      |        |          |       | 5th quintile         |  97 |   7.794 |    0.108 |     6.866 |      0.206 |   5.491 |    0.361 |    4.783 |     6.200 |  97 |    7.794 |     0.108 |      6.866 |       0.206 |    5.455 |     0.365 |     4.739 |      6.170 |    0 |
+| Experimental |      |        |          |       | 1st quintile         |  93 |   1.710 |    0.050 |     3.871 |      0.202 |   5.159 |    0.348 |    4.476 |     5.841 |  93 |    1.710 |     0.050 |      3.871 |       0.202 |    5.193 |     0.351 |     4.503 |      5.883 |    0 |
+| Experimental |      |        |          |       | 2nd quintile         | 105 |   3.000 |    0.000 |     4.686 |      0.168 |   5.409 |    0.249 |    4.920 |     5.898 | 105 |    3.000 |     0.000 |      4.686 |       0.168 |    5.428 |     0.252 |     4.934 |      5.922 |    0 |
+| Experimental |      |        |          |       | 3rd quintile         | 273 |   4.451 |    0.030 |     5.154 |      0.125 |   5.242 |    0.121 |    5.004 |     5.480 | 273 |    4.451 |     0.030 |      5.154 |       0.125 |    5.245 |     0.122 |     5.004 |      5.485 |    0 |
+| Experimental |      |        |          |       | 4th quintile         |  99 |   6.000 |    0.000 |     5.778 |      0.219 |   5.188 |    0.237 |    4.724 |     5.652 |  99 |    6.000 |     0.000 |      5.778 |       0.219 |    5.172 |     0.239 |     4.703 |      5.642 |    0 |
+| Experimental |      |        |          |       | 5th quintile         | 143 |   7.762 |    0.086 |     7.133 |      0.182 |   5.772 |    0.340 |    5.105 |     6.439 | 143 |    7.762 |     0.086 |      7.133 |       0.182 |    5.736 |     0.343 |     5.062 |      6.410 |    0 |

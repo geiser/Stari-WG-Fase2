@@ -1,11 +1,11 @@
 ---
-title: "ANCOVA in TDE - Escrita (TDE - Escrita)"
+title: "ANCOVA in Writing (TDE) (Writing (TDE))"
 author: Geiser C. Challco <geiser@alumni.usp.br>
 comment: Teste ANCOVA para determinar se houve diferenças significativas
-         na TDE - Escrita (medido usando pre- e pos-testes).
+         na Writing (TDE) (medido usando pre- e pos-testes).
          
          ANCOVA test to determine whether there were significant differences
-         in TDE - Escrita (measured using pre- and post-tests).
+         in Writing (TDE) (measured using pre- and post-tests).
          
          Author - Geiser C. Challco <geiser@alumni.usp.br>
          
@@ -31,9 +31,9 @@ fontsize: 10pt
 **NOTE**:
 
  - Teste ANCOVA para determinar se houve diferenças significativas
-no TDE - Escrita (medido usando pre- e pos-testes).
+no Writing (TDE) (medido usando pre- e pos-testes).
  - ANCOVA test to determine whether there were significant differences
-in TDE - Escrita (measured using pre- and post-tests).
+in Writing (TDE) (measured using pre- and post-tests).
 
 
 ```{r setup, include=FALSE}
@@ -72,8 +72,9 @@ library(rshinystatistics)
 options(knitr.kable.NA = '')
 ```
 
-```{r, include=FALSE}
 # Setting Initial Variables
+
+```{r}
 dv = "score.tde"
 dv.pos = "score.tde.pos"
 dv.pre = "score.tde.pre"
@@ -88,26 +89,6 @@ names(lfatores1) <- fatores1
 
 lfatores <- c(lfatores1)
 
-# ..
-
-gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
-gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
-
-
-
-dat <- gdat
-dat$grupo <- factor(dat[["WG.Grupo"]], c("Controle","Experimental"))
-for (coln in c(names(lfatores))) {
-  dat[[coln]] <- factor(dat[[coln]], sort(unique(dat[[coln]])[!is.na(unique(dat[[coln]]))]))
-}
-dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
-dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
-
-dat.long <- rbind(dat, dat)
-dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
-dat.long$time <- factor(dat.long$time, c("pre","pos"))
-dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
-
 color <- list()
 color[["prepost"]] = c("#ffee65","#f28e2B")
 color[["grupo"]] = c("#bcbd22","#008000")
@@ -117,6 +98,22 @@ color[["Cor.Raca"]] = c(
   "Parda"="#b97100","Indígena"="#9F262F",
   "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
 )
+
+level <- list()
+level[["grupo"]] = c("Controle","Experimental")
+level[["Sexo"]] = c("F","M")
+level[["Zona"]] = c("Rural","Urbana")
+level[["Cor.Raca"]] = c("Parda","Indígena","Branca", "Preta","Amarela")
+level[["Serie"]] = c("6 ano","7 ano","8 ano","9 ano")
+
+# ..
+
+ymin <- 0
+ymax <- 0
+
+ymin.ci <- 0
+ymax.ci <- 0
+
 
 color[["grupo:Sexo"]] = c(
   "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
@@ -145,9 +142,11 @@ color[["grupo:Cor.Raca"]] = c(
 )
 
 
-for (coln in c("vocab","score.tde",
-               "TFL.lidas.per.min","TFL.corretas.per.min","leitura.compreensao")) {
+for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min",
+               "leitura.compreensao")) {
   color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  level[[paste0(coln,".quintile")]] = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile")
   color[[paste0("grupo:",coln,".quintile")]] = c(
     "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
     "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
@@ -161,6 +160,25 @@ for (coln in c("vocab","score.tde",
     "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
     "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
 }
+
+
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
+
+
+
+dat <- gdat
+dat$grupo <- factor(dat[["WG.Grupo"]], level[["grupo"]])
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], level[[coln]][level[[coln]] %in% unique(dat[[coln]])])
+}
+dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
+dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
+
+dat.long <- rbind(dat, dat)
+dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
+dat.long$time <- factor(dat.long$time, c("pre","pos"))
+dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
 
 
 for (f in c("grupo", names(lfatores))) {
@@ -190,16 +208,13 @@ df <- plyr::rbind.fill(
                        symmetry.test = T, normality.test = F)
     }))
 )
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+            colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
 kable(df, digits = 3)
 ```
-
-
-
 
 # ANCOVA and Pairwise for one factor: **grupo**
 
@@ -236,10 +251,12 @@ ds <- merge(ds[ds$variable != "score.tde.pre",],
             ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".score.tde.pre"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- ds
 ```
@@ -266,7 +283,8 @@ ldat[["grupo"]] = wdat
 
 ```{r}
 aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo)
-laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suffixes = c("","'"))
+laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]],
+                            by="Effect", suffixes = c("","'"))
 
 (df = get_anova_table(aov))
 ```
@@ -275,7 +293,7 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 kable(df, digits = 3)
 ```
 
-```{r, echo=FALSE}
+```{r}
 pwc <- emmeans_test(wdat, score.tde.pos ~ grupo, covariate = score.tde.pre,
                     p.adjust.method = "bonferroni")
 ```
@@ -288,7 +306,9 @@ kable(pwc, digits = 3)
 pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "grupo"),
                          score.tde ~ time,
                          p.adjust.method = "bonferroni")
-lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]], by=c("grupo","term",".y.","group1","group2"), suffixes = c("","'"))
+lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]],
+                            by=c("grupo","term",".y.","group1","group2"),
+                            suffixes = c("","'"))
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
@@ -302,10 +322,12 @@ ds <- merge(ds[ds$variable != "score.tde.pre",],
             ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".score.tde.pre"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- merge(ds, lemms[["grupo"]], by=c("grupo"), suffixes = c("","'"))
 ```
@@ -319,14 +341,15 @@ kable(ds, digits = 3)
 
 ```{r}
 plots <- oneWayAncovaPlots(
-  wdat, "score.tde.pos", "grupo", aov, list("grupo"=pwc), addParam = c("mean_se"),
+  wdat, "score.tde.pos", "grupo", aov, list("grupo"=pwc), addParam = c("mean_ci"),
   font.label.size=10, step.increase=0.05, p.label="p.adj",
   subtitle = which(aov$Effect == "grupo"))
 ```
 
 ```{r, dpi=300, fig.width=7, fig.height=7}
 if (!is.null(nrow(plots[["grupo"]]$data)))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+  plots[["grupo"]] +
+  if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
 
 
@@ -339,20 +362,23 @@ plots <- oneWayAncovaBoxPlots(
 
 ```{r, dpi=300, fig.width=8, fig.height=6}
 if (length(unique(wdat[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+  plots[["grupo"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ```{r}
 if (length(unique(wdat.long[["grupo"]])) > 1)
   plots <- oneWayAncovaBoxPlots(
-    wdat.long, "score.tde", "grupo", aov, pwc.long, pre.post = "time",
-    theme = "classic", color = color$prepost)
+    wdat.long, "score.tde", "grupo", aov, pwc.long,
+    pre.post = "time", theme = "classic", color = color$prepost)
 ```
 
 ```{r, dpi=300, fig.width=10, fig.height=6}
 if (length(unique(wdat.long[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("TDE - Escrita")
+  plots[["grupo"]] + ggplot2::ylab("Writing (TDE)") +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax) 
 ```
 
 
@@ -363,7 +389,10 @@ ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
-  )
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ### Checking normality and homogeneity
@@ -386,197 +415,286 @@ levene_test(res, .resid ~ grupo)
 ## Without remove non-normal data
 
 ```{r}
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),], "score.tde.pos", c("grupo","Sexo"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),],
+                         "score.tde.pos", c("grupo","Sexo"))
+pdat = pdat[pdat[["Sexo"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Sexo"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Sexo"]] = factor(
+  pdat[["Sexo"]],
+  level[["Sexo"]][level[["Sexo"]] %in% unique(pdat[["Sexo"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Sexo")], pdat[,c("id","grupo","Sexo")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
-laov[["grupo:Sexo"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- get_anova_table(aov)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Sexo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Sexo), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Sexo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Sexo), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 
 ```{r}
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- ds
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ```{r}
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Sexo"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Sexo"]] = wdat
+  
+  (non.normal)
+}
 ```
 
 ```{r}
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
-laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  kable(df, digits = 3)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Sexo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Sexo), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Sexo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Sexo), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc, digits = 3)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  kable(pwc, digits = 3)
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo"]], by=c("grupo","Sexo","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Sexo"]],
+                                         by=c("grupo","Sexo","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc.long, digits = 3)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  kable(pwc.long, digits = 3)
+}
 ```
 
 ```{r}
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]], by=c("grupo","Sexo"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]],
+                                          by=c("grupo","Sexo"), suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(ds, digits = 3)
+if (length(unique(pdat[["Sexo"]])) >= 2)
+  kable(ds, digits = 3)
 ```
 
 
 ### Plots for ancova
 
-```{r}
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Sexo"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Sexo"))
-```
-
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Sexo"]])
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["Sexo"]]))
-  plots[["Sexo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Sexo", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Sexo"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Sexo"]],
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Sexo"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Sexo"]],
+    subtitle = which(aov$Effect == "grupo:Sexo"))
+}
 ```
 
 ```{r, dpi=300, fig.width=8, fig.height=6}
-plots[["grupo:Sexo"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots[["grupo:Sexo"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Sexo"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Sexo"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ```{r, dpi=300, fig.width=14, fig.height=6}
-plots[["grupo:Sexo"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  plots[["grupo:Sexo"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ### Checking linearity assumption
 
 ```{r, dpi=300, fig.width=12, fig.height=8}
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Sexo"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Sexo"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Sexo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Sexo", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Sexo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ### Checking normality and homogeneity
 
 ```{r}
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
 ```
 
 ```{r}
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Sexo"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
 ```{r}
-levene_test(res, .resid ~ grupo*Sexo)
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Sexo)
 ```
 
 
@@ -585,197 +703,286 @@ levene_test(res, .resid ~ grupo*Sexo)
 ## Without remove non-normal data
 
 ```{r}
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),], "score.tde.pos", c("grupo","Zona"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),],
+                         "score.tde.pos", c("grupo","Zona"))
+pdat = pdat[pdat[["Zona"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Zona"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Zona"]] = factor(
+  pdat[["Zona"]],
+  level[["Zona"]][level[["Zona"]] %in% unique(pdat[["Zona"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Zona")], pdat[,c("id","grupo","Zona")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
-laov[["grupo:Zona"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
+  laov[["grupo:Zona"]] <- get_anova_table(aov)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Zona,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Zona), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Zona,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Zona), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 
 ```{r}
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- ds
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ```{r}
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Zona"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Zona"]] = wdat
+  
+  (non.normal)
+}
 ```
 
 ```{r}
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
-laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
+  laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  kable(df, digits = 3)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Zona,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Zona), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Zona,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Zona), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc, digits = 3)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  kable(pwc, digits = 3)
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona"]], by=c("grupo","Zona","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Zona"]],
+                                         by=c("grupo","Zona","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc.long, digits = 3)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  kable(pwc.long, digits = 3)
+}
 ```
 
 ```{r}
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]], by=c("grupo","Zona"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]],
+                                          by=c("grupo","Zona"), suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(ds, digits = 3)
+if (length(unique(pdat[["Zona"]])) >= 2)
+  kable(ds, digits = 3)
 ```
 
 
 ### Plots for ancova
 
-```{r}
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Zona"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Zona"))
-```
-
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Zona"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Zona", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["Zona"]]))
-  plots[["Zona"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Zona"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Zona"]],
-  subtitle = which(aov$Effect == "grupo:Zona"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Zona"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Zona"]],
+    subtitle = which(aov$Effect == "grupo:Zona"))
+}
 ```
 
 ```{r, dpi=300, fig.width=8, fig.height=6}
-plots[["grupo:Zona"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots[["grupo:Zona"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Zona"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Zona"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ```{r, dpi=300, fig.width=14, fig.height=6}
-plots[["grupo:Zona"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  plots[["grupo:Zona"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ### Checking linearity assumption
 
 ```{r, dpi=300, fig.width=12, fig.height=8}
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Zona"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Zona"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Zona", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Zona", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Zona)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ### Checking normality and homogeneity
 
 ```{r}
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
 ```
 
 ```{r}
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Zona"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
 ```{r}
-levene_test(res, .resid ~ grupo*Zona)
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Zona)
 ```
 
 
@@ -784,197 +991,286 @@ levene_test(res, .resid ~ grupo*Zona)
 ## Without remove non-normal data
 
 ```{r}
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),], "score.tde.pos", c("grupo","Cor.Raca"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),],
+                         "score.tde.pos", c("grupo","Cor.Raca"))
+pdat = pdat[pdat[["Cor.Raca"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Cor.Raca"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Cor.Raca"]] = factor(
+  pdat[["Cor.Raca"]],
+  level[["Cor.Raca"]][level[["Cor.Raca"]] %in% unique(pdat[["Cor.Raca"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Cor.Raca")], pdat[,c("id","grupo","Cor.Raca")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Cor.Raca,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Cor.Raca), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Cor.Raca,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Cor.Raca), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 
 ```{r}
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- ds
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ```{r}
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Cor.Raca"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Cor.Raca"]] = wdat
+  
+  (non.normal)
+}
 ```
 
 ```{r}
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  kable(df, digits = 3)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Cor.Raca,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Cor.Raca), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Cor.Raca,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Cor.Raca), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc, digits = 3)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  kable(pwc, digits = 3)
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Cor.Raca"]],
+                                         by=c("grupo","Cor.Raca","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc.long, digits = 3)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  kable(pwc.long, digits = 3)
+}
 ```
 
 ```{r}
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]],
+                                          by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(ds, digits = 3)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2)
+  kable(ds, digits = 3)
 ```
 
 
 ### Plots for ancova
 
-```{r}
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Cor.Raca"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
-```
-
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Cor.Raca"]])
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Cor.Raca", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["Cor.Raca"]]))
-  plots[["Cor.Raca"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Cor.Raca", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Cor.Raca"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Cor.Raca"]],
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Cor.Raca"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Cor.Raca"]],
+    subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+}
 ```
 
 ```{r, dpi=300, fig.width=8, fig.height=6}
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Cor.Raca"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Cor.Raca"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ```{r, dpi=300, fig.width=14, fig.height=6}
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ### Checking linearity assumption
 
 ```{r, dpi=300, fig.width=12, fig.height=8}
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Cor.Raca", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Cor.Raca", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Cor.Raca)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ### Checking normality and homogeneity
 
 ```{r}
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
 ```
 
 ```{r}
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
 ```{r}
-levene_test(res, .resid ~ grupo*Cor.Raca)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Cor.Raca)
 ```
 
 
@@ -983,197 +1279,286 @@ levene_test(res, .resid ~ grupo*Cor.Raca)
 ## Without remove non-normal data
 
 ```{r}
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),], "score.tde.pos", c("grupo","Serie"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),],
+                         "score.tde.pos", c("grupo","Serie"))
+pdat = pdat[pdat[["Serie"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Serie"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Serie"]] = factor(
+  pdat[["Serie"]],
+  level[["Serie"]][level[["Serie"]] %in% unique(pdat[["Serie"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Serie")], pdat[,c("id","grupo","Serie")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
-laov[["grupo:Serie"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
+  laov[["grupo:Serie"]] <- get_anova_table(aov)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Serie,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Serie), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Serie,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Serie), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 
 ```{r}
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- ds
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ```{r}
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Serie"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Serie"]] = wdat
+  
+  (non.normal)
+}
 ```
 
 ```{r}
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
-laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
+  laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  kable(df, digits = 3)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Serie,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Serie), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Serie,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Serie), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc, digits = 3)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  kable(pwc, digits = 3)
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Serie"]], by=c("grupo","Serie","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Serie"]],
+                                         by=c("grupo","Serie","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc.long, digits = 3)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  kable(pwc.long, digits = 3)
+}
 ```
 
 ```{r}
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]], by=c("grupo","Serie"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]],
+                                          by=c("grupo","Serie"), suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(ds, digits = 3)
+if (length(unique(pdat[["Serie"]])) >= 2)
+  kable(ds, digits = 3)
 ```
 
 
 ### Plots for ancova
 
-```{r}
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Serie"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Serie"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["Serie"]]))
-  plots[["Serie"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Serie"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Serie"]],
-  subtitle = which(aov$Effect == "grupo:Serie"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Serie"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Serie"]],
+    subtitle = which(aov$Effect == "grupo:Serie"))
+}
 ```
 
 ```{r, dpi=300, fig.width=8, fig.height=6}
-plots[["grupo:Serie"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots[["grupo:Serie"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Serie"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Serie"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ```{r, dpi=300, fig.width=14, fig.height=6}
-plots[["grupo:Serie"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  plots[["grupo:Serie"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ### Checking linearity assumption
 
 ```{r, dpi=300, fig.width=12, fig.height=8}
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Serie"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Serie"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Serie", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Serie", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Serie)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ### Checking normality and homogeneity
 
 ```{r}
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
 ```
 
 ```{r}
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Serie"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
 ```{r}
-levene_test(res, .resid ~ grupo*Serie)
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Serie)
 ```
 
 
@@ -1182,197 +1567,286 @@ levene_test(res, .resid ~ grupo*Serie)
 ## Without remove non-normal data
 
 ```{r}
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["score.tde.quintile"]]),], "score.tde.pos", c("grupo","score.tde.quintile"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["score.tde.quintile"]]),],
+                         "score.tde.pos", c("grupo","score.tde.quintile"))
+pdat = pdat[pdat[["score.tde.quintile"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["score.tde.quintile"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["score.tde.quintile"]] = factor(
+  pdat[["score.tde.quintile"]],
+  level[["score.tde.quintile"]][level[["score.tde.quintile"]] %in% unique(pdat[["score.tde.quintile"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","score.tde.quintile")], pdat[,c("id","grupo","score.tde.quintile")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
-laov[["grupo:score.tde.quintile"]] <- get_anova_table(aov)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
+  laov[["grupo:score.tde.quintile"]] <- get_anova_table(aov)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["score.tde.quintile"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ score.tde.quintile,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, score.tde.quintile), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
-pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["score.tde.quintile"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ score.tde.quintile,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, score.tde.quintile), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
+  pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","score.tde.quintile")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:score.tde.quintile"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","score.tde.quintile")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:score.tde.quintile"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 
 ```{r}
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:score.tde.quintile"]] <- ds
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:score.tde.quintile"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ```{r}
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","score.tde.quintile")], wdat[,c("id","grupo","score.tde.quintile")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:score.tde.quintile"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","score.tde.quintile")], wdat[,c("id","grupo","score.tde.quintile")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:score.tde.quintile"]] = wdat
+  
+  (non.normal)
+}
 ```
 
 ```{r}
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
-laov[["grupo:score.tde.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:score.tde.quintile"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
+  laov[["grupo:score.tde.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:score.tde.quintile"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  kable(df, digits = 3)
+}
 ```
 
 ```{r}
-pwcs <- list()
-pwcs[["score.tde.quintile"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ score.tde.quintile,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, score.tde.quintile), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
-pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["score.tde.quintile"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ score.tde.quintile,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, score.tde.quintile), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
+  pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc, digits = 3)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  kable(pwc, digits = 3)
+}
 ```
 
 ```{r}
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","score.tde.quintile")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:score.tde.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:score.tde.quintile"]], by=c("grupo","score.tde.quintile","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","score.tde.quintile")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:score.tde.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:score.tde.quintile"]],
+                                         by=c("grupo","score.tde.quintile","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(pwc.long, digits = 3)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  kable(pwc.long, digits = 3)
+}
 ```
 
 ```{r}
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:score.tde.quintile"]] <- merge(ds, lemms[["grupo:score.tde.quintile"]], by=c("grupo","score.tde.quintile"), suffixes = c("","'"))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:score.tde.quintile"]] <- merge(ds, lemms[["grupo:score.tde.quintile"]],
+                                          by=c("grupo","score.tde.quintile"), suffixes = c("","'"))
+}
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
-kable(ds, digits = 3)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2)
+  kable(ds, digits = 3)
 ```
 
 
 ### Plots for ancova
 
-```{r}
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","score.tde.quintile"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:score.tde.quintile"))
-```
-
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["score.tde.quintile"]])
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "score.tde.quintile", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:score.tde.quintile"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["score.tde.quintile"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r, dpi=300, fig.width=7, fig.height=7}
-if (!is.null(plots[["score.tde.quintile"]]))
-  plots[["score.tde.quintile"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggPlotAoC2(pwcs, "score.tde.quintile", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:score.tde.quintile"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","score.tde.quintile"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:score.tde.quintile"]],
-  subtitle = which(aov$Effect == "grupo:score.tde.quintile"))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","score.tde.quintile"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:score.tde.quintile"]],
+    subtitle = which(aov$Effect == "grupo:score.tde.quintile"))
+}
 ```
 
 ```{r, dpi=300, fig.width=8, fig.height=6}
-plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 
 ```{r}
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","score.tde.quintile"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","score.tde.quintile"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ```{r, dpi=300, fig.width=21, fig.height=6}
-plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) 
+  plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 
 ### Checking linearity assumption
 
 ```{r, dpi=300, fig.width=12, fig.height=8}
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","score.tde.quintile"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","score.tde.quintile"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "score.tde.quintile", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:score.tde.quintile"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+
+```{r, dpi=300, fig.width=12, fig.height=8}
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "score.tde.quintile", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = score.tde.quintile)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:score.tde.quintile"))) +
+    ggplot2::scale_color_manual(values = color[["score.tde.quintile"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ### Checking normality and homogeneity
 
 ```{r}
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
 ```
 
 ```{r}
-shapiro_test(res$.resid)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
 ```{r}
-levene_test(res, .resid ~ grupo*score.tde.quintile)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*score.tde.quintile)
 ```
 
 
@@ -1386,13 +1860,13 @@ df <- get.descriptives(ldat[["grupo"]], c(dv.pre, dv.pos), c("grupo"),
                        include.global = T, symmetry.test = T, normality.test = F)
 df <- plyr::rbind.fill(
   df, do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
-    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1 && paste0("grupo:",f) %in% names(ldat))
       get.descriptives(ldat[[paste0("grupo:",f)]], c(dv.pre,dv.pos), c("grupo", f),
                        symmetry.test = T, normality.test = F)
     }))
 )
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
@@ -1404,7 +1878,7 @@ kable(df, digits = 3)
 
 ```{r}
 df <- do.call(plyr::rbind.fill, laov)
-(df <- df[!duplicated(df$Effect),])
+df <- df[!duplicated(df$Effect),]
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
@@ -1416,7 +1890,8 @@ kable(df, digits = 3)
 
 ```{r}
 df <- do.call(plyr::rbind.fill, lpwc)
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
 ```
 
 ```{r, echo=FALSE, purl=FALSE}
@@ -1429,7 +1904,8 @@ kable(df, digits = 3)
 ```{r}
 df <- do.call(plyr::rbind.fill, lemms)
 df[["N-N'"]] <- df[["N"]] - df[["N'"]]
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% names(lfatores)])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% names(lfatores)])]
 ```
 
 ```{r, echo=FALSE, purl=FALSE}

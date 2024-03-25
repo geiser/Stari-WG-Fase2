@@ -1,7 +1,8 @@
-ANCOVA in flow (prob. matemática) (flow (prob. matemática))
+ANCOVA in flow (math) (flow (math))
 ================
 Geiser C. Challco <geiser@alumni.usp.br>
 
+- [Setting Initial Variables](#setting-initial-variables)
 - [Descriptive Statistics of Initial
   Data](#descriptive-statistics-of-initial-data)
 - [ANCOVA and Pairwise for one factor:
@@ -58,9 +59,133 @@ Geiser C. Challco <geiser@alumni.usp.br>
 **NOTE**:
 
 - Teste ANCOVA para determinar se houve diferenças significativas no
-  flow (prob. matemática) (medido usando pre- e pos-testes).
+  flow (math) (medido usando pre- e pos-testes).
 - ANCOVA test to determine whether there were significant differences in
-  flow (prob. matemática) (measured using pre- and post-tests).
+  flow (math) (measured using pre- and post-tests).
+
+# Setting Initial Variables
+
+``` r
+dv = "flow.math"
+dv.pos = "fss.media.math"
+dv.pre = "dfs.media.math"
+
+fatores2 <- c("Sexo","Zona","Cor.Raca","Serie")
+lfatores2 <- as.list(fatores2)
+names(lfatores2) <- fatores2
+
+fatores1 <- c("grupo", fatores2)
+lfatores1 <- as.list(fatores1)
+names(lfatores1) <- fatores1
+
+lfatores <- c(lfatores1)
+
+color <- list()
+color[["prepost"]] = c("#ffee65","#f28e2B")
+color[["grupo"]] = c("#bcbd22","#008000")
+color[["Sexo"]] = c("#FF007F","#4D4DFF")
+color[["Zona"]] = c("#AA00FF","#00CCCC")
+color[["Cor.Raca"]] = c(
+  "Parda"="#b97100","Indígena"="#9F262F",
+  "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
+)
+
+level <- list()
+level[["grupo"]] = c("Controle","Experimental")
+level[["Sexo"]] = c("F","M")
+level[["Zona"]] = c("Rural","Urbana")
+level[["Cor.Raca"]] = c("Parda","Indígena","Branca", "Preta","Amarela")
+level[["Serie"]] = c("6 ano","7 ano","8 ano","9 ano")
+
+# ..
+
+ymin <- 0
+ymax <- 0
+
+ymin.ci <- 0
+ymax.ci <- 0
+
+
+color[["grupo:Sexo"]] = c(
+  "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
+  "Experimental:F"="#FF007F", "Experimental:M"="#4D4DFF",
+  "Controle.F"="#ff99cb", "Controle.M"="#b7b7ff",
+  "Experimental.F"="#FF007F", "Experimental.M"="#4D4DFF"
+)
+color[["grupo:Zona"]] = c(
+  "Controle:Rural"="#b2efef","Controle:Urbana"="#e5b2ff",
+  "Experimental:Rural"="#00CCCC", "Experimental:Urbana"="#AA00FF",
+  "Controle.Rural"="#b2efef","Controle.Urbana"="#e5b2ff",
+  "Experimental.Rural"="#00CCCC", "Experimental.Urbana"="#AA00FF"
+)
+color[["grupo:Cor.Raca"]] = c(
+    "Controle:Parda"="#e3c699", "Experimental:Parda"="#b97100",
+    "Controle:Indígena"="#e2bdc0", "Experimental:Indígena"="#9F262F",
+    "Controle:Branca"="#c0e8cb", "Experimental:Branca"="#87c498",
+    "Controle:Preta"="#dad9d9", "Experimental:Preta"="#848283",
+    "Controle:Amarela"="#eee3a4", "Experimental:Amarela"="#D6B91C",
+    
+    "Controle.Parda"="#e3c699", "Experimental.Parda"="#b97100",
+    "Controle.Indígena"="#e2bdc0", "Experimental.Indígena"="#9F262F",
+    "Controle.Branca"="#c0e8cb", "Experimental.Branca"="#87c498",
+    "Controle.Preta"="#dad9d9", "Experimental.Preta"="#848283",
+    "Controle.Amarela"="#eee3a4", "Experimental.Amarela"="#D6B91C"
+)
+
+
+for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min",
+               "leitura.compreensao")) {
+  color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  level[[paste0(coln,".quintile")]] = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile")
+  color[[paste0("grupo:",coln,".quintile")]] = c(
+    "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
+    "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
+    "Experimental.3rd quintile"="#8fce00", "Controle.3rd quintile"="#ddf0b2",
+    "Experimental.4th quintile"="#0000FF", "Controle.4th quintile"="#b2b2ff",
+    "Experimental.5th quintile"="#4000BF", "Controle.5th quintile"="#b299e5",
+    
+    "Experimental:1st quintile"="#BF0040", "Controle:1st quintile"="#d8668c",
+    "Experimental:2nd quintile"="#FF0000", "Controle:2nd quintile"="#ff7f7f",
+    "Experimental:3rd quintile"="#8fce00", "Controle:3rd quintile"="#ddf0b2",
+    "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
+    "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
+}
+
+
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
+
+
+
+dat <- gdat
+dat$grupo <- factor(dat[["WG.Grupo"]], level[["grupo"]])
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], level[[coln]][level[[coln]] %in% unique(dat[[coln]])])
+}
+dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
+dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
+
+dat.long <- rbind(dat, dat)
+dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
+dat.long$time <- factor(dat.long$time, c("pre","pos"))
+dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
+
+
+for (f in c("grupo", names(lfatores))) {
+  if (is.null(color[[f]]) && length(unique(dat[[f]])) > 0) 
+      color[[f]] <- distinctColorPalette(length(unique(dat[[f]])))
+}
+for (f in c(fatores2)) {
+  if (is.null(color[[paste0("grupo:",f)]]) && length(unique(dat[[f]])) > 0)
+    color[[paste0("grupo:",f)]] <- distinctColorPalette(length(unique(dat[["grupo"]]))*length(unique(dat[[f]])))
+}
+
+ldat <- list()
+laov <- list()
+lpwc <- list()
+lemms <- list()
+```
 
 # Descriptive Statistics of Initial Data
 
@@ -96,123 +221,9 @@ df <- plyr::rbind.fill(
     ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.
 
 ``` r
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+            colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
-
-    ##           grupo Sexo   Zona Cor.Raca Serie       variable    n  mean median   min   max    sd    se    ci   iqr
-    ## 1      Controle <NA>   <NA>     <NA>  <NA> dfs.media.math  496 3.405  3.444 1.333 5.000 0.593 0.027 0.052 0.778
-    ## 2  Experimental <NA>   <NA>     <NA>  <NA> dfs.media.math  713 3.453  3.444 1.444 5.000 0.546 0.020 0.040 0.667
-    ## 3          <NA> <NA>   <NA>     <NA>  <NA> dfs.media.math 1209 3.433  3.444 1.333 5.000 0.566 0.016 0.032 0.667
-    ## 4      Controle <NA>   <NA>     <NA>  <NA> fss.media.math  496 3.358  3.333 1.333 5.000 0.611 0.027 0.054 0.778
-    ## 5  Experimental <NA>   <NA>     <NA>  <NA> fss.media.math  713 3.398  3.444 1.000 5.000 0.592 0.022 0.044 0.778
-    ## 6          <NA> <NA>   <NA>     <NA>  <NA> fss.media.math 1209 3.382  3.333 1.000 5.000 0.600 0.017 0.034 0.778
-    ## 7      Controle    F   <NA>     <NA>  <NA> dfs.media.math  247 3.421  3.444 1.889 4.667 0.555 0.035 0.070 0.889
-    ## 8      Controle    M   <NA>     <NA>  <NA> dfs.media.math  249 3.388  3.333 1.333 5.000 0.630 0.040 0.079 0.778
-    ## 9  Experimental    F   <NA>     <NA>  <NA> dfs.media.math  370 3.417  3.444 1.667 5.000 0.526 0.027 0.054 0.667
-    ## 10 Experimental    M   <NA>     <NA>  <NA> dfs.media.math  343 3.492  3.444 1.444 5.000 0.566 0.031 0.060 0.778
-    ## 11     Controle    F   <NA>     <NA>  <NA> fss.media.math  247 3.329  3.333 1.556 4.667 0.596 0.038 0.075 0.778
-    ## 12     Controle    M   <NA>     <NA>  <NA> fss.media.math  249 3.387  3.333 1.333 5.000 0.625 0.040 0.078 0.778
-    ## 13 Experimental    F   <NA>     <NA>  <NA> fss.media.math  370 3.357  3.333 1.000 5.000 0.607 0.032 0.062 0.778
-    ## 14 Experimental    M   <NA>     <NA>  <NA> fss.media.math  343 3.443  3.444 1.111 5.000 0.572 0.031 0.061 0.667
-    ## 15     Controle <NA>  Rural     <NA>  <NA> dfs.media.math  232 3.489  3.444 2.333 5.000 0.560 0.037 0.072 0.778
-    ## 16     Controle <NA> Urbana     <NA>  <NA> dfs.media.math  137 3.377  3.444 1.333 4.778 0.651 0.056 0.110 0.889
-    ## 17     Controle <NA>   <NA>     <NA>  <NA> dfs.media.math  127 3.281  3.333 1.444 5.000 0.567 0.050 0.100 0.778
-    ## 18 Experimental <NA>  Rural     <NA>  <NA> dfs.media.math  283 3.412  3.444 1.444 5.000 0.558 0.033 0.065 0.667
-    ## 19 Experimental <NA> Urbana     <NA>  <NA> dfs.media.math  192 3.514  3.528 2.111 4.778 0.540 0.039 0.077 0.778
-    ## 20 Experimental <NA>   <NA>     <NA>  <NA> dfs.media.math  238 3.453  3.444 1.667 5.000 0.535 0.035 0.068 0.667
-    ## 21     Controle <NA>  Rural     <NA>  <NA> fss.media.math  232 3.397  3.333 1.778 5.000 0.610 0.040 0.079 0.778
-    ## 22     Controle <NA> Urbana     <NA>  <NA> fss.media.math  137 3.351  3.375 1.889 5.000 0.590 0.050 0.100 0.778
-    ## 23     Controle <NA>   <NA>     <NA>  <NA> fss.media.math  127 3.296  3.333 1.333 4.778 0.634 0.056 0.111 0.889
-    ## 24 Experimental <NA>  Rural     <NA>  <NA> fss.media.math  283 3.456  3.444 2.222 5.000 0.511 0.030 0.060 0.722
-    ## 25 Experimental <NA> Urbana     <NA>  <NA> fss.media.math  192 3.349  3.333 1.000 5.000 0.682 0.049 0.097 0.778
-    ## 26 Experimental <NA>   <NA>     <NA>  <NA> fss.media.math  238 3.369  3.333 2.000 5.000 0.600 0.039 0.077 0.778
-    ## 27     Controle <NA>   <NA>   Branca  <NA> dfs.media.math   49 3.471  3.444 1.333 5.000 0.694 0.099 0.199 0.889
-    ## 28     Controle <NA>   <NA> Indígena  <NA> dfs.media.math   10 3.567  3.500 2.778 4.000 0.407 0.129 0.291 0.611
-    ## 29     Controle <NA>   <NA>    Parda  <NA> dfs.media.math  166 3.362  3.333 1.444 4.778 0.578 0.045 0.089 0.889
-    ## 30     Controle <NA>   <NA>    Preta  <NA> dfs.media.math    1 3.444  3.444 3.444 3.444    NA    NA   NaN 0.000
-    ## 31     Controle <NA>   <NA>     <NA>  <NA> dfs.media.math  270 3.413  3.444 1.889 5.000 0.591 0.036 0.071 0.778
-    ## 32 Experimental <NA>   <NA>  Amarela  <NA> dfs.media.math    2 3.000  3.000 2.444 3.556 0.786 0.556 7.059 0.556
-    ## 33 Experimental <NA>   <NA>   Branca  <NA> dfs.media.math   62 3.526  3.444 2.667 4.444 0.445 0.057 0.113 0.667
-    ## 34 Experimental <NA>   <NA> Indígena  <NA> dfs.media.math   16 3.546  3.590 2.778 4.000 0.352 0.088 0.187 0.472
-    ## 35 Experimental <NA>   <NA>    Parda  <NA> dfs.media.math  181 3.419  3.444 2.222 5.000 0.538 0.040 0.079 0.667
-    ## 36 Experimental <NA>   <NA>    Preta  <NA> dfs.media.math    1 3.222  3.222 3.222 3.222    NA    NA   NaN 0.000
-    ## 37 Experimental <NA>   <NA>     <NA>  <NA> dfs.media.math  451 3.457  3.444 1.444 5.000 0.567 0.027 0.053 0.778
-    ## 38     Controle <NA>   <NA>   Branca  <NA> fss.media.math   49 3.509  3.556 2.444 5.000 0.595 0.085 0.171 0.667
-    ## 39     Controle <NA>   <NA> Indígena  <NA> fss.media.math   10 3.600  3.611 2.778 4.556 0.584 0.185 0.418 0.750
-    ## 40     Controle <NA>   <NA>    Parda  <NA> fss.media.math  166 3.328  3.333 1.778 5.000 0.564 0.044 0.086 0.667
-    ## 41     Controle <NA>   <NA>    Preta  <NA> fss.media.math    1 3.222  3.222 3.222 3.222    NA    NA   NaN 0.000
-    ## 42     Controle <NA>   <NA>     <NA>  <NA> fss.media.math  270 3.341  3.333 1.333 5.000 0.640 0.039 0.077 0.889
-    ## 43 Experimental <NA>   <NA>  Amarela  <NA> fss.media.math    2 3.167  3.167 2.889 3.444 0.393 0.278 3.530 0.278
-    ## 44 Experimental <NA>   <NA>   Branca  <NA> fss.media.math   62 3.433  3.444 2.000 4.667 0.631 0.080 0.160 0.847
-    ## 45 Experimental <NA>   <NA> Indígena  <NA> fss.media.math   16 3.250  3.278 2.778 3.889 0.359 0.090 0.192 0.500
-    ## 46 Experimental <NA>   <NA>    Parda  <NA> fss.media.math  181 3.404  3.333 2.222 5.000 0.549 0.041 0.080 0.778
-    ## 47 Experimental <NA>   <NA>    Preta  <NA> fss.media.math    1 3.889  3.889 3.889 3.889    NA    NA   NaN 0.000
-    ## 48 Experimental <NA>   <NA>     <NA>  <NA> fss.media.math  451 3.396  3.444 1.000 5.000 0.611 0.029 0.057 0.778
-    ## 49     Controle <NA>   <NA>     <NA> 6 ano dfs.media.math  155 3.483  3.444 2.111 5.000 0.594 0.048 0.094 0.778
-    ## 50     Controle <NA>   <NA>     <NA> 7 ano dfs.media.math  136 3.280  3.292 1.333 4.667 0.619 0.053 0.105 0.889
-    ## 51     Controle <NA>   <NA>     <NA> 8 ano dfs.media.math   87 3.368  3.333 2.000 5.000 0.557 0.060 0.119 0.889
-    ## 52     Controle <NA>   <NA>     <NA> 9 ano dfs.media.math  118 3.473  3.556 1.444 4.667 0.569 0.052 0.104 0.667
-    ## 53 Experimental <NA>   <NA>     <NA> 6 ano dfs.media.math  176 3.446  3.444 2.000 5.000 0.541 0.041 0.081 0.667
-    ## 54 Experimental <NA>   <NA>     <NA> 7 ano dfs.media.math  198 3.468  3.444 2.111 5.000 0.557 0.040 0.078 0.667
-    ## 55 Experimental <NA>   <NA>     <NA> 8 ano dfs.media.math  175 3.382  3.444 1.444 4.667 0.548 0.041 0.082 0.778
-    ##    symmetry     skewness    kurtosis
-    ## 1       YES -0.050244827 -0.03693240
-    ## 2       YES -0.144448003  0.31635099
-    ## 3       YES -0.110560476  0.16295846
-    ## 4       YES -0.070338801  0.08328120
-    ## 5       YES -0.107987946  0.33331465
-    ## 6       YES -0.094774158  0.22920804
-    ## 7       YES -0.109952367 -0.66508929
-    ## 8       YES  0.008474367  0.25246343
-    ## 9       YES -0.137887371  0.33550443
-    ## 10      YES -0.178862535  0.27667476
-    ## 11      YES -0.188047119 -0.14656978
-    ## 12      YES  0.018315130  0.20357840
-    ## 13      YES -0.014155108  0.15431928
-    ## 14      YES -0.200663016  0.59520461
-    ## 15      YES  0.262566852 -0.54985020
-    ## 16      YES -0.281430841 -0.21611507
-    ## 17      YES -0.159241852  0.36070859
-    ## 18      YES -0.319470564  0.46630207
-    ## 19      YES  0.088349601 -0.26265753
-    ## 20      YES -0.083104471  0.35801894
-    ## 21      YES  0.076511155 -0.08357329
-    ## 22      YES  0.042577802 -0.01026966
-    ## 23      YES -0.388799161  0.12526152
-    ## 24      YES  0.125049190 -0.20484127
-    ## 25      YES -0.187343366  0.58881111
-    ## 26      YES -0.028777024 -0.34478309
-    ## 27      YES -0.322070772  0.40770013
-    ## 28      YES -0.400688956 -1.10442075
-    ## 29      YES -0.062381934 -0.15857589
-    ## 30 few data  0.000000000  0.00000000
-    ## 31      YES  0.031378975 -0.25657623
-    ## 32 few data  0.000000000  0.00000000
-    ## 33      YES  0.283685666 -0.63719704
-    ## 34       NO -0.683961680 -0.68329229
-    ## 35      YES -0.027369506  0.01912716
-    ## 36 few data  0.000000000  0.00000000
-    ## 37      YES -0.184641471  0.35347969
-    ## 38      YES  0.323715720 -0.24581179
-    ## 39      YES  0.090538844 -1.47442344
-    ## 40      YES -0.080305566  0.14957589
-    ## 41 few data  0.000000000  0.00000000
-    ## 42      YES -0.124536746 -0.03621519
-    ## 43 few data  0.000000000  0.00000000
-    ## 44      YES -0.220566570 -0.61144605
-    ## 45      YES  0.121817971 -1.35176107
-    ## 46      YES  0.239056465 -0.20865352
-    ## 47 few data  0.000000000  0.00000000
-    ## 48      YES -0.207400991  0.52182607
-    ## 49      YES  0.175453674 -0.35558951
-    ## 50      YES -0.149182095 -0.11227269
-    ## 51      YES  0.130013359 -0.36706281
-    ## 52      YES -0.280506531  0.33648551
-    ## 53      YES -0.104296446  0.11932317
-    ## 54      YES  0.195445760 -0.14357518
-    ## 55       NO -0.548864513  0.88755829
-    ##  [ reached 'max' / getOption("max.print") -- omitted 9 rows ]
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | variable       |    n |  mean | median |   min |   max |    sd |    se |    ci |   iqr | symmetry | skewness | kurtosis |
 |:-------------|:-----|:-------|:---------|:------|:---------------|-----:|------:|-------:|------:|------:|------:|------:|------:|------:|:---------|---------:|---------:|
@@ -242,27 +253,27 @@ df <- plyr::rbind.fill(
 | Experimental |      | Rural  |          |       | fss.media.math |  283 | 3.456 |  3.444 | 2.222 | 5.000 | 0.511 | 0.030 | 0.060 | 0.722 | YES      |    0.125 |   -0.205 |
 | Experimental |      | Urbana |          |       | fss.media.math |  192 | 3.349 |  3.333 | 1.000 | 5.000 | 0.682 | 0.049 | 0.097 | 0.778 | YES      |   -0.187 |    0.589 |
 | Experimental |      |        |          |       | fss.media.math |  238 | 3.369 |  3.333 | 2.000 | 5.000 | 0.600 | 0.039 | 0.077 | 0.778 | YES      |   -0.029 |   -0.345 |
-| Controle     |      |        | Branca   |       | dfs.media.math |   49 | 3.471 |  3.444 | 1.333 | 5.000 | 0.694 | 0.099 | 0.199 | 0.889 | YES      |   -0.322 |    0.408 |
-| Controle     |      |        | Indígena |       | dfs.media.math |   10 | 3.567 |  3.500 | 2.778 | 4.000 | 0.407 | 0.129 | 0.291 | 0.611 | YES      |   -0.401 |   -1.104 |
 | Controle     |      |        | Parda    |       | dfs.media.math |  166 | 3.362 |  3.333 | 1.444 | 4.778 | 0.578 | 0.045 | 0.089 | 0.889 | YES      |   -0.062 |   -0.159 |
+| Controle     |      |        | Indígena |       | dfs.media.math |   10 | 3.567 |  3.500 | 2.778 | 4.000 | 0.407 | 0.129 | 0.291 | 0.611 | YES      |   -0.401 |   -1.104 |
+| Controle     |      |        | Branca   |       | dfs.media.math |   49 | 3.471 |  3.444 | 1.333 | 5.000 | 0.694 | 0.099 | 0.199 | 0.889 | YES      |   -0.322 |    0.408 |
 | Controle     |      |        | Preta    |       | dfs.media.math |    1 | 3.444 |  3.444 | 3.444 | 3.444 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
 | Controle     |      |        |          |       | dfs.media.math |  270 | 3.413 |  3.444 | 1.889 | 5.000 | 0.591 | 0.036 | 0.071 | 0.778 | YES      |    0.031 |   -0.257 |
-| Experimental |      |        | Amarela  |       | dfs.media.math |    2 | 3.000 |  3.000 | 2.444 | 3.556 | 0.786 | 0.556 | 7.059 | 0.556 | few data |    0.000 |    0.000 |
-| Experimental |      |        | Branca   |       | dfs.media.math |   62 | 3.526 |  3.444 | 2.667 | 4.444 | 0.445 | 0.057 | 0.113 | 0.667 | YES      |    0.284 |   -0.637 |
-| Experimental |      |        | Indígena |       | dfs.media.math |   16 | 3.546 |  3.590 | 2.778 | 4.000 | 0.352 | 0.088 | 0.187 | 0.472 | NO       |   -0.684 |   -0.683 |
 | Experimental |      |        | Parda    |       | dfs.media.math |  181 | 3.419 |  3.444 | 2.222 | 5.000 | 0.538 | 0.040 | 0.079 | 0.667 | YES      |   -0.027 |    0.019 |
+| Experimental |      |        | Indígena |       | dfs.media.math |   16 | 3.546 |  3.590 | 2.778 | 4.000 | 0.352 | 0.088 | 0.187 | 0.472 | NO       |   -0.684 |   -0.683 |
+| Experimental |      |        | Branca   |       | dfs.media.math |   62 | 3.526 |  3.444 | 2.667 | 4.444 | 0.445 | 0.057 | 0.113 | 0.667 | YES      |    0.284 |   -0.637 |
 | Experimental |      |        | Preta    |       | dfs.media.math |    1 | 3.222 |  3.222 | 3.222 | 3.222 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
+| Experimental |      |        | Amarela  |       | dfs.media.math |    2 | 3.000 |  3.000 | 2.444 | 3.556 | 0.786 | 0.556 | 7.059 | 0.556 | few data |    0.000 |    0.000 |
 | Experimental |      |        |          |       | dfs.media.math |  451 | 3.457 |  3.444 | 1.444 | 5.000 | 0.567 | 0.027 | 0.053 | 0.778 | YES      |   -0.185 |    0.353 |
-| Controle     |      |        | Branca   |       | fss.media.math |   49 | 3.509 |  3.556 | 2.444 | 5.000 | 0.595 | 0.085 | 0.171 | 0.667 | YES      |    0.324 |   -0.246 |
-| Controle     |      |        | Indígena |       | fss.media.math |   10 | 3.600 |  3.611 | 2.778 | 4.556 | 0.584 | 0.185 | 0.418 | 0.750 | YES      |    0.091 |   -1.474 |
 | Controle     |      |        | Parda    |       | fss.media.math |  166 | 3.328 |  3.333 | 1.778 | 5.000 | 0.564 | 0.044 | 0.086 | 0.667 | YES      |   -0.080 |    0.150 |
+| Controle     |      |        | Indígena |       | fss.media.math |   10 | 3.600 |  3.611 | 2.778 | 4.556 | 0.584 | 0.185 | 0.418 | 0.750 | YES      |    0.091 |   -1.474 |
+| Controle     |      |        | Branca   |       | fss.media.math |   49 | 3.509 |  3.556 | 2.444 | 5.000 | 0.595 | 0.085 | 0.171 | 0.667 | YES      |    0.324 |   -0.246 |
 | Controle     |      |        | Preta    |       | fss.media.math |    1 | 3.222 |  3.222 | 3.222 | 3.222 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
 | Controle     |      |        |          |       | fss.media.math |  270 | 3.341 |  3.333 | 1.333 | 5.000 | 0.640 | 0.039 | 0.077 | 0.889 | YES      |   -0.125 |   -0.036 |
-| Experimental |      |        | Amarela  |       | fss.media.math |    2 | 3.167 |  3.167 | 2.889 | 3.444 | 0.393 | 0.278 | 3.530 | 0.278 | few data |    0.000 |    0.000 |
-| Experimental |      |        | Branca   |       | fss.media.math |   62 | 3.433 |  3.444 | 2.000 | 4.667 | 0.631 | 0.080 | 0.160 | 0.847 | YES      |   -0.221 |   -0.611 |
-| Experimental |      |        | Indígena |       | fss.media.math |   16 | 3.250 |  3.278 | 2.778 | 3.889 | 0.359 | 0.090 | 0.192 | 0.500 | YES      |    0.122 |   -1.352 |
 | Experimental |      |        | Parda    |       | fss.media.math |  181 | 3.404 |  3.333 | 2.222 | 5.000 | 0.549 | 0.041 | 0.080 | 0.778 | YES      |    0.239 |   -0.209 |
+| Experimental |      |        | Indígena |       | fss.media.math |   16 | 3.250 |  3.278 | 2.778 | 3.889 | 0.359 | 0.090 | 0.192 | 0.500 | YES      |    0.122 |   -1.352 |
+| Experimental |      |        | Branca   |       | fss.media.math |   62 | 3.433 |  3.444 | 2.000 | 4.667 | 0.631 | 0.080 | 0.160 | 0.847 | YES      |   -0.221 |   -0.611 |
 | Experimental |      |        | Preta    |       | fss.media.math |    1 | 3.889 |  3.889 | 3.889 | 3.889 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
+| Experimental |      |        | Amarela  |       | fss.media.math |    2 | 3.167 |  3.167 | 2.889 | 3.444 | 0.393 | 0.278 | 3.530 | 0.278 | few data |    0.000 |    0.000 |
 | Experimental |      |        |          |       | fss.media.math |  451 | 3.396 |  3.444 | 1.000 | 5.000 | 0.611 | 0.029 | 0.057 | 0.778 | YES      |   -0.207 |    0.522 |
 | Controle     |      |        |          | 6 ano | dfs.media.math |  155 | 3.483 |  3.444 | 2.111 | 5.000 | 0.594 | 0.048 | 0.094 | 0.778 | YES      |    0.175 |   -0.356 |
 | Controle     |      |        |          | 7 ano | dfs.media.math |  136 | 3.280 |  3.292 | 1.333 | 4.667 | 0.619 | 0.053 | 0.105 | 0.889 | YES      |   -0.149 |   -0.112 |
@@ -315,10 +326,12 @@ ds <- merge(ds[ds$variable != "dfs.media.math",],
             ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".dfs.media.math"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.dfs.media.math","se.dfs.media.math","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- ds
 ```
@@ -347,7 +360,8 @@ ldat[["grupo"]] = wdat
 
 ``` r
 aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo)
-laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suffixes = c("","'"))
+laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]],
+                            by="Effect", suffixes = c("","'"))
 
 (df = get_anova_table(aov))
 ```
@@ -363,6 +377,11 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 | dfs.media.math |   1 | 1204 | 275.609 | 0.000 | \*     | 0.186 |
 | grupo          |   1 | 1204 |   0.649 | 0.421 |        | 0.001 |
 
+``` r
+pwc <- emmeans_test(wdat, fss.media.math ~ grupo, covariate = dfs.media.math,
+                    p.adjust.method = "bonferroni")
+```
+
 | term                  | .y.            | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
 |:----------------------|:---------------|:---------|:-------------|-----:|----------:|------:|------:|:-------------|
 | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 1204 |    -0.806 | 0.421 | 0.421 | ns           |
@@ -371,7 +390,9 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "grupo"),
                          flow.math ~ time,
                          p.adjust.method = "bonferroni")
-lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]], by=c("grupo","term",".y.","group1","group2"), suffixes = c("","'"))
+lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]],
+                            by=c("grupo","term",".y.","group1","group2"),
+                            suffixes = c("","'"))
 ```
 
 | grupo        | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -385,35 +406,35 @@ ds <- merge(ds[ds$variable != "dfs.media.math",],
             ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".dfs.media.math"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.dfs.media.math","se.dfs.media.math","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- merge(ds, lemms[["grupo"]], by=c("grupo"), suffixes = c("","'"))
 ```
 
-| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 496 |   3.405 |    0.027 |     3.358 |      0.027 |   3.371 |    0.024 |
-| Experimental | 711 |   3.452 |    0.021 |     3.405 |      0.022 |   3.396 |    0.020 |
+| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 496 |   3.405 |    0.027 |     3.358 |      0.027 |   3.371 |    0.024 |    3.324 |     3.418 |
+| Experimental | 711 |   3.452 |    0.021 |     3.405 |      0.022 |   3.396 |    0.020 |    3.357 |     3.435 |
 
 ### Plots for ancova
 
 ``` r
 plots <- oneWayAncovaPlots(
-  wdat, "fss.media.math", "grupo", aov, list("grupo"=pwc), addParam = c("mean_se"),
+  wdat, "fss.media.math", "grupo", aov, list("grupo"=pwc), addParam = c("mean_ci"),
   font.label.size=10, step.increase=0.05, p.label="p.adj",
   subtitle = which(aov$Effect == "grupo"))
 ```
 
 ``` r
 if (!is.null(nrow(plots[["grupo"]]$data)))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+  plots[["grupo"]] +
+  if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
@@ -426,7 +447,9 @@ plots <- oneWayAncovaBoxPlots(
 
 ``` r
 if (length(unique(wdat[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("flow (prob. matemática)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+  plots[["grupo"]] + ggplot2::ylab("flow (math)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
@@ -434,13 +457,14 @@ if (length(unique(wdat[["grupo"]])) > 1)
 ``` r
 if (length(unique(wdat.long[["grupo"]])) > 1)
   plots <- oneWayAncovaBoxPlots(
-    wdat.long, "flow.math", "grupo", aov, pwc.long, pre.post = "time",
-    theme = "classic", color = color$prepost)
+    wdat.long, "flow.math", "grupo", aov, pwc.long,
+    pre.post = "time", theme = "classic", color = color$prepost)
 ```
 
 ``` r
 if (length(unique(wdat.long[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("flow (prob. matemática)")
+  plots[["grupo"]] + ggplot2::ylab("flow (math)") +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax) 
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
@@ -452,7 +476,10 @@ ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
-  )
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
@@ -486,88 +513,104 @@ levene_test(res, .resid ~ grupo)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),], "fss.media.math", c("grupo","Sexo"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),],
+                         "fss.media.math", c("grupo","Sexo"))
+pdat = pdat[pdat[["Sexo"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Sexo"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Sexo"]] = factor(
+  pdat[["Sexo"]],
+  level[["Sexo"]][level[["Sexo"]] %in% unique(pdat[["Sexo"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Sexo")], pdat[,c("id","grupo","Sexo")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["flow.math"]] <- c(pdat[["dfs.media.math"]], pdat[["fss.media.math"]])
 
-aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Sexo)
-laov[["grupo:Sexo"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(pdat, grupo), fss.media.math ~ Sexo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Sexo), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(pdat, grupo), fss.media.math ~ Sexo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Sexo), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Sexo"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- ds
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Sexo"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.dfs.media.math","se.dfs.media.math","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Sexo, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
-
-
-ldat[["grupo:Sexo"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Sexo, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
+  
+  
+  ldat[["grupo:Sexo"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P1772"
 
 ``` r
-aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Sexo)
-laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##           Effect DFn  DFd       F        p p<.05      ges
-    ## 1 dfs.media.math   1 1203 268.645 1.19e-54     * 1.83e-01
-    ## 2          grupo   1 1203   0.546 4.60e-01       4.54e-04
-    ## 3           Sexo   1 1203   4.456 3.50e-02     * 4.00e-03
-    ## 4     grupo:Sexo   1 1203   0.044 8.33e-01       3.68e-05
 
 | Effect         | DFn |  DFd |       F |     p | p\<.05 |   ges |
 |:---------------|----:|-----:|--------:|------:|:-------|------:|
@@ -577,16 +620,18 @@ laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Ef
 | grupo:Sexo     |   1 | 1203 |   0.044 | 0.833 |        | 0.000 |
 
 ``` r
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(wdat, grupo), fss.media.math ~ Sexo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Sexo), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(wdat, grupo), fss.media.math ~ Sexo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Sexo), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 | grupo        | Sexo | term                  | .y.            | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -597,10 +642,15 @@ pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo"
 | Experimental |      | dfs.media.math\*Sexo  | fss.media.math | F        | M            | 1203 |    -1.484 | 0.138 | 0.138 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo"]], by=c("grupo","Sexo","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Sexo"]],
+                                         by=c("grupo","Sexo","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Sexo | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -611,38 +661,55 @@ lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo
 | Experimental | M    | time | flow.math | pre    | pos    | 2408 |     0.918 | 0.359 | 0.359 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Sexo"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]], by=c("grupo","Sexo"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Sexo"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.dfs.media.math","se.dfs.media.math",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]],
+                                          by=c("grupo","Sexo"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | F    | 247 |   3.421 |    0.035 |     3.329 |      0.038 |   3.334 |    0.034 |
-| Controle     | M    | 249 |   3.388 |    0.040 |     3.387 |      0.040 |   3.407 |    0.034 |
-| Experimental | F    | 370 |   3.417 |    0.027 |     3.357 |      0.032 |   3.364 |    0.028 |
-| Experimental | M    | 342 |   3.491 |    0.031 |     3.450 |      0.030 |   3.424 |    0.029 |
+| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | F    | 247 |   3.421 |    0.035 |     3.329 |      0.038 |   3.334 |    0.034 |    3.267 |     3.401 |
+| Controle     | M    | 249 |   3.388 |    0.040 |     3.387 |      0.040 |   3.407 |    0.034 |    3.340 |     3.474 |
+| Experimental | F    | 370 |   3.417 |    0.027 |     3.357 |      0.032 |   3.364 |    0.028 |    3.309 |     3.419 |
+| Experimental | M    | 342 |   3.491 |    0.031 |     3.450 |      0.030 |   3.424 |    0.029 |    3.367 |     3.481 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "fss.media.math", c("grupo","Sexo"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "flow (math)",
+             subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
+
 ``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Sexo"]])
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Sexo", "grupo", aov, ylab = "flow (math)",
+               subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -651,60 +718,99 @@ if (!is.null(plots[["grupo"]]))
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Sexo"]]))
-  plots[["Sexo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "fss.media.math", c("grupo","Sexo"), aov, pwcs, covar = "dfs.media.math",
-  theme = "classic", color = color[["grupo:Sexo"]],
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "fss.media.math", c("grupo","Sexo"), aov, pwcs, covar = "dfs.media.math",
+    theme = "classic", color = color[["grupo:Sexo"]],
+    subtitle = which(aov$Effect == "grupo:Sexo"))
+}
 ```
 
 ``` r
-plots[["grupo:Sexo"]] + ggplot2::ylab("flow (prob. matemática)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots[["grupo:Sexo"]] + ggplot2::ylab("flow (math)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "flow.math", c("grupo","Sexo"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "flow.math", c("grupo","Sexo"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Sexo"]] + ggplot2::ylab("flow (prob. matemática)")
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  plots[["grupo:Sexo"]] + ggplot2::ylab("flow (math)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
 
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
-          facet.by = c("grupo","Sexo"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            facet.by = c("grupo","Sexo"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "grupo", facet.by = "Sexo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "Sexo", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Sexo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Sexo, data = wdat))
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Sexo, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Sexo"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -713,7 +819,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998  0.0637
 
 ``` r
-levene_test(res, .resid ~ grupo*Sexo)
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Sexo)
 ```
 
     ## # A tibble: 1 × 4
@@ -726,88 +833,104 @@ levene_test(res, .resid ~ grupo*Sexo)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),], "fss.media.math", c("grupo","Zona"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),],
+                         "fss.media.math", c("grupo","Zona"))
+pdat = pdat[pdat[["Zona"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Zona"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Zona"]] = factor(
+  pdat[["Zona"]],
+  level[["Zona"]][level[["Zona"]] %in% unique(pdat[["Zona"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Zona")], pdat[,c("id","grupo","Zona")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["flow.math"]] <- c(pdat[["dfs.media.math"]], pdat[["fss.media.math"]])
 
-aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Zona)
-laov[["grupo:Zona"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Zona)
+  laov[["grupo:Zona"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(pdat, grupo), fss.media.math ~ Zona,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Zona), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(pdat, grupo), fss.media.math ~ Zona,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Zona), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Zona"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- ds
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Zona"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.dfs.media.math","se.dfs.media.math","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Zona, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
-
-
-ldat[["grupo:Zona"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Zona, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
+  
+  
+  ldat[["grupo:Zona"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P1848"
 
 ``` r
-aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Zona)
-laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Zona)
+  laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##           Effect DFn DFd       F        p p<.05   ges
-    ## 1 dfs.media.math   1 838 211.946 5.70e-43     * 0.202
-    ## 2          grupo   1 838   1.103 2.94e-01       0.001
-    ## 3           Zona   1 838   4.439 3.50e-02     * 0.005
-    ## 4     grupo:Zona   1 838   3.846 5.00e-02       0.005
 
 | Effect         | DFn | DFd |       F |     p | p\<.05 |   ges |
 |:---------------|----:|----:|--------:|------:|:-------|------:|
@@ -817,16 +940,18 @@ laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Ef
 | grupo:Zona     |   1 | 838 |   3.846 | 0.050 |        | 0.005 |
 
 ``` r
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(wdat, grupo), fss.media.math ~ Zona,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Zona), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(wdat, grupo), fss.media.math ~ Zona,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Zona), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 | grupo        | Zona   | term                  | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
@@ -837,10 +962,15 @@ pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona"
 | Experimental |        | dfs.media.math\*Zona  | fss.media.math | Rural    | Urbana       | 838 |     2.877 | 0.004 | 0.004 | \*\*         |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona"]], by=c("grupo","Zona","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Zona"]],
+                                         by=c("grupo","Zona","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Zona   | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -851,38 +981,41 @@ lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona
 | Experimental | Urbana | time | flow.math | pre    | pos    | 1678 |     2.571 | 0.010 | 0.010 | \*           |
 
 ``` r
-ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Zona"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]], by=c("grupo","Zona"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Zona"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.dfs.media.math","se.dfs.media.math",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]],
+                                          by=c("grupo","Zona"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | Rural  | 232 |   3.489 |    0.037 |     3.397 |      0.040 |   3.379 |    0.035 |
-| Controle     | Urbana | 137 |   3.377 |    0.056 |     3.351 |      0.050 |   3.385 |    0.045 |
-| Experimental | Rural  | 283 |   3.412 |    0.033 |     3.456 |      0.030 |   3.474 |    0.031 |
-| Experimental | Urbana | 191 |   3.514 |    0.039 |     3.361 |      0.048 |   3.332 |    0.038 |
+| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | Rural  | 232 |   3.489 |    0.037 |     3.397 |      0.040 |   3.379 |    0.035 |    3.311 |     3.447 |
+| Controle     | Urbana | 137 |   3.377 |    0.056 |     3.351 |      0.050 |   3.385 |    0.045 |    3.296 |     3.473 |
+| Experimental | Rural  | 283 |   3.412 |    0.033 |     3.456 |      0.030 |   3.474 |    0.031 |    3.413 |     3.536 |
+| Experimental | Urbana | 191 |   3.514 |    0.039 |     3.361 |      0.048 |   3.332 |    0.038 |    3.257 |     3.407 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "fss.media.math", c("grupo","Zona"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Zona"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Zona"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Zona", aov, ylab = "flow (math)",
+             subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -891,8 +1024,12 @@ if (!is.null(plots[["grupo"]]))
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Zona"]]))
-  plots[["Zona"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "flow (math)",
+               subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -901,26 +1038,40 @@ if (!is.null(plots[["Zona"]]))
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-67-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "fss.media.math", c("grupo","Zona"), aov, pwcs, covar = "dfs.media.math",
-  theme = "classic", color = color[["grupo:Zona"]],
-  subtitle = which(aov$Effect == "grupo:Zona"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "fss.media.math", c("grupo","Zona"), aov, pwcs, covar = "dfs.media.math",
+    theme = "classic", color = color[["grupo:Zona"]],
+    subtitle = which(aov$Effect == "grupo:Zona"))
+}
 ```
 
 ``` r
-plots[["grupo:Zona"]] + ggplot2::ylab("flow (prob. matemática)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots[["grupo:Zona"]] + ggplot2::ylab("flow (math)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
+
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "flow.math", c("grupo","Zona"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "flow.math", c("grupo","Zona"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Zona"]] + ggplot2::ylab("flow (prob. matemática)")
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  plots[["grupo:Zona"]] + ggplot2::ylab("flow (math)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
@@ -928,23 +1079,58 @@ plots[["grupo:Zona"]] + ggplot2::ylab("flow (prob. matemática)")
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
-          facet.by = c("grupo","Zona"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            facet.by = c("grupo","Zona"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "grupo", facet.by = "Zona", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "Zona", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Zona)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Zona, data = wdat))
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Zona, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Zona"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -953,7 +1139,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.996  0.0478
 
 ``` r
-levene_test(res, .resid ~ grupo*Zona)
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Zona)
 ```
 
     ## # A tibble: 1 × 4
@@ -966,7 +1153,8 @@ levene_test(res, .resid ~ grupo*Zona)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),], "fss.media.math", c("grupo","Cor.Raca"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),],
+                         "fss.media.math", c("grupo","Cor.Raca"))
 ```
 
     ## Warning: There were 2 warnings in `mutate()`.
@@ -980,86 +1168,102 @@ pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),
     ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.
 
 ``` r
+pdat = pdat[pdat[["Cor.Raca"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Cor.Raca"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Cor.Raca"]] = factor(
+  pdat[["Cor.Raca"]],
+  level[["Cor.Raca"]][level[["Cor.Raca"]] %in% unique(pdat[["Cor.Raca"]])])
+
 pdat.long <- rbind(pdat[,c("id","grupo","Cor.Raca")], pdat[,c("id","grupo","Cor.Raca")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["flow.math"]] <- c(pdat[["dfs.media.math"]], pdat[["fss.media.math"]])
 
-aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(pdat, grupo), fss.media.math ~ Cor.Raca,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Cor.Raca), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(pdat, grupo), fss.media.math ~ Cor.Raca,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Cor.Raca), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Cor.Raca"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- ds
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Cor.Raca"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.dfs.media.math","se.dfs.media.math","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Cor.Raca, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
-
-
-ldat[["grupo:Cor.Raca"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Cor.Raca, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
+  
+  
+  ldat[["grupo:Cor.Raca"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## NULL
 
 ``` r
-aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##           Effect DFn DFd       F        p p<.05      ges
-    ## 1 dfs.media.math   1 477 126.705 3.15e-26     * 2.10e-01
-    ## 2          grupo   1 477   0.011 9.15e-01       2.39e-05
-    ## 3       Cor.Raca   2 477   0.611 5.43e-01       3.00e-03
-    ## 4 grupo:Cor.Raca   2 477   2.365 9.50e-02       1.00e-02
 
 | Effect         | DFn | DFd |       F |     p | p\<.05 |   ges |
 |:---------------|----:|----:|--------:|------:|:-------|------:|
@@ -1069,91 +1273,91 @@ laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]]
 | grupo:Cor.Raca |   2 | 477 |   2.365 | 0.095 |        | 0.010 |
 
 ``` r
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(wdat, grupo), fss.media.math ~ Cor.Raca,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Cor.Raca), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(wdat, grupo), fss.media.math ~ Cor.Raca,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Cor.Raca), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 | grupo        | Cor.Raca | term                     | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
 |:-------------|:---------|:-------------------------|:---------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | Branca   | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental | 477 |     1.048 | 0.295 | 0.295 | ns           |
-|              | Indígena | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental | 477 |     1.677 | 0.094 | 0.094 | ns           |
 |              | Parda    | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental | 477 |    -0.911 | 0.363 | 0.363 | ns           |
-| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Branca   | Indígena     | 477 |    -0.266 | 0.790 | 1.000 | ns           |
-| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Branca   | Parda        | 477 |     1.576 | 0.116 | 0.347 | ns           |
-| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Indígena | Parda        | 477 |     1.070 | 0.285 | 0.856 | ns           |
-| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Branca   | Indígena     | 477 |     1.367 | 0.172 | 0.517 | ns           |
-| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Branca   | Parda        | 477 |    -0.283 | 0.777 | 1.000 | ns           |
-| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Indígena | Parda        | 477 |    -1.628 | 0.104 | 0.312 | ns           |
+|              | Indígena | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental | 477 |     1.677 | 0.094 | 0.094 | ns           |
+|              | Branca   | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental | 477 |     1.048 | 0.295 | 0.295 | ns           |
+| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Parda    | Indígena     | 477 |    -1.070 | 0.285 | 0.856 | ns           |
+| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Parda    | Branca       | 477 |    -1.576 | 0.116 | 0.347 | ns           |
+| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Indígena | Branca       | 477 |     0.266 | 0.790 | 1.000 | ns           |
+| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Parda    | Indígena     | 477 |     1.628 | 0.104 | 0.312 | ns           |
+| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Parda    | Branca       | 477 |     0.283 | 0.777 | 1.000 | ns           |
+| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Indígena | Branca       | 477 |    -1.367 | 0.172 | 0.517 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Cor.Raca"]],
+                                         by=c("grupo","Cor.Raca","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Cor.Raca | term | .y.       | group1 | group2 |  df | statistic |     p | p.adj | p.adj.signif |
 |:-------------|:---------|:-----|:----------|:-------|:-------|----:|----------:|------:|------:|:-------------|
-| Controle     | Branca   | time | flow.math | pre    | pos    | 956 |    -0.334 | 0.739 | 0.739 | ns           |
-| Controle     | Indígena | time | flow.math | pre    | pos    | 956 |    -0.133 | 0.894 | 0.894 | ns           |
 | Controle     | Parda    | time | flow.math | pre    | pos    | 956 |     0.546 | 0.585 | 0.585 | ns           |
-| Experimental | Branca   | time | flow.math | pre    | pos    | 956 |     0.919 | 0.358 | 0.358 | ns           |
-| Experimental | Indígena | time | flow.math | pre    | pos    | 956 |     1.498 | 0.134 | 0.134 | ns           |
+| Controle     | Indígena | time | flow.math | pre    | pos    | 956 |    -0.133 | 0.894 | 0.894 | ns           |
+| Controle     | Branca   | time | flow.math | pre    | pos    | 956 |    -0.334 | 0.739 | 0.739 | ns           |
 | Experimental | Parda    | time | flow.math | pre    | pos    | 956 |     0.250 | 0.803 | 0.803 | ns           |
+| Experimental | Indígena | time | flow.math | pre    | pos    | 956 |     1.498 | 0.134 | 0.134 | ns           |
+| Experimental | Branca   | time | flow.math | pre    | pos    | 956 |     0.919 | 0.358 | 0.358 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Cor.Raca"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Cor.Raca"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.dfs.media.math","se.dfs.media.math",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]],
+                                          by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | Branca   |  49 |   3.471 |    0.099 |     3.509 |      0.085 |   3.487 |    0.072 |
-| Controle     | Indígena |  10 |   3.567 |    0.129 |     3.600 |      0.185 |   3.534 |    0.159 |
-| Controle     | Parda    | 166 |   3.362 |    0.045 |     3.328 |      0.044 |   3.358 |    0.039 |
-| Experimental | Branca   |  62 |   3.526 |    0.057 |     3.433 |      0.080 |   3.386 |    0.064 |
-| Experimental | Indígena |  16 |   3.546 |    0.088 |     3.250 |      0.090 |   3.193 |    0.126 |
-| Experimental | Parda    | 181 |   3.419 |    0.040 |     3.404 |      0.041 |   3.407 |    0.037 |
+| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | Branca   |  49 |   3.471 |    0.099 |     3.509 |      0.085 |   3.487 |    0.072 |    3.346 |     3.629 |
+| Controle     | Indígena |  10 |   3.567 |    0.129 |     3.600 |      0.185 |   3.534 |    0.159 |    3.221 |     3.847 |
+| Controle     | Parda    | 166 |   3.362 |    0.045 |     3.328 |      0.044 |   3.358 |    0.039 |    3.281 |     3.435 |
+| Experimental | Branca   |  62 |   3.526 |    0.057 |     3.433 |      0.080 |   3.386 |    0.064 |    3.260 |     3.512 |
+| Experimental | Indígena |  16 |   3.546 |    0.088 |     3.250 |      0.090 |   3.193 |    0.126 |    2.946 |     3.441 |
+| Experimental | Parda    | 181 |   3.419 |    0.040 |     3.404 |      0.041 |   3.407 |    0.037 |    3.334 |     3.481 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "fss.media.math", c("grupo","Cor.Raca"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Cor.Raca"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-90-1.png)<!-- -->
-
-``` r
-if (!is.null(plots[["Cor.Raca"]]))
-  plots[["Cor.Raca"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Cor.Raca", aov, ylab = "flow (math)",
+             subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -1162,50 +1366,113 @@ if (!is.null(plots[["Cor.Raca"]]))
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "fss.media.math", c("grupo","Cor.Raca"), aov, pwcs, covar = "dfs.media.math",
-  theme = "classic", color = color[["grupo:Cor.Raca"]],
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Cor.Raca", "grupo", aov, ylab = "flow (math)",
+               subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
+```
+
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "fss.media.math", c("grupo","Cor.Raca"), aov, pwcs, covar = "dfs.media.math",
+    theme = "classic", color = color[["grupo:Cor.Raca"]],
+    subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+}
 ```
 
 ``` r
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("flow (prob. matemática)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("flow (math)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-93-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "flow.math", c("grupo","Cor.Raca"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "flow.math", c("grupo","Cor.Raca"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("flow (prob. matemática)")
-```
-
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
-
-### Checking linearity assumption
-
-``` r
-ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
-          facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("flow (math)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
 
+### Checking linearity assumption
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "grupo", facet.by = "Cor.Raca", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "Cor.Raca", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Cor.Raca)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Cor.Raca, data = wdat))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Cor.Raca, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1214,7 +1481,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998   0.708
 
 ``` r
-levene_test(res, .resid ~ grupo*Cor.Raca)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Cor.Raca)
 ```
 
     ## # A tibble: 1 × 4
@@ -1227,88 +1495,104 @@ levene_test(res, .resid ~ grupo*Cor.Raca)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),], "fss.media.math", c("grupo","Serie"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),],
+                         "fss.media.math", c("grupo","Serie"))
+pdat = pdat[pdat[["Serie"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Serie"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Serie"]] = factor(
+  pdat[["Serie"]],
+  level[["Serie"]][level[["Serie"]] %in% unique(pdat[["Serie"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Serie")], pdat[,c("id","grupo","Serie")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["flow.math"]] <- c(pdat[["dfs.media.math"]], pdat[["fss.media.math"]])
 
-aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Serie)
-laov[["grupo:Serie"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(pdat, fss.media.math ~ dfs.media.math + grupo*Serie)
+  laov[["grupo:Serie"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(pdat, grupo), fss.media.math ~ Serie,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Serie), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(pdat, grupo), fss.media.math ~ Serie,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Serie), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Serie"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- ds
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(pdat, "fss.media.math", c("grupo","Serie"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.dfs.media.math","se.dfs.media.math","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Serie, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
-
-
-ldat[["grupo:Serie"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(fss.media.math ~ dfs.media.math + grupo*Serie, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["flow.math"]] <- c(wdat[["dfs.media.math"]], wdat[["fss.media.math"]])
+  
+  
+  ldat[["grupo:Serie"]] = wdat
+  
+  (non.normal)
+}
 ```
 
     ## [1] "P1848" "P1772"
 
 ``` r
-aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Serie)
-laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo*Serie)
+  laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##           Effect DFn  DFd       F        p p<.05      ges
-    ## 1 dfs.media.math   1 1198 258.029 9.85e-53     * 0.177000
-    ## 2          grupo   1 1198   0.950 3.30e-01       0.000793
-    ## 3          Serie   3 1198   6.548 2.16e-04     * 0.016000
-    ## 4    grupo:Serie   3 1198   3.666 1.20e-02     * 0.009000
 
 | Effect         | DFn |  DFd |       F |     p | p\<.05 |   ges |
 |:---------------|----:|-----:|--------:|------:|:-------|------:|
@@ -1318,16 +1602,18 @@ laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="
 | grupo:Serie    |   3 | 1198 |   3.666 | 0.012 | \*     | 0.009 |
 
 ``` r
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(wdat, grupo), fss.media.math ~ Serie,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Serie), fss.media.math ~ grupo,
-  covariate = dfs.media.math, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(wdat, grupo), fss.media.math ~ Serie,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Serie), fss.media.math ~ grupo,
+    covariate = dfs.media.math, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 | grupo        | Serie | term                  | .y.            | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1350,10 +1636,15 @@ pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Seri
 | Experimental |       | dfs.media.math\*Serie | fss.media.math | 8 ano    | 9 ano        | 1198 |    -3.366 | 0.001 | 0.005 | \*\*         |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
-                         flow.math ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Serie"]], by=c("grupo","Serie","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
+                           flow.math ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Serie"]],
+                                         by=c("grupo","Serie","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Serie | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1368,106 +1659,157 @@ lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Ser
 | Experimental | 9 ano | time | flow.math | pre    | pos    | 2398 |    -0.273 | 0.785 | 0.785 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Serie"), covar = "dfs.media.math")
-ds <- merge(ds[ds$variable != "dfs.media.math",],
-            ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".dfs.media.math"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.dfs.media.math","se.dfs.media.math","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]], by=c("grupo","Serie"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(wdat, "fss.media.math", c("grupo","Serie"), covar = "dfs.media.math")
+  ds <- merge(ds[ds$variable != "dfs.media.math",],
+              ds[ds$variable == "dfs.media.math", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".dfs.media.math"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.dfs.media.math","se.dfs.media.math",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]],
+                                          by=c("grupo","Serie"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 6 ano | 155 |   3.483 |    0.048 |     3.410 |      0.047 |   3.389 |    0.043 |
-| Controle     | 7 ano | 136 |   3.280 |    0.053 |     3.155 |      0.046 |   3.222 |    0.046 |
-| Controle     | 8 ano |  87 |   3.368 |    0.060 |     3.355 |      0.064 |   3.383 |    0.057 |
-| Controle     | 9 ano | 118 |   3.473 |    0.052 |     3.526 |      0.063 |   3.508 |    0.049 |
-| Experimental | 6 ano | 175 |   3.442 |    0.041 |     3.375 |      0.039 |   3.371 |    0.040 |
-| Experimental | 7 ano | 197 |   3.468 |    0.040 |     3.430 |      0.043 |   3.414 |    0.038 |
-| Experimental | 8 ano | 175 |   3.382 |    0.041 |     3.283 |      0.045 |   3.305 |    0.040 |
-| Experimental | 9 ano | 164 |   3.520 |    0.042 |     3.537 |      0.045 |   3.499 |    0.041 |
+| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 6 ano | 155 |   3.483 |    0.048 |     3.410 |      0.047 |   3.389 |    0.043 |    3.305 |     3.472 |
+| Controle     | 7 ano | 136 |   3.280 |    0.053 |     3.155 |      0.046 |   3.222 |    0.046 |    3.132 |     3.311 |
+| Controle     | 8 ano |  87 |   3.368 |    0.060 |     3.355 |      0.064 |   3.383 |    0.057 |    3.272 |     3.495 |
+| Controle     | 9 ano | 118 |   3.473 |    0.052 |     3.526 |      0.063 |   3.508 |    0.049 |    3.413 |     3.604 |
+| Experimental | 6 ano | 175 |   3.442 |    0.041 |     3.375 |      0.039 |   3.371 |    0.040 |    3.293 |     3.450 |
+| Experimental | 7 ano | 197 |   3.468 |    0.040 |     3.430 |      0.043 |   3.414 |    0.038 |    3.340 |     3.488 |
+| Experimental | 8 ano | 175 |   3.382 |    0.041 |     3.283 |      0.045 |   3.305 |    0.040 |    3.227 |     3.384 |
+| Experimental | 9 ano | 164 |   3.520 |    0.042 |     3.537 |      0.045 |   3.499 |    0.041 |    3.418 |     3.580 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "fss.media.math", c("grupo","Serie"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Serie"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "flow (math)",
+             subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-114-1.png)<!-- -->
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-116-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Serie"]]))
-  plots[["Serie"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "flow (math)",
+               subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
-
-    ## Warning: `position_dodge()` requires non-overlapping x intervals
-
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-115-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "fss.media.math", c("grupo","Serie"), aov, pwcs, covar = "dfs.media.math",
-  theme = "classic", color = color[["grupo:Serie"]],
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
-``` r
-plots[["grupo:Serie"]] + ggplot2::ylab("flow (prob. matemática)") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
-```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-117-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "flow.math", c("grupo","Serie"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "fss.media.math", c("grupo","Serie"), aov, pwcs, covar = "dfs.media.math",
+    theme = "classic", color = color[["grupo:Serie"]],
+    subtitle = which(aov$Effect == "grupo:Serie"))
+}
 ```
 
 ``` r
-plots[["grupo:Serie"]] + ggplot2::ylab("flow (prob. matemática)")
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots[["grupo:Serie"]] + ggplot2::ylab("flow (math)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-119-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "flow.math", c("grupo","Serie"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
+```
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  plots[["grupo:Serie"]] + ggplot2::ylab("flow (math)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-121-1.png)<!-- -->
+
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
-          facet.by = c("grupo","Serie"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            facet.by = c("grupo","Serie"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-120-1.png)<!-- -->
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-122-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "grupo", facet.by = "Serie", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "dfs.media.math", y = "fss.media.math", size = 0.5,
+            color = "Serie", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Serie)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-flow.math_files/figure-gfm/unnamed-chunk-124-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Serie, data = wdat))
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  res <- augment(lm(fss.media.math ~ dfs.media.math + grupo*Serie, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Serie"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1476,7 +1818,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.998   0.231
 
 ``` r
-levene_test(res, .resid ~ grupo*Serie)
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Serie)
 ```
 
     ## # A tibble: 1 × 4
@@ -1493,117 +1836,14 @@ df <- get.descriptives(ldat[["grupo"]], c(dv.pre, dv.pos), c("grupo"),
                        include.global = T, symmetry.test = T, normality.test = F)
 df <- plyr::rbind.fill(
   df, do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
-    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1 && paste0("grupo:",f) %in% names(ldat))
       get.descriptives(ldat[[paste0("grupo:",f)]], c(dv.pre,dv.pos), c("grupo", f),
                        symmetry.test = T, normality.test = F)
     }))
 )
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
-
-    ##           grupo Sexo   Zona Cor.Raca Serie       variable    n  mean median   min   max    sd    se    ci   iqr
-    ## 1      Controle <NA>   <NA>     <NA>  <NA> dfs.media.math  496 3.405  3.444 1.333 5.000 0.593 0.027 0.052 0.778
-    ## 2  Experimental <NA>   <NA>     <NA>  <NA> dfs.media.math  711 3.452  3.444 1.444 5.000 0.547 0.021 0.040 0.667
-    ## 3          <NA> <NA>   <NA>     <NA>  <NA> dfs.media.math 1207 3.433  3.444 1.333 5.000 0.567 0.016 0.032 0.722
-    ## 4      Controle <NA>   <NA>     <NA>  <NA> fss.media.math  496 3.358  3.333 1.333 5.000 0.611 0.027 0.054 0.778
-    ## 5  Experimental <NA>   <NA>     <NA>  <NA> fss.media.math  711 3.405  3.444 1.889 5.000 0.579 0.022 0.043 0.778
-    ## 6          <NA> <NA>   <NA>     <NA>  <NA> fss.media.math 1207 3.386  3.333 1.333 5.000 0.593 0.017 0.033 0.778
-    ## 7      Controle    F   <NA>     <NA>  <NA> dfs.media.math  247 3.421  3.444 1.889 4.667 0.555 0.035 0.070 0.889
-    ## 8      Controle    M   <NA>     <NA>  <NA> dfs.media.math  249 3.388  3.333 1.333 5.000 0.630 0.040 0.079 0.778
-    ## 9  Experimental    F   <NA>     <NA>  <NA> dfs.media.math  370 3.417  3.444 1.667 5.000 0.526 0.027 0.054 0.667
-    ## 10 Experimental    M   <NA>     <NA>  <NA> dfs.media.math  342 3.491  3.444 1.444 5.000 0.566 0.031 0.060 0.778
-    ## 11     Controle    F   <NA>     <NA>  <NA> fss.media.math  247 3.329  3.333 1.556 4.667 0.596 0.038 0.075 0.778
-    ## 12     Controle    M   <NA>     <NA>  <NA> fss.media.math  249 3.387  3.333 1.333 5.000 0.625 0.040 0.078 0.778
-    ## 13 Experimental    F   <NA>     <NA>  <NA> fss.media.math  370 3.357  3.333 1.000 5.000 0.607 0.032 0.062 0.778
-    ## 14 Experimental    M   <NA>     <NA>  <NA> fss.media.math  342 3.450  3.444 2.000 5.000 0.559 0.030 0.059 0.667
-    ## 15     Controle <NA>  Rural     <NA>  <NA> dfs.media.math  232 3.489  3.444 2.333 5.000 0.560 0.037 0.072 0.778
-    ## 16     Controle <NA> Urbana     <NA>  <NA> dfs.media.math  137 3.377  3.444 1.333 4.778 0.651 0.056 0.110 0.889
-    ## 17 Experimental <NA>  Rural     <NA>  <NA> dfs.media.math  283 3.412  3.444 1.444 5.000 0.558 0.033 0.065 0.667
-    ## 18 Experimental <NA> Urbana     <NA>  <NA> dfs.media.math  191 3.514  3.500 2.111 4.778 0.541 0.039 0.077 0.778
-    ## 19     Controle <NA>  Rural     <NA>  <NA> fss.media.math  232 3.397  3.333 1.778 5.000 0.610 0.040 0.079 0.778
-    ## 20     Controle <NA> Urbana     <NA>  <NA> fss.media.math  137 3.351  3.375 1.889 5.000 0.590 0.050 0.100 0.778
-    ## 21 Experimental <NA>  Rural     <NA>  <NA> fss.media.math  283 3.456  3.444 2.222 5.000 0.511 0.030 0.060 0.722
-    ## 22 Experimental <NA> Urbana     <NA>  <NA> fss.media.math  191 3.361  3.333 1.111 5.000 0.662 0.048 0.094 0.778
-    ## 23     Controle <NA>   <NA>   Branca  <NA> dfs.media.math   49 3.471  3.444 1.333 5.000 0.694 0.099 0.199 0.889
-    ## 24     Controle <NA>   <NA> Indígena  <NA> dfs.media.math   10 3.567  3.500 2.778 4.000 0.407 0.129 0.291 0.611
-    ## 25     Controle <NA>   <NA>    Parda  <NA> dfs.media.math  166 3.362  3.333 1.444 4.778 0.578 0.045 0.089 0.889
-    ## 26 Experimental <NA>   <NA>   Branca  <NA> dfs.media.math   62 3.526  3.444 2.667 4.444 0.445 0.057 0.113 0.667
-    ## 27 Experimental <NA>   <NA> Indígena  <NA> dfs.media.math   16 3.546  3.590 2.778 4.000 0.352 0.088 0.187 0.472
-    ## 28 Experimental <NA>   <NA>    Parda  <NA> dfs.media.math  181 3.419  3.444 2.222 5.000 0.538 0.040 0.079 0.667
-    ## 29     Controle <NA>   <NA>   Branca  <NA> fss.media.math   49 3.509  3.556 2.444 5.000 0.595 0.085 0.171 0.667
-    ## 30     Controle <NA>   <NA> Indígena  <NA> fss.media.math   10 3.600  3.611 2.778 4.556 0.584 0.185 0.418 0.750
-    ## 31     Controle <NA>   <NA>    Parda  <NA> fss.media.math  166 3.328  3.333 1.778 5.000 0.564 0.044 0.086 0.667
-    ## 32 Experimental <NA>   <NA>   Branca  <NA> fss.media.math   62 3.433  3.444 2.000 4.667 0.631 0.080 0.160 0.847
-    ## 33 Experimental <NA>   <NA> Indígena  <NA> fss.media.math   16 3.250  3.278 2.778 3.889 0.359 0.090 0.192 0.500
-    ## 34 Experimental <NA>   <NA>    Parda  <NA> fss.media.math  181 3.404  3.333 2.222 5.000 0.549 0.041 0.080 0.778
-    ## 35     Controle <NA>   <NA>     <NA> 6 ano dfs.media.math  155 3.483  3.444 2.111 5.000 0.594 0.048 0.094 0.778
-    ## 36     Controle <NA>   <NA>     <NA> 7 ano dfs.media.math  136 3.280  3.292 1.333 4.667 0.619 0.053 0.105 0.889
-    ## 37     Controle <NA>   <NA>     <NA> 8 ano dfs.media.math   87 3.368  3.333 2.000 5.000 0.557 0.060 0.119 0.889
-    ## 38     Controle <NA>   <NA>     <NA> 9 ano dfs.media.math  118 3.473  3.556 1.444 4.667 0.569 0.052 0.104 0.667
-    ## 39 Experimental <NA>   <NA>     <NA> 6 ano dfs.media.math  175 3.442  3.444 2.000 5.000 0.541 0.041 0.081 0.667
-    ## 40 Experimental <NA>   <NA>     <NA> 7 ano dfs.media.math  197 3.468  3.444 2.111 5.000 0.558 0.040 0.078 0.667
-    ## 41 Experimental <NA>   <NA>     <NA> 8 ano dfs.media.math  175 3.382  3.444 1.444 4.667 0.548 0.041 0.082 0.778
-    ## 42 Experimental <NA>   <NA>     <NA> 9 ano dfs.media.math  164 3.520  3.556 2.222 5.000 0.533 0.042 0.082 0.667
-    ## 43     Controle <NA>   <NA>     <NA> 6 ano fss.media.math  155 3.410  3.375 1.778 5.000 0.581 0.047 0.092 0.778
-    ## 44     Controle <NA>   <NA>     <NA> 7 ano fss.media.math  136 3.155  3.111 1.778 4.625 0.537 0.046 0.091 0.778
-    ## 45     Controle <NA>   <NA>     <NA> 8 ano fss.media.math   87 3.355  3.444 2.111 4.556 0.593 0.064 0.126 0.993
-    ## 46     Controle <NA>   <NA>     <NA> 9 ano fss.media.math  118 3.526  3.556 1.333 5.000 0.681 0.063 0.124 0.833
-    ## 47 Experimental <NA>   <NA>     <NA> 6 ano fss.media.math  175 3.375  3.333 2.000 4.667 0.512 0.039 0.076 0.667
-    ## 48 Experimental <NA>   <NA>     <NA> 7 ano fss.media.math  197 3.430  3.444 1.889 5.000 0.602 0.043 0.085 0.667
-    ## 49 Experimental <NA>   <NA>     <NA> 8 ano fss.media.math  175 3.283  3.333 2.000 4.889 0.600 0.045 0.090 0.778
-    ## 50 Experimental <NA>   <NA>     <NA> 9 ano fss.media.math  164 3.537  3.556 2.111 5.000 0.571 0.045 0.088 0.806
-    ##    symmetry     skewness     kurtosis
-    ## 1       YES -0.050244827 -0.036932398
-    ## 2       YES -0.141299462  0.316794719
-    ## 3       YES -0.108592387  0.163251500
-    ## 4       YES -0.070338801  0.083281195
-    ## 5       YES  0.036757070 -0.118458037
-    ## 6       YES -0.017579860 -0.002911719
-    ## 7       YES -0.109952367 -0.665089289
-    ## 8       YES  0.008474367  0.252463432
-    ## 9       YES -0.137887371  0.335504426
-    ## 10      YES -0.173802579  0.283629137
-    ## 11      YES -0.188047119 -0.146569777
-    ## 12      YES  0.018315130  0.203578397
-    ## 13      YES -0.014155108  0.154319280
-    ## 14      YES -0.040244258  0.076952294
-    ## 15      YES  0.262566852 -0.549850196
-    ## 16      YES -0.281430841 -0.216115073
-    ## 17      YES -0.319470564  0.466302073
-    ## 18      YES  0.089313983 -0.276752693
-    ## 19      YES  0.076511155 -0.083573285
-    ## 20      YES  0.042577802 -0.010269664
-    ## 21      YES  0.125049190 -0.204841268
-    ## 22      YES -0.027345101  0.231291196
-    ## 23      YES -0.322070772  0.407700132
-    ## 24      YES -0.400688956 -1.104420753
-    ## 25      YES -0.062381934 -0.158575888
-    ## 26      YES  0.283685666 -0.637197043
-    ## 27       NO -0.683961680 -0.683292289
-    ## 28      YES -0.027369506  0.019127165
-    ## 29      YES  0.323715720 -0.245811791
-    ## 30      YES  0.090538844 -1.474423440
-    ## 31      YES -0.080305566  0.149575892
-    ## 32      YES -0.220566570 -0.611446049
-    ## 33      YES  0.121817971 -1.351761069
-    ## 34      YES  0.239056465 -0.208653518
-    ## 35      YES  0.175453674 -0.355589509
-    ## 36      YES -0.149182095 -0.112272690
-    ## 37      YES  0.130013359 -0.367062807
-    ## 38      YES -0.280506531  0.336485509
-    ## 39      YES -0.095036764  0.139856935
-    ## 40      YES  0.197327262 -0.156818347
-    ## 41       NO -0.548864513  0.887558295
-    ## 42      YES -0.171735499  0.102324750
-    ## 43      YES  0.001517756  0.126780633
-    ## 44      YES -0.050564660 -0.243180196
-    ## 45      YES -0.026548867 -1.010970401
-    ## 46      YES -0.464715422  0.783276393
-    ## 47      YES  0.075877729 -0.168000488
-    ## 48      YES  0.064056347  0.128298966
-    ## 49      YES  0.058014769 -0.477114124
-    ## 50      YES -0.035037467 -0.237233991
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | variable       |    n |  mean | median |   min |   max |    sd |    se |    ci |   iqr | symmetry | skewness | kurtosis |
 |:-------------|:-----|:-------|:---------|:------|:---------------|-----:|------:|-------:|------:|------:|------:|------:|------:|------:|:---------|---------:|---------:|
@@ -1629,18 +1869,18 @@ df <- plyr::rbind.fill(
 | Controle     |      | Urbana |          |       | fss.media.math |  137 | 3.351 |  3.375 | 1.889 | 5.000 | 0.590 | 0.050 | 0.100 | 0.778 | YES      |    0.043 |   -0.010 |
 | Experimental |      | Rural  |          |       | fss.media.math |  283 | 3.456 |  3.444 | 2.222 | 5.000 | 0.511 | 0.030 | 0.060 | 0.722 | YES      |    0.125 |   -0.205 |
 | Experimental |      | Urbana |          |       | fss.media.math |  191 | 3.361 |  3.333 | 1.111 | 5.000 | 0.662 | 0.048 | 0.094 | 0.778 | YES      |   -0.027 |    0.231 |
-| Controle     |      |        | Branca   |       | dfs.media.math |   49 | 3.471 |  3.444 | 1.333 | 5.000 | 0.694 | 0.099 | 0.199 | 0.889 | YES      |   -0.322 |    0.408 |
-| Controle     |      |        | Indígena |       | dfs.media.math |   10 | 3.567 |  3.500 | 2.778 | 4.000 | 0.407 | 0.129 | 0.291 | 0.611 | YES      |   -0.401 |   -1.104 |
 | Controle     |      |        | Parda    |       | dfs.media.math |  166 | 3.362 |  3.333 | 1.444 | 4.778 | 0.578 | 0.045 | 0.089 | 0.889 | YES      |   -0.062 |   -0.159 |
-| Experimental |      |        | Branca   |       | dfs.media.math |   62 | 3.526 |  3.444 | 2.667 | 4.444 | 0.445 | 0.057 | 0.113 | 0.667 | YES      |    0.284 |   -0.637 |
-| Experimental |      |        | Indígena |       | dfs.media.math |   16 | 3.546 |  3.590 | 2.778 | 4.000 | 0.352 | 0.088 | 0.187 | 0.472 | NO       |   -0.684 |   -0.683 |
+| Controle     |      |        | Indígena |       | dfs.media.math |   10 | 3.567 |  3.500 | 2.778 | 4.000 | 0.407 | 0.129 | 0.291 | 0.611 | YES      |   -0.401 |   -1.104 |
+| Controle     |      |        | Branca   |       | dfs.media.math |   49 | 3.471 |  3.444 | 1.333 | 5.000 | 0.694 | 0.099 | 0.199 | 0.889 | YES      |   -0.322 |    0.408 |
 | Experimental |      |        | Parda    |       | dfs.media.math |  181 | 3.419 |  3.444 | 2.222 | 5.000 | 0.538 | 0.040 | 0.079 | 0.667 | YES      |   -0.027 |    0.019 |
-| Controle     |      |        | Branca   |       | fss.media.math |   49 | 3.509 |  3.556 | 2.444 | 5.000 | 0.595 | 0.085 | 0.171 | 0.667 | YES      |    0.324 |   -0.246 |
-| Controle     |      |        | Indígena |       | fss.media.math |   10 | 3.600 |  3.611 | 2.778 | 4.556 | 0.584 | 0.185 | 0.418 | 0.750 | YES      |    0.091 |   -1.474 |
+| Experimental |      |        | Indígena |       | dfs.media.math |   16 | 3.546 |  3.590 | 2.778 | 4.000 | 0.352 | 0.088 | 0.187 | 0.472 | NO       |   -0.684 |   -0.683 |
+| Experimental |      |        | Branca   |       | dfs.media.math |   62 | 3.526 |  3.444 | 2.667 | 4.444 | 0.445 | 0.057 | 0.113 | 0.667 | YES      |    0.284 |   -0.637 |
 | Controle     |      |        | Parda    |       | fss.media.math |  166 | 3.328 |  3.333 | 1.778 | 5.000 | 0.564 | 0.044 | 0.086 | 0.667 | YES      |   -0.080 |    0.150 |
-| Experimental |      |        | Branca   |       | fss.media.math |   62 | 3.433 |  3.444 | 2.000 | 4.667 | 0.631 | 0.080 | 0.160 | 0.847 | YES      |   -0.221 |   -0.611 |
-| Experimental |      |        | Indígena |       | fss.media.math |   16 | 3.250 |  3.278 | 2.778 | 3.889 | 0.359 | 0.090 | 0.192 | 0.500 | YES      |    0.122 |   -1.352 |
+| Controle     |      |        | Indígena |       | fss.media.math |   10 | 3.600 |  3.611 | 2.778 | 4.556 | 0.584 | 0.185 | 0.418 | 0.750 | YES      |    0.091 |   -1.474 |
+| Controle     |      |        | Branca   |       | fss.media.math |   49 | 3.509 |  3.556 | 2.444 | 5.000 | 0.595 | 0.085 | 0.171 | 0.667 | YES      |    0.324 |   -0.246 |
 | Experimental |      |        | Parda    |       | fss.media.math |  181 | 3.404 |  3.333 | 2.222 | 5.000 | 0.549 | 0.041 | 0.080 | 0.778 | YES      |    0.239 |   -0.209 |
+| Experimental |      |        | Indígena |       | fss.media.math |   16 | 3.250 |  3.278 | 2.778 | 3.889 | 0.359 | 0.090 | 0.192 | 0.500 | YES      |    0.122 |   -1.352 |
+| Experimental |      |        | Branca   |       | fss.media.math |   62 | 3.433 |  3.444 | 2.000 | 4.667 | 0.631 | 0.080 | 0.160 | 0.847 | YES      |   -0.221 |   -0.611 |
 | Controle     |      |        |          | 6 ano | dfs.media.math |  155 | 3.483 |  3.444 | 2.111 | 5.000 | 0.594 | 0.048 | 0.094 | 0.778 | YES      |    0.175 |   -0.356 |
 | Controle     |      |        |          | 7 ano | dfs.media.math |  136 | 3.280 |  3.292 | 1.333 | 4.667 | 0.619 | 0.053 | 0.105 | 0.889 | YES      |   -0.149 |   -0.112 |
 | Controle     |      |        |          | 8 ano | dfs.media.math |   87 | 3.368 |  3.333 | 2.000 | 5.000 | 0.557 | 0.060 | 0.119 | 0.889 | YES      |    0.130 |   -0.367 |
@@ -1662,20 +1902,8 @@ df <- plyr::rbind.fill(
 
 ``` r
 df <- do.call(plyr::rbind.fill, laov)
-(df <- df[!duplicated(df$Effect),])
+df <- df[!duplicated(df$Effect),]
 ```
-
-    ##            Effect DFn  DFd       F        p p<.05      ges DFn' DFd'      F'       p' p<.05'     ges'
-    ## 1  dfs.media.math   1 1204 275.609 6.82e-56     * 1.86e-01    1 1206 260.642 3.12e-53      * 1.78e-01
-    ## 2           grupo   1 1204   0.649 4.21e-01       5.39e-04    1 1206   0.334 5.63e-01        2.77e-04
-    ## 5      grupo:Sexo   1 1203   0.044 8.33e-01       3.68e-05    1 1204   0.103 7.48e-01        8.57e-05
-    ## 6            Sexo   1 1203   4.456 3.50e-02     * 4.00e-03    1 1204   3.813 5.10e-02        3.00e-03
-    ## 9      grupo:Zona   1  838   3.846 5.00e-02       5.00e-03    1  839   4.418 3.60e-02      * 5.00e-03
-    ## 10           Zona   1  838   4.439 3.50e-02     * 5.00e-03    1  839   5.179 2.30e-02      * 6.00e-03
-    ## 11       Cor.Raca   2  477   0.611 5.43e-01       3.00e-03    2  477   0.611 5.43e-01        3.00e-03
-    ## 14 grupo:Cor.Raca   2  477   2.365 9.50e-02       1.00e-02    2  477   2.365 9.50e-02        1.00e-02
-    ## 17    grupo:Serie   3 1198   3.666 1.20e-02     * 9.00e-03    3 1200   3.347 1.90e-02      * 8.00e-03
-    ## 18          Serie   3 1198   6.548 2.16e-04     * 1.60e-02    3 1200   6.672 1.81e-04      * 1.60e-02
 
 |     | Effect         | DFn |  DFd |       F |     p | p\<.05 |   ges | DFn’ | DFd’ |      F’ |    p’ | p\<.05’ |  ges’ |
 |:----|:---------------|----:|-----:|--------:|------:|:-------|------:|-----:|-----:|--------:|------:|:--------|------:|
@@ -1694,7 +1922,8 @@ df <- do.call(plyr::rbind.fill, laov)
 
 ``` r
 df <- do.call(plyr::rbind.fill, lpwc)
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
 ```
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |  df’ | statistic’ |    p’ | p.adj’ | p.adj.signif’ |
@@ -1720,15 +1949,15 @@ df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",
 |              |      | Urbana |          |       | Controle | Experimental |  838 |     0.891 | 0.373 | 0.373 | ns           |  839 |      1.089 | 0.277 |  0.277 | ns            |
 | Controle     |      |        | Branca   |       | pre      | pos          |  956 |    -0.334 | 0.739 | 0.739 | ns           |  956 |     -0.334 | 0.739 |  0.739 | ns            |
 | Controle     |      |        | Indígena |       | pre      | pos          |  956 |    -0.133 | 0.894 | 0.894 | ns           |  956 |     -0.133 | 0.894 |  0.894 | ns            |
-| Controle     |      |        |          |       | Branca   | Indígena     |  477 |    -0.266 | 0.790 | 1.000 | ns           |  477 |     -0.266 | 0.790 |  1.000 | ns            |
-| Controle     |      |        |          |       | Branca   | Parda        |  477 |     1.576 | 0.116 | 0.347 | ns           |  477 |      1.576 | 0.116 |  0.347 | ns            |
-| Controle     |      |        |          |       | Indígena | Parda        |  477 |     1.070 | 0.285 | 0.856 | ns           |  477 |      1.070 | 0.285 |  0.856 | ns            |
+| Controle     |      |        |          |       | Indígena | Branca       |  477 |     0.266 | 0.790 | 1.000 | ns           |  477 |      0.266 | 0.790 |  1.000 | ns            |
+| Controle     |      |        |          |       | Parda    | Branca       |  477 |    -1.576 | 0.116 | 0.347 | ns           |  477 |     -1.576 | 0.116 |  0.347 | ns            |
+| Controle     |      |        |          |       | Parda    | Indígena     |  477 |    -1.070 | 0.285 | 0.856 | ns           |  477 |     -1.070 | 0.285 |  0.856 | ns            |
 | Controle     |      |        | Parda    |       | pre      | pos          |  956 |     0.546 | 0.585 | 0.585 | ns           |  956 |      0.546 | 0.585 |  0.585 | ns            |
 | Experimental |      |        | Branca   |       | pre      | pos          |  956 |     0.919 | 0.358 | 0.358 | ns           |  956 |      0.919 | 0.358 |  0.358 | ns            |
 | Experimental |      |        | Indígena |       | pre      | pos          |  956 |     1.498 | 0.134 | 0.134 | ns           |  956 |      1.498 | 0.134 |  0.134 | ns            |
-| Experimental |      |        |          |       | Branca   | Indígena     |  477 |     1.367 | 0.172 | 0.517 | ns           |  477 |      1.367 | 0.172 |  0.517 | ns            |
-| Experimental |      |        |          |       | Branca   | Parda        |  477 |    -0.283 | 0.777 | 1.000 | ns           |  477 |     -0.283 | 0.777 |  1.000 | ns            |
-| Experimental |      |        |          |       | Indígena | Parda        |  477 |    -1.628 | 0.104 | 0.312 | ns           |  477 |     -1.628 | 0.104 |  0.312 | ns            |
+| Experimental |      |        |          |       | Indígena | Branca       |  477 |    -1.367 | 0.172 | 0.517 | ns           |  477 |     -1.367 | 0.172 |  0.517 | ns            |
+| Experimental |      |        |          |       | Parda    | Branca       |  477 |     0.283 | 0.777 | 1.000 | ns           |  477 |      0.283 | 0.777 |  1.000 | ns            |
+| Experimental |      |        |          |       | Parda    | Indígena     |  477 |     1.628 | 0.104 | 0.312 | ns           |  477 |      1.628 | 0.104 |  0.312 | ns            |
 | Experimental |      |        | Parda    |       | pre      | pos          |  956 |     0.250 | 0.803 | 0.803 | ns           |  956 |      0.250 | 0.803 |  0.803 | ns            |
 |              |      |        | Branca   |       | Controle | Experimental |  477 |     1.048 | 0.295 | 0.295 | ns           |  477 |      1.048 | 0.295 |  0.295 | ns            |
 |              |      |        | Indígena |       | Controle | Experimental |  477 |     1.677 | 0.094 | 0.094 | ns           |  477 |      1.677 | 0.094 |  0.094 | ns            |
@@ -1763,32 +1992,33 @@ df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",
 ``` r
 df <- do.call(plyr::rbind.fill, lemms)
 df[["N-N'"]] <- df[["N"]] - df[["N'"]]
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% names(lfatores)])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% names(lfatores)])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | N-N’ |
-|:-------------|:-----|:-------|:---------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|-----:|
-| Controle     |      |        |          |       | 496 |   3.405 |    0.027 |     3.358 |      0.027 |   3.371 |    0.024 | 496 |    3.405 |     0.027 |      3.358 |       0.027 |    3.371 |     0.024 |    0 |
-| Experimental |      |        |          |       | 711 |   3.452 |    0.021 |     3.405 |      0.022 |   3.396 |    0.020 | 713 |    3.453 |     0.020 |      3.398 |       0.022 |    3.389 |     0.020 |   -2 |
-| Controle     | F    |        |          |       | 247 |   3.421 |    0.035 |     3.329 |      0.038 |   3.334 |    0.034 | 247 |    3.421 |     0.035 |      3.329 |       0.038 |    3.334 |     0.035 |    0 |
-| Controle     | M    |        |          |       | 249 |   3.388 |    0.040 |     3.387 |      0.040 |   3.407 |    0.034 | 249 |    3.388 |     0.040 |      3.387 |       0.040 |    3.407 |     0.034 |    0 |
-| Experimental | F    |        |          |       | 370 |   3.417 |    0.027 |     3.357 |      0.032 |   3.364 |    0.028 | 370 |    3.417 |     0.027 |      3.357 |       0.032 |    3.364 |     0.028 |    0 |
-| Experimental | M    |        |          |       | 342 |   3.491 |    0.031 |     3.450 |      0.030 |   3.424 |    0.029 | 343 |    3.492 |     0.031 |      3.443 |       0.031 |    3.417 |     0.029 |   -1 |
-| Controle     |      | Rural  |          |       | 232 |   3.489 |    0.037 |     3.397 |      0.040 |   3.379 |    0.035 | 232 |    3.489 |     0.037 |      3.397 |       0.040 |    3.379 |     0.035 |    0 |
-| Controle     |      | Urbana |          |       | 137 |   3.377 |    0.056 |     3.351 |      0.050 |   3.385 |    0.045 | 137 |    3.377 |     0.056 |      3.351 |       0.050 |    3.385 |     0.045 |    0 |
-| Experimental |      | Rural  |          |       | 283 |   3.412 |    0.033 |     3.456 |      0.030 |   3.474 |    0.031 | 283 |    3.412 |     0.033 |      3.456 |       0.030 |    3.474 |     0.032 |    0 |
-| Experimental |      | Urbana |          |       | 191 |   3.514 |    0.039 |     3.361 |      0.048 |   3.332 |    0.038 | 192 |    3.514 |     0.039 |      3.349 |       0.049 |    3.320 |     0.038 |   -1 |
-| Controle     |      |        | Branca   |       |  49 |   3.471 |    0.099 |     3.509 |      0.085 |   3.487 |    0.072 |  49 |    3.471 |     0.099 |      3.509 |       0.085 |    3.487 |     0.072 |    0 |
-| Controle     |      |        | Indígena |       |  10 |   3.567 |    0.129 |     3.600 |      0.185 |   3.534 |    0.159 |  10 |    3.567 |     0.129 |      3.600 |       0.185 |    3.534 |     0.159 |    0 |
-| Controle     |      |        | Parda    |       | 166 |   3.362 |    0.045 |     3.328 |      0.044 |   3.358 |    0.039 | 166 |    3.362 |     0.045 |      3.328 |       0.044 |    3.358 |     0.039 |    0 |
-| Experimental |      |        | Branca   |       |  62 |   3.526 |    0.057 |     3.433 |      0.080 |   3.386 |    0.064 |  62 |    3.526 |     0.057 |      3.433 |       0.080 |    3.386 |     0.064 |    0 |
-| Experimental |      |        | Indígena |       |  16 |   3.546 |    0.088 |     3.250 |      0.090 |   3.193 |    0.126 |  16 |    3.546 |     0.088 |      3.250 |       0.090 |    3.193 |     0.126 |    0 |
-| Experimental |      |        | Parda    |       | 181 |   3.419 |    0.040 |     3.404 |      0.041 |   3.407 |    0.037 | 181 |    3.419 |     0.040 |      3.404 |       0.041 |    3.407 |     0.037 |    0 |
-| Controle     |      |        |          | 6 ano | 155 |   3.483 |    0.048 |     3.410 |      0.047 |   3.389 |    0.043 | 155 |    3.483 |     0.048 |      3.410 |       0.047 |    3.389 |     0.043 |    0 |
-| Controle     |      |        |          | 7 ano | 136 |   3.280 |    0.053 |     3.155 |      0.046 |   3.222 |    0.046 | 136 |    3.280 |     0.053 |      3.155 |       0.046 |    3.221 |     0.046 |    0 |
-| Controle     |      |        |          | 8 ano |  87 |   3.368 |    0.060 |     3.355 |      0.064 |   3.383 |    0.057 |  87 |    3.368 |     0.060 |      3.355 |       0.064 |    3.383 |     0.058 |    0 |
-| Controle     |      |        |          | 9 ano | 118 |   3.473 |    0.052 |     3.526 |      0.063 |   3.508 |    0.049 | 118 |    3.473 |     0.052 |      3.526 |       0.063 |    3.509 |     0.050 |    0 |
-| Experimental |      |        |          | 6 ano | 175 |   3.442 |    0.041 |     3.375 |      0.039 |   3.371 |    0.040 | 176 |    3.446 |     0.041 |      3.362 |       0.041 |    3.357 |     0.041 |   -1 |
-| Experimental |      |        |          | 7 ano | 197 |   3.468 |    0.040 |     3.430 |      0.043 |   3.414 |    0.038 | 198 |    3.468 |     0.040 |      3.417 |       0.044 |    3.402 |     0.038 |   -1 |
-| Experimental |      |        |          | 8 ano | 175 |   3.382 |    0.041 |     3.283 |      0.045 |   3.305 |    0.040 | 175 |    3.382 |     0.041 |      3.283 |       0.045 |    3.305 |     0.041 |    0 |
-| Experimental |      |        |          | 9 ano | 164 |   3.520 |    0.042 |     3.537 |      0.045 |   3.499 |    0.041 | 164 |    3.520 |     0.042 |      3.537 |       0.045 |    3.500 |     0.042 |    0 |
+| grupo        | Sexo | Zona   | Cor.Raca | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | conf.low’ | conf.high’ | N-N’ |
+|:-------------|:-----|:-------|:---------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|----------:|-----------:|-----:|
+| Controle     |      |        |          |       | 496 |   3.405 |    0.027 |     3.358 |      0.027 |   3.371 |    0.024 |    3.324 |     3.418 | 496 |    3.405 |     0.027 |      3.358 |       0.027 |    3.371 |     0.024 |     3.323 |      3.419 |    0 |
+| Experimental |      |        |          |       | 711 |   3.452 |    0.021 |     3.405 |      0.022 |   3.396 |    0.020 |    3.357 |     3.435 | 713 |    3.453 |     0.020 |      3.398 |       0.022 |    3.389 |     0.020 |     3.349 |      3.429 |   -2 |
+| Controle     | F    |        |          |       | 247 |   3.421 |    0.035 |     3.329 |      0.038 |   3.334 |    0.034 |    3.267 |     3.401 | 247 |    3.421 |     0.035 |      3.329 |       0.038 |    3.334 |     0.035 |     3.266 |      3.402 |    0 |
+| Controle     | M    |        |          |       | 249 |   3.388 |    0.040 |     3.387 |      0.040 |   3.407 |    0.034 |    3.340 |     3.474 | 249 |    3.388 |     0.040 |      3.387 |       0.040 |    3.407 |     0.034 |     3.340 |      3.475 |    0 |
+| Experimental | F    |        |          |       | 370 |   3.417 |    0.027 |     3.357 |      0.032 |   3.364 |    0.028 |    3.309 |     3.419 | 370 |    3.417 |     0.027 |      3.357 |       0.032 |    3.364 |     0.028 |     3.309 |      3.420 |    0 |
+| Experimental | M    |        |          |       | 342 |   3.491 |    0.031 |     3.450 |      0.030 |   3.424 |    0.029 |    3.367 |     3.481 | 343 |    3.492 |     0.031 |      3.443 |       0.031 |    3.417 |     0.029 |     3.359 |      3.474 |   -1 |
+| Controle     |      | Rural  |          |       | 232 |   3.489 |    0.037 |     3.397 |      0.040 |   3.379 |    0.035 |    3.311 |     3.447 | 232 |    3.489 |     0.037 |      3.397 |       0.040 |    3.379 |     0.035 |     3.310 |      3.448 |    0 |
+| Controle     |      | Urbana |          |       | 137 |   3.377 |    0.056 |     3.351 |      0.050 |   3.385 |    0.045 |    3.296 |     3.473 | 137 |    3.377 |     0.056 |      3.351 |       0.050 |    3.385 |     0.045 |     3.296 |      3.474 |    0 |
+| Experimental |      | Rural  |          |       | 283 |   3.412 |    0.033 |     3.456 |      0.030 |   3.474 |    0.031 |    3.413 |     3.536 | 283 |    3.412 |     0.033 |      3.456 |       0.030 |    3.474 |     0.032 |     3.412 |      3.536 |    0 |
+| Experimental |      | Urbana |          |       | 191 |   3.514 |    0.039 |     3.361 |      0.048 |   3.332 |    0.038 |    3.257 |     3.407 | 192 |    3.514 |     0.039 |      3.349 |       0.049 |    3.320 |     0.038 |     3.244 |      3.395 |   -1 |
+| Controle     |      |        | Branca   |       |  49 |   3.471 |    0.099 |     3.509 |      0.085 |   3.487 |    0.072 |    3.346 |     3.629 |  49 |    3.471 |     0.099 |      3.509 |       0.085 |    3.487 |     0.072 |     3.346 |      3.629 |    0 |
+| Controle     |      |        | Indígena |       |  10 |   3.567 |    0.129 |     3.600 |      0.185 |   3.534 |    0.159 |    3.221 |     3.847 |  10 |    3.567 |     0.129 |      3.600 |       0.185 |    3.534 |     0.159 |     3.221 |      3.847 |    0 |
+| Controle     |      |        | Parda    |       | 166 |   3.362 |    0.045 |     3.328 |      0.044 |   3.358 |    0.039 |    3.281 |     3.435 | 166 |    3.362 |     0.045 |      3.328 |       0.044 |    3.358 |     0.039 |     3.281 |      3.435 |    0 |
+| Experimental |      |        | Branca   |       |  62 |   3.526 |    0.057 |     3.433 |      0.080 |   3.386 |    0.064 |    3.260 |     3.512 |  62 |    3.526 |     0.057 |      3.433 |       0.080 |    3.386 |     0.064 |     3.260 |      3.512 |    0 |
+| Experimental |      |        | Indígena |       |  16 |   3.546 |    0.088 |     3.250 |      0.090 |   3.193 |    0.126 |    2.946 |     3.441 |  16 |    3.546 |     0.088 |      3.250 |       0.090 |    3.193 |     0.126 |     2.946 |      3.441 |    0 |
+| Experimental |      |        | Parda    |       | 181 |   3.419 |    0.040 |     3.404 |      0.041 |   3.407 |    0.037 |    3.334 |     3.481 | 181 |    3.419 |     0.040 |      3.404 |       0.041 |    3.407 |     0.037 |     3.334 |      3.481 |    0 |
+| Controle     |      |        |          | 6 ano | 155 |   3.483 |    0.048 |     3.410 |      0.047 |   3.389 |    0.043 |    3.305 |     3.472 | 155 |    3.483 |     0.048 |      3.410 |       0.047 |    3.389 |     0.043 |     3.304 |      3.474 |    0 |
+| Controle     |      |        |          | 7 ano | 136 |   3.280 |    0.053 |     3.155 |      0.046 |   3.222 |    0.046 |    3.132 |     3.311 | 136 |    3.280 |     0.053 |      3.155 |       0.046 |    3.221 |     0.046 |     3.130 |      3.312 |    0 |
+| Controle     |      |        |          | 8 ano |  87 |   3.368 |    0.060 |     3.355 |      0.064 |   3.383 |    0.057 |    3.272 |     3.495 |  87 |    3.368 |     0.060 |      3.355 |       0.064 |    3.383 |     0.058 |     3.270 |      3.497 |    0 |
+| Controle     |      |        |          | 9 ano | 118 |   3.473 |    0.052 |     3.526 |      0.063 |   3.508 |    0.049 |    3.413 |     3.604 | 118 |    3.473 |     0.052 |      3.526 |       0.063 |    3.509 |     0.050 |     3.412 |      3.606 |    0 |
+| Experimental |      |        |          | 6 ano | 175 |   3.442 |    0.041 |     3.375 |      0.039 |   3.371 |    0.040 |    3.293 |     3.450 | 176 |    3.446 |     0.041 |      3.362 |       0.041 |    3.357 |     0.041 |     3.277 |      3.437 |   -1 |
+| Experimental |      |        |          | 7 ano | 197 |   3.468 |    0.040 |     3.430 |      0.043 |   3.414 |    0.038 |    3.340 |     3.488 | 198 |    3.468 |     0.040 |      3.417 |       0.044 |    3.402 |     0.038 |     3.327 |      3.477 |   -1 |
+| Experimental |      |        |          | 8 ano | 175 |   3.382 |    0.041 |     3.283 |      0.045 |   3.305 |    0.040 |    3.227 |     3.384 | 175 |    3.382 |     0.041 |      3.283 |       0.045 |    3.305 |     0.041 |     3.225 |      3.385 |    0 |
+| Experimental |      |        |          | 9 ano | 164 |   3.520 |    0.042 |     3.537 |      0.045 |   3.499 |    0.041 |    3.418 |     3.580 | 164 |    3.520 |     0.042 |      3.537 |       0.045 |    3.500 |     0.042 |     3.417 |      3.583 |    0 |

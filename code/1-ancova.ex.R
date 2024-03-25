@@ -11,6 +11,8 @@ generate_md <- function(
     info, params, factors = c("Sexo","Zona","Cor.Raca","Serie"),
     other.factors = c(), dat.filter = "", suffix = "", fig.size = list()) {
 
+
+
   tfile = "templates/ancova.Rmd"
   params = c(params, list(
     grupo = info$grupo,
@@ -18,8 +20,12 @@ generate_md <- function(
     label.en = paste0(params$ylab),
     label.pt = paste0(params$ylab),
     exp.color = info$color,
-    dat.filter = dat.filter
+    dat.filter = dat.filter,
+    ymin = 0, ymax =0
   ))
+
+  if (is.null(params$ymin.ci)) params$ymin.ci = 0
+  if (is.null(params$ymax.ci)) params$ymax.ci = 0
 
   if (is.list(other.factors) && !is.null(other.factors[[params$dv]]))
     params$fatores = c(params$fatores, other.factors[[params$dv]])
@@ -94,22 +100,22 @@ generate_wg <- function(
     other.factors = c(), dat.filter = "", suffix = "", fig.size = list()) {
 
   dvs.flow = list(
-    list(ylab="flow (debate)",
+    list(ylab="flow (debat)",
          dv.pre = "dfs.media.debat", dv.pos = "fss.media.debat", dv = "flow.debat"),
-    list(ylab="flow (prod. textual)",
+    list(ylab="flow (textual prod)",
          dv.pre = "dfs.media.text", dv.pos = "fss.media.text", dv = "flow.text"),
-    list(ylab="flow (ativ. leitura)",
+    list(ylab="flow (reading)",
          dv.pre = "dfs.media.read", dv.pos = "fss.media.read", dv = "flow.read"),
-    list(ylab="flow (prob. matemática)",
+    list(ylab="flow (math)",
          dv.pre = "dfs.media.math", dv.pos = "fss.media.math", dv = "flow.math")
   )
 
 
   dvs = c(list(
-    list(ylab = "Vocabulario",dv.pre = "vocab.pre", dv.pos = "vocab.pos", dv = "vocab"),
-    list(ylab = "Vocabulario Ensinado",dv.pre = "vocab.teach.pre", dv.pos = "vocab.teach.pos", dv = "vocab.teach"),
-    list(ylab = "Vocabulario Não Ensinado",dv.pre = "vocab.non.teach.pre", dv.pos = "vocab.non.teach.pos", dv = "vocab.non.teach"),
-    list(ylab = "TDE - Escrita",dv.pre = "score.tde.pre", dv.pos = "score.tde.pos", dv = "score.tde")
+    list(ylab = "Vocabulary",dv.pre = "vocab.pre", dv.pos = "vocab.pos", dv = "vocab"),
+    list(ylab = "Vocabulary taught",dv.pre = "vocab.teach.pre", dv.pos = "vocab.teach.pos", dv = "vocab.teach"),
+    list(ylab = "Vocabulary not taught",dv.pre = "vocab.non.teach.pre", dv.pos = "vocab.non.teach.pos", dv = "vocab.non.teach"),
+    list(ylab = "Writing (TDE)",dv.pre = "score.tde.pre", dv.pos = "score.tde.pos", dv = "score.tde")
   ), dvs.flow)
 
   for (dv in dvs) {
@@ -127,27 +133,27 @@ generate_stari <- function(
     other.factors = c(), dat.filter = "", suffix = "", fig.size = list()) {
 
   dvs.flow = list(
-    list(ylab="flow (debate)",
+    list(ylab="flow (debat)",
          dv.pre = "dfs.media.debat", dv.pos = "fss.media.debat", dv = "flow.debat"),
-    list(ylab="flow (prod. textual)",
+    list(ylab="flow (textual prod)",
          dv.pre = "dfs.media.text", dv.pos = "fss.media.text", dv = "flow.text"),
-    list(ylab="flow (ativ. leitura)",
+    list(ylab="flow (reading)",
          dv.pre = "dfs.media.read", dv.pos = "fss.media.read", dv = "flow.read"),
-    list(ylab="flow (prob. matemática)",
+    list(ylab="flow (math)",
          dv.pre = "dfs.media.math", dv.pos = "fss.media.math", dv = "flow.math")
   )
 
   dvs = c(list(
-    list(ylab = "Vocabulario",dv.pre = "vocab.pre", dv.pos = "vocab.pos", dv = "vocab"),
-    list(ylab = "Vocabulario Ensinado",dv.pre = "vocab.teach.pre", dv.pos = "vocab.teach.pos", dv = "vocab.teach"),
-    list(ylab = "Vocabulario Não Ensinado",dv.pre = "vocab.non.teach.pre", dv.pos = "vocab.non.teach.pos", dv = "vocab.non.teach"),
-    list(ylab = "TDE - Escrita",dv.pre = "score.tde.pre", dv.pos = "score.tde.pos", dv = "score.tde"),
+    list(ylab = "Vocabulary",dv.pre = "vocab.pre", dv.pos = "vocab.pos", dv = "vocab"),
+    list(ylab = "Vocabulary taught",dv.pre = "vocab.teach.pre", dv.pos = "vocab.teach.pos", dv = "vocab.teach"),
+    list(ylab = "Vocabulary not taught",dv.pre = "vocab.non.teach.pre", dv.pos = "vocab.non.teach.pos", dv = "vocab.non.teach"),
+    list(ylab = "Writing (TDE)",dv.pre = "score.tde.pre", dv.pos = "score.tde.pos", dv = "score.tde"),
 
-    list(ylab = "Palavras Lidas (1 Min)",
+    list(ylab = "Reading Words (1 Min)",
          dv.pre = "TFL.lidas.per.min.pre", dv.pos = "TFL.lidas.per.min.pos", dv = "TFL.lidas.per.min"),
-    list(ylab = "Palavras Corretas (1 Min)",
+    list(ylab = "Reading Correct Words (1 Min)",
          dv.pre = "TFL.corretas.per.min.pre", dv.pos = "TFL.corretas.per.min.pos", dv = "TFL.corretas.per.min"),
-    list(ylab = "Fluencia Leitora (Compreensão)",
+    list(ylab = "Reading Comprehension",
          dv.pre = "leitura.compreensao.pre", dv.pos = "leitura.compreensao.pos", dv = "leitura.compreensao")
     ), dvs.flow)
 
@@ -190,8 +196,15 @@ data <- read_excel("data/data.xlsx")
 
 generate_wg(other.factors = other.factors, fig.size = fig.size)
 
+## ... generate stari
+
+generate_stari(other.factors = other.factors, fig.size = fig.size)
+
+
+
+
 for (filter.val in unique(data$Serie)[!is.na(unique(data$Serie))]){
-  #if (filter.val %in% c("anos iniciais")) next
+  if (filter.val %in% c("8 ano", "6 ano","9 ano","7 ano")) next
   suffix = paste0('-Serie-',filter.val)
   dat.filter = paste0('gdat <- gdat[which(gdat$Serie == "',filter.val,'"),]')
   generate_wg(dat.filter = dat.filter, suffix = suffix,
@@ -203,6 +216,7 @@ for (filter.val in unique(data$Serie)[!is.na(unique(data$Serie))]){
 for(dv in names(other.factors)) {
   f = other.factors[[dv]]
   for (val in unique(data[[f]][which(!is.na(data[[paste0(dv,".pos")]]))])) {
+    # 4th quintile 1st quintile 3th quintile 2nd quinti
     if (is.na(val)) next
     suffix = paste0('-',val)
     dat.filter = paste0('gdat <- gdat[which(gdat[["',f,'"]] == "',val,'"),]')
@@ -211,9 +225,6 @@ for(dv in names(other.factors)) {
 }
 
 
-## ... generate stari
-
-generate_stari(other.factors = other.factors, fig.size = fig.size)
 
 
 for (filter.val in unique(data$Serie)[!is.na(unique(data$Serie))]){

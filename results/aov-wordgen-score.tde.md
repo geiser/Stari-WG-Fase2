@@ -1,7 +1,8 @@
-ANCOVA in TDE - Escrita (TDE - Escrita)
+ANCOVA in Writing (TDE) (Writing (TDE))
 ================
 Geiser C. Challco <geiser@alumni.usp.br>
 
+- [Setting Initial Variables](#setting-initial-variables)
 - [Descriptive Statistics of Initial
   Data](#descriptive-statistics-of-initial-data)
 - [ANCOVA and Pairwise for one factor:
@@ -67,9 +68,133 @@ Geiser C. Challco <geiser@alumni.usp.br>
 **NOTE**:
 
 - Teste ANCOVA para determinar se houve diferenças significativas no
-  TDE - Escrita (medido usando pre- e pos-testes).
+  Writing (TDE) (medido usando pre- e pos-testes).
 - ANCOVA test to determine whether there were significant differences in
-  TDE - Escrita (measured using pre- and post-tests).
+  Writing (TDE) (measured using pre- and post-tests).
+
+# Setting Initial Variables
+
+``` r
+dv = "score.tde"
+dv.pos = "score.tde.pos"
+dv.pre = "score.tde.pre"
+
+fatores2 <- c("Sexo","Zona","Cor.Raca","Serie","score.tde.quintile")
+lfatores2 <- as.list(fatores2)
+names(lfatores2) <- fatores2
+
+fatores1 <- c("grupo", fatores2)
+lfatores1 <- as.list(fatores1)
+names(lfatores1) <- fatores1
+
+lfatores <- c(lfatores1)
+
+color <- list()
+color[["prepost"]] = c("#ffee65","#f28e2B")
+color[["grupo"]] = c("#bcbd22","#008000")
+color[["Sexo"]] = c("#FF007F","#4D4DFF")
+color[["Zona"]] = c("#AA00FF","#00CCCC")
+color[["Cor.Raca"]] = c(
+  "Parda"="#b97100","Indígena"="#9F262F",
+  "Branca"="#87c498", "Preta"="#848283","Amarela"="#D6B91C"
+)
+
+level <- list()
+level[["grupo"]] = c("Controle","Experimental")
+level[["Sexo"]] = c("F","M")
+level[["Zona"]] = c("Rural","Urbana")
+level[["Cor.Raca"]] = c("Parda","Indígena","Branca", "Preta","Amarela")
+level[["Serie"]] = c("6 ano","7 ano","8 ano","9 ano")
+
+# ..
+
+ymin <- 0
+ymax <- 0
+
+ymin.ci <- 0
+ymax.ci <- 0
+
+
+color[["grupo:Sexo"]] = c(
+  "Controle:F"="#ff99cb", "Controle:M"="#b7b7ff",
+  "Experimental:F"="#FF007F", "Experimental:M"="#4D4DFF",
+  "Controle.F"="#ff99cb", "Controle.M"="#b7b7ff",
+  "Experimental.F"="#FF007F", "Experimental.M"="#4D4DFF"
+)
+color[["grupo:Zona"]] = c(
+  "Controle:Rural"="#b2efef","Controle:Urbana"="#e5b2ff",
+  "Experimental:Rural"="#00CCCC", "Experimental:Urbana"="#AA00FF",
+  "Controle.Rural"="#b2efef","Controle.Urbana"="#e5b2ff",
+  "Experimental.Rural"="#00CCCC", "Experimental.Urbana"="#AA00FF"
+)
+color[["grupo:Cor.Raca"]] = c(
+    "Controle:Parda"="#e3c699", "Experimental:Parda"="#b97100",
+    "Controle:Indígena"="#e2bdc0", "Experimental:Indígena"="#9F262F",
+    "Controle:Branca"="#c0e8cb", "Experimental:Branca"="#87c498",
+    "Controle:Preta"="#dad9d9", "Experimental:Preta"="#848283",
+    "Controle:Amarela"="#eee3a4", "Experimental:Amarela"="#D6B91C",
+    
+    "Controle.Parda"="#e3c699", "Experimental.Parda"="#b97100",
+    "Controle.Indígena"="#e2bdc0", "Experimental.Indígena"="#9F262F",
+    "Controle.Branca"="#c0e8cb", "Experimental.Branca"="#87c498",
+    "Controle.Preta"="#dad9d9", "Experimental.Preta"="#848283",
+    "Controle.Amarela"="#eee3a4", "Experimental.Amarela"="#D6B91C"
+)
+
+
+for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
+               "TFL.lidas.per.min","TFL.corretas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min",
+               "leitura.compreensao")) {
+  color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
+  level[[paste0(coln,".quintile")]] = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile")
+  color[[paste0("grupo:",coln,".quintile")]] = c(
+    "Experimental.1st quintile"="#BF0040", "Controle.1st quintile"="#d8668c",
+    "Experimental.2nd quintile"="#FF0000", "Controle.2nd quintile"="#ff7f7f",
+    "Experimental.3rd quintile"="#8fce00", "Controle.3rd quintile"="#ddf0b2",
+    "Experimental.4th quintile"="#0000FF", "Controle.4th quintile"="#b2b2ff",
+    "Experimental.5th quintile"="#4000BF", "Controle.5th quintile"="#b299e5",
+    
+    "Experimental:1st quintile"="#BF0040", "Controle:1st quintile"="#d8668c",
+    "Experimental:2nd quintile"="#FF0000", "Controle:2nd quintile"="#ff7f7f",
+    "Experimental:3rd quintile"="#8fce00", "Controle:3rd quintile"="#ddf0b2",
+    "Experimental:4th quintile"="#0000FF", "Controle:4th quintile"="#b2b2ff",
+    "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
+}
+
+
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
+
+
+
+dat <- gdat
+dat$grupo <- factor(dat[["WG.Grupo"]], level[["grupo"]])
+for (coln in c(names(lfatores))) {
+  dat[[coln]] <- factor(dat[[coln]], level[[coln]][level[[coln]] %in% unique(dat[[coln]])])
+}
+dat <- dat[which(!is.na(dat[[dv.pre]]) & !is.na(dat[[dv.pos]])),]
+dat <- dat[,c("id",names(lfatores),dv.pre,dv.pos)]
+
+dat.long <- rbind(dat, dat)
+dat.long$time <- c(rep("pre", nrow(dat)), rep("pos", nrow(dat)))
+dat.long$time <- factor(dat.long$time, c("pre","pos"))
+dat.long[[dv]] <- c(dat[[dv.pre]], dat[[dv.pos]])
+
+
+for (f in c("grupo", names(lfatores))) {
+  if (is.null(color[[f]]) && length(unique(dat[[f]])) > 0) 
+      color[[f]] <- distinctColorPalette(length(unique(dat[[f]])))
+}
+for (f in c(fatores2)) {
+  if (is.null(color[[paste0("grupo:",f)]]) && length(unique(dat[[f]])) > 0)
+    color[[paste0("grupo:",f)]] <- distinctColorPalette(length(unique(dat[["grupo"]]))*length(unique(dat[[f]])))
+}
+
+ldat <- list()
+laov <- list()
+lpwc <- list()
+lemms <- list()
+```
 
 # Descriptive Statistics of Initial Data
 
@@ -101,117 +226,9 @@ df <- plyr::rbind.fill(
     ## ! NaNs produced
 
 ``` r
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+            colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
-
-    ##           grupo Sexo   Zona Cor.Raca Serie score.tde.quintile      variable    n   mean median min max     sd
-    ## 1      Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre  485 37.631   44.0   0  75 19.176
-    ## 2  Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre  636 36.748   39.0   0  73 16.891
-    ## 3          <NA> <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre 1121 37.130   41.0   0  75 17.912
-    ## 4      Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos  485 33.816   36.0   0  73 20.988
-    ## 5  Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos  636 35.376   38.0   0  74 18.900
-    ## 6          <NA> <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos 1121 34.701   37.0   0  74 19.836
-    ## 7      Controle    F   <NA>     <NA>  <NA>               <NA> score.tde.pre  247 40.652   46.0   0  72 17.259
-    ## 8      Controle    M   <NA>     <NA>  <NA>               <NA> score.tde.pre  238 34.496   42.0   0  75 20.552
-    ## 9  Experimental    F   <NA>     <NA>  <NA>               <NA> score.tde.pre  319 39.408   43.0   0  73 16.802
-    ## 10 Experimental    M   <NA>     <NA>  <NA>               <NA> score.tde.pre  317 34.073   36.0   0  71 16.580
-    ## 11     Controle    F   <NA>     <NA>  <NA>               <NA> score.tde.pos  247 36.567   42.0   0  72 19.883
-    ## 12     Controle    M   <NA>     <NA>  <NA>               <NA> score.tde.pos  238 30.962   28.5   0  73 21.752
-    ## 13 Experimental    F   <NA>     <NA>  <NA>               <NA> score.tde.pos  319 38.138   42.0   0  73 19.397
-    ## 14 Experimental    M   <NA>     <NA>  <NA>               <NA> score.tde.pos  317 32.596   34.0   0  74 17.992
-    ## 15     Controle <NA>  Rural     <NA>  <NA>               <NA> score.tde.pre  243 36.181   43.0   0  69 19.626
-    ## 16     Controle <NA> Urbana     <NA>  <NA>               <NA> score.tde.pre  109 39.468   43.0   1  75 18.034
-    ## 17     Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre  133 38.774   45.0   0  73 19.183
-    ## 18 Experimental <NA>  Rural     <NA>  <NA>               <NA> score.tde.pre  284 34.592   35.5   0  73 17.467
-    ## 19 Experimental <NA> Urbana     <NA>  <NA>               <NA> score.tde.pre  167 37.850   42.0   0  71 16.633
-    ## 20 Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre  185 39.065   42.0   0  69 15.877
-    ## 21     Controle <NA>  Rural     <NA>  <NA>               <NA> score.tde.pos  243 34.243   39.0   0  72 21.515
-    ## 22     Controle <NA> Urbana     <NA>  <NA>               <NA> score.tde.pos  109 29.835   26.0   0  73 20.374
-    ## 23     Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos  133 36.301   39.0   0  73 20.179
-    ## 24 Experimental <NA>  Rural     <NA>  <NA>               <NA> score.tde.pos  284 33.627   33.0   0  72 19.232
-    ## 25 Experimental <NA> Urbana     <NA>  <NA>               <NA> score.tde.pos  167 34.108   38.0   0  74 18.899
-    ## 26 Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos  185 39.205   42.0   0  73 17.909
-    ## 27     Controle <NA>   <NA>   Branca  <NA>               <NA> score.tde.pre   50 41.460   46.0   2  67 16.942
-    ## 28     Controle <NA>   <NA> Indígena  <NA>               <NA> score.tde.pre   11 42.000   46.0   4  65 17.297
-    ## 29     Controle <NA>   <NA>    Parda  <NA>               <NA> score.tde.pre  162 36.741   43.0   0  66 18.900
-    ## 30     Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre  262 37.267   43.0   0  75 19.798
-    ## 31 Experimental <NA>   <NA>  Amarela  <NA>               <NA> score.tde.pre    1 23.000   23.0  23  23     NA
-    ## 32 Experimental <NA>   <NA>   Branca  <NA>               <NA> score.tde.pre   61 34.623   36.0   0  73 19.728
-    ## 33 Experimental <NA>   <NA> Indígena  <NA>               <NA> score.tde.pre   15 27.067   26.0   6  54 17.065
-    ## 34 Experimental <NA>   <NA>    Parda  <NA>               <NA> score.tde.pre  190 34.253   35.0   0  68 17.537
-    ## 35 Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre  369 38.816   42.0   0  71 15.723
-    ## 36     Controle <NA>   <NA>   Branca  <NA>               <NA> score.tde.pos   50 34.300   38.0   0  72 20.518
-    ## 37     Controle <NA>   <NA> Indígena  <NA>               <NA> score.tde.pos   11 45.636   52.0   4  63 19.931
-    ## 38     Controle <NA>   <NA>    Parda  <NA>               <NA> score.tde.pos  162 32.463   35.0   0  68 20.798
-    ## 39     Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos  262 34.065   34.0   0  73 21.180
-    ## 40 Experimental <NA>   <NA>  Amarela  <NA>               <NA> score.tde.pos    1 23.000   23.0  23  23     NA
-    ## 41 Experimental <NA>   <NA>   Branca  <NA>               <NA> score.tde.pos   61 33.311   34.0   0  72 21.189
-    ## 42 Experimental <NA>   <NA> Indígena  <NA>               <NA> score.tde.pos   15 30.333   26.0   1  57 17.715
-    ## 43 Experimental <NA>   <NA>    Parda  <NA>               <NA> score.tde.pos  190 32.447   30.0   0  71 19.467
-    ## 44 Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos  369 37.463   40.0   0  74 18.045
-    ## 45     Controle <NA>   <NA>     <NA> 6 ano               <NA> score.tde.pre  134 28.993   26.5   0  63 19.526
-    ## 46     Controle <NA>   <NA>     <NA> 7 ano               <NA> score.tde.pre  141 34.716   41.0   0  69 17.842
-    ## 47     Controle <NA>   <NA>     <NA> 8 ano               <NA> score.tde.pre   89 42.584   46.0   0  72 16.382
-    ## 48     Controle <NA>   <NA>     <NA> 9 ano               <NA> score.tde.pre  121 46.950   51.0   0  75 17.124
-    ## 49 Experimental <NA>   <NA>     <NA> 6 ano               <NA> score.tde.pre  159 29.000   29.0   0  65 15.950
-    ## 50 Experimental <NA>   <NA>     <NA> 7 ano               <NA> score.tde.pre  187 36.540   38.0   0  68 14.891
-    ## 51 Experimental <NA>   <NA>     <NA> 8 ano               <NA> score.tde.pre  143 39.000   44.0   0  73 18.129
-    ## 52 Experimental <NA>   <NA>     <NA> 9 ano               <NA> score.tde.pre  147 43.204   45.0   0  71 15.845
-    ##       se     ci   iqr symmetry    skewness    kurtosis
-    ## 1  0.871  1.711 33.00      YES -0.44274989 -1.01707467
-    ## 2  0.670  1.315 24.00      YES -0.30344161 -0.71147687
-    ## 3  0.535  1.050 28.00      YES -0.37008314 -0.85685240
-    ## 4  0.953  1.873 37.00      YES -0.10751410 -1.28698503
-    ## 5  0.749  1.472 30.00      YES -0.15803324 -1.02368787
-    ## 6  0.592  1.162 33.00      YES -0.14486726 -1.13847481
-    ## 7  1.098  2.163 24.50       NO -0.69223653 -0.51900532
-    ## 8  1.332  2.624 37.00      YES -0.17287988 -1.30786872
-    ## 9  0.941  1.851 25.00      YES -0.45984192 -0.59886631
-    ## 10 0.931  1.832 23.00      YES -0.17507882 -0.72288113
-    ## 11 1.265  2.492 35.00      YES -0.29044867 -1.20776748
-    ## 12 1.410  2.778 37.00      YES  0.09799856 -1.29143115
-    ## 13 1.086  2.137 32.00      YES -0.31140874 -1.05942976
-    ## 14 1.011  1.988 29.00      YES -0.04979288 -0.90855546
-    ## 15 1.259  2.480 34.50      YES -0.42868859 -1.21958969
-    ## 16 1.727  3.424 26.00      YES -0.36050250 -0.67567914
-    ## 17 1.663  3.290 32.00      YES -0.48032220 -1.00346159
-    ## 18 1.036  2.040 25.25      YES -0.14024816 -0.82254134
-    ## 19 1.287  2.541 22.00      YES -0.49091139 -0.51898593
-    ## 20 1.167  2.303 23.00      YES -0.34523802 -0.69059456
-    ## 21 1.380  2.719 38.00      YES -0.20056381 -1.32132739
-    ## 22 1.951  3.868 37.00      YES  0.23741503 -1.19801189
-    ## 23 1.750  3.461 34.00      YES -0.20045157 -1.18475175
-    ## 24 1.141  2.246 33.00      YES  0.03874057 -1.08824698
-    ## 25 1.462  2.887 30.50      YES -0.22828841 -1.04859393
-    ## 26 1.317  2.598 26.00      YES -0.38703562 -0.77474992
-    ## 27 2.396  4.815 14.50       NO -0.82080180 -0.31101987
-    ## 28 5.215 11.621  9.50       NO -1.00451089 -0.10394060
-    ## 29 1.485  2.932 31.25       NO -0.59501818 -0.97452970
-    ## 30 1.223  2.408 34.00      YES -0.26844337 -1.18051048
-    ## 31    NA    NaN  0.00 few data  0.00000000  0.00000000
-    ## 32 2.526  5.053 33.00      YES -0.04473036 -1.03712232
-    ## 33 4.406  9.450 27.00      YES  0.12583026 -1.42236449
-    ## 34 1.272  2.510 27.00      YES -0.13269356 -0.93054435
-    ## 35 0.819  1.610 21.00      YES -0.43758567 -0.44867547
-    ## 36 2.902  5.831 34.75      YES -0.20771754 -1.18377556
-    ## 37 6.009 13.390 19.50       NO -0.96819848 -0.64463830
-    ## 38 1.634  3.227 39.75      YES -0.16610719 -1.43720040
-    ## 39 1.309  2.577 36.00      YES -0.02367728 -1.25202614
-    ## 40    NA    NaN  0.00 few data  0.00000000  0.00000000
-    ## 41 2.713  5.427 34.00      YES  0.07577819 -1.20145082
-    ## 42 4.574  9.810 30.50      YES  0.11732392 -1.54214722
-    ## 43 1.412  2.786 32.75      YES  0.08193591 -1.11192890
-    ## 44 0.939  1.847 27.00      YES -0.33636541 -0.84428487
-    ## 45 1.687  3.336 36.00      YES  0.05716502 -1.52605010
-    ## 46 1.503  2.971 29.00      YES -0.26516097 -1.16172777
-    ## 47 1.737  3.451 17.00       NO -0.83320010  0.21399944
-    ## 48 1.557  3.082 15.00       NO -1.12350409  0.58914469
-    ## 49 1.265  2.498 24.50      YES -0.04348830 -0.90927038
-    ## 50 1.089  2.148 21.50      YES -0.19526601 -0.68190100
-    ## 51 1.516  2.997 25.50       NO -0.51517062 -0.73362765
-    ## 52 1.307  2.583 22.00       NO -0.64076336 -0.04356704
-    ##  [ reached 'max' / getOption("max.print") -- omitted 28 rows ]
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | score.tde.quintile | variable      |    n |   mean | median | min | max |     sd |    se |     ci |   iqr | symmetry | skewness | kurtosis |
 |:-------------|:-----|:-------|:---------|:------|:-------------------|:--------------|-----:|-------:|-------:|----:|----:|-------:|------:|-------:|------:|:---------|---------:|---------:|
@@ -241,23 +258,23 @@ df <- plyr::rbind.fill(
 | Experimental |      | Rural  |          |       |                    | score.tde.pos |  284 | 33.627 |   33.0 |   0 |  72 | 19.232 | 1.141 |  2.246 | 33.00 | YES      |    0.039 |   -1.088 |
 | Experimental |      | Urbana |          |       |                    | score.tde.pos |  167 | 34.108 |   38.0 |   0 |  74 | 18.899 | 1.462 |  2.887 | 30.50 | YES      |   -0.228 |   -1.049 |
 | Experimental |      |        |          |       |                    | score.tde.pos |  185 | 39.205 |   42.0 |   0 |  73 | 17.909 | 1.317 |  2.598 | 26.00 | YES      |   -0.387 |   -0.775 |
-| Controle     |      |        | Branca   |       |                    | score.tde.pre |   50 | 41.460 |   46.0 |   2 |  67 | 16.942 | 2.396 |  4.815 | 14.50 | NO       |   -0.821 |   -0.311 |
-| Controle     |      |        | Indígena |       |                    | score.tde.pre |   11 | 42.000 |   46.0 |   4 |  65 | 17.297 | 5.215 | 11.621 |  9.50 | NO       |   -1.005 |   -0.104 |
 | Controle     |      |        | Parda    |       |                    | score.tde.pre |  162 | 36.741 |   43.0 |   0 |  66 | 18.900 | 1.485 |  2.932 | 31.25 | NO       |   -0.595 |   -0.975 |
+| Controle     |      |        | Indígena |       |                    | score.tde.pre |   11 | 42.000 |   46.0 |   4 |  65 | 17.297 | 5.215 | 11.621 |  9.50 | NO       |   -1.005 |   -0.104 |
+| Controle     |      |        | Branca   |       |                    | score.tde.pre |   50 | 41.460 |   46.0 |   2 |  67 | 16.942 | 2.396 |  4.815 | 14.50 | NO       |   -0.821 |   -0.311 |
 | Controle     |      |        |          |       |                    | score.tde.pre |  262 | 37.267 |   43.0 |   0 |  75 | 19.798 | 1.223 |  2.408 | 34.00 | YES      |   -0.268 |   -1.181 |
-| Experimental |      |        | Amarela  |       |                    | score.tde.pre |    1 | 23.000 |   23.0 |  23 |  23 |        |       |        |  0.00 | few data |    0.000 |    0.000 |
-| Experimental |      |        | Branca   |       |                    | score.tde.pre |   61 | 34.623 |   36.0 |   0 |  73 | 19.728 | 2.526 |  5.053 | 33.00 | YES      |   -0.045 |   -1.037 |
-| Experimental |      |        | Indígena |       |                    | score.tde.pre |   15 | 27.067 |   26.0 |   6 |  54 | 17.065 | 4.406 |  9.450 | 27.00 | YES      |    0.126 |   -1.422 |
 | Experimental |      |        | Parda    |       |                    | score.tde.pre |  190 | 34.253 |   35.0 |   0 |  68 | 17.537 | 1.272 |  2.510 | 27.00 | YES      |   -0.133 |   -0.931 |
+| Experimental |      |        | Indígena |       |                    | score.tde.pre |   15 | 27.067 |   26.0 |   6 |  54 | 17.065 | 4.406 |  9.450 | 27.00 | YES      |    0.126 |   -1.422 |
+| Experimental |      |        | Branca   |       |                    | score.tde.pre |   61 | 34.623 |   36.0 |   0 |  73 | 19.728 | 2.526 |  5.053 | 33.00 | YES      |   -0.045 |   -1.037 |
+| Experimental |      |        | Amarela  |       |                    | score.tde.pre |    1 | 23.000 |   23.0 |  23 |  23 |        |       |        |  0.00 | few data |    0.000 |    0.000 |
 | Experimental |      |        |          |       |                    | score.tde.pre |  369 | 38.816 |   42.0 |   0 |  71 | 15.723 | 0.819 |  1.610 | 21.00 | YES      |   -0.438 |   -0.449 |
-| Controle     |      |        | Branca   |       |                    | score.tde.pos |   50 | 34.300 |   38.0 |   0 |  72 | 20.518 | 2.902 |  5.831 | 34.75 | YES      |   -0.208 |   -1.184 |
-| Controle     |      |        | Indígena |       |                    | score.tde.pos |   11 | 45.636 |   52.0 |   4 |  63 | 19.931 | 6.009 | 13.390 | 19.50 | NO       |   -0.968 |   -0.645 |
 | Controle     |      |        | Parda    |       |                    | score.tde.pos |  162 | 32.463 |   35.0 |   0 |  68 | 20.798 | 1.634 |  3.227 | 39.75 | YES      |   -0.166 |   -1.437 |
+| Controle     |      |        | Indígena |       |                    | score.tde.pos |   11 | 45.636 |   52.0 |   4 |  63 | 19.931 | 6.009 | 13.390 | 19.50 | NO       |   -0.968 |   -0.645 |
+| Controle     |      |        | Branca   |       |                    | score.tde.pos |   50 | 34.300 |   38.0 |   0 |  72 | 20.518 | 2.902 |  5.831 | 34.75 | YES      |   -0.208 |   -1.184 |
 | Controle     |      |        |          |       |                    | score.tde.pos |  262 | 34.065 |   34.0 |   0 |  73 | 21.180 | 1.309 |  2.577 | 36.00 | YES      |   -0.024 |   -1.252 |
-| Experimental |      |        | Amarela  |       |                    | score.tde.pos |    1 | 23.000 |   23.0 |  23 |  23 |        |       |        |  0.00 | few data |    0.000 |    0.000 |
-| Experimental |      |        | Branca   |       |                    | score.tde.pos |   61 | 33.311 |   34.0 |   0 |  72 | 21.189 | 2.713 |  5.427 | 34.00 | YES      |    0.076 |   -1.201 |
-| Experimental |      |        | Indígena |       |                    | score.tde.pos |   15 | 30.333 |   26.0 |   1 |  57 | 17.715 | 4.574 |  9.810 | 30.50 | YES      |    0.117 |   -1.542 |
 | Experimental |      |        | Parda    |       |                    | score.tde.pos |  190 | 32.447 |   30.0 |   0 |  71 | 19.467 | 1.412 |  2.786 | 32.75 | YES      |    0.082 |   -1.112 |
+| Experimental |      |        | Indígena |       |                    | score.tde.pos |   15 | 30.333 |   26.0 |   1 |  57 | 17.715 | 4.574 |  9.810 | 30.50 | YES      |    0.117 |   -1.542 |
+| Experimental |      |        | Branca   |       |                    | score.tde.pos |   61 | 33.311 |   34.0 |   0 |  72 | 21.189 | 2.713 |  5.427 | 34.00 | YES      |    0.076 |   -1.201 |
+| Experimental |      |        | Amarela  |       |                    | score.tde.pos |    1 | 23.000 |   23.0 |  23 |  23 |        |       |        |  0.00 | few data |    0.000 |    0.000 |
 | Experimental |      |        |          |       |                    | score.tde.pos |  369 | 37.463 |   40.0 |   0 |  74 | 18.045 | 0.939 |  1.847 | 27.00 | YES      |   -0.336 |   -0.844 |
 | Controle     |      |        |          | 6 ano |                    | score.tde.pre |  134 | 28.993 |   26.5 |   0 |  63 | 19.526 | 1.687 |  3.336 | 36.00 | YES      |    0.057 |   -1.526 |
 | Controle     |      |        |          | 7 ano |                    | score.tde.pre |  141 | 34.716 |   41.0 |   0 |  69 | 17.842 | 1.503 |  2.971 | 29.00 | YES      |   -0.265 |   -1.162 |
@@ -330,10 +347,12 @@ ds <- merge(ds[ds$variable != "score.tde.pre",],
             ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".score.tde.pre"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- ds
 ```
@@ -358,21 +377,24 @@ ldat[["grupo"]] = wdat
 (non.normal)
 ```
 
-    ##   [1] "P962"  "P1128" "P984"  "P1129" "P3637" "P1126" "P1971" "P572"  "P3021" "P2871" "P1139" "P921"  "P2858"
-    ##  [14] "P3054" "P3019" "P2995" "P2848" "P2870" "P1117" "P2929" "P929"  "P2835" "P2983" "P2946" "P2865" "P2910"
-    ##  [27] "P3007" "P3015" "P2964" "P2975" "P2876" "P2937" "P2831" "P2953" "P2986" "P1018" "P2950" "P2883" "P1878"
-    ##  [40] "P2917" "P2866" "P2997" "P2880" "P908"  "P2978" "P2864" "P3005" "P2974" "P3026" "P2904" "P2994" "P1111"
-    ##  [53] "P2846" "P2913" "P2886" "P2905" "P3533" "P914"  "P2888" "P2867" "P1983" "P3574" "P1840" "P3545" "P2993"
-    ##  [66] "P976"  "P2973" "P2967" "P3029" "P3548" "P3000" "P2959" "P2956" "P2982" "P3475" "P2854" "P1068" "P3476"
-    ##  [79] "P3674" "P3660" "P2004" "P3666" "P2190" "P2839" "P2861" "P1885" "P2947" "P606"  "P1149" "P609"  "P2843"
-    ##  [92] "P3228" "P2845" "P2868" "P2860" "P3024" "P2852" "P2990" "P2969" "P809"  "P2909" "P924"  "P1914" "P1056"
-    ## [105] "P2847" "P1046" "P1118" "P541"  "P3651" "P3221" "P2903" "P2979" "P3537" "P2981" "P3237" "P1127" "P1916"
-    ## [118] "P2832" "P1828" "P3571" "P996"  "P2869" "P2836" "P2879" "P1900" "P2891" "P3608" "P2882" "P2951" "P1673"
-    ## [131] "P993"  "P1910" "P548"  "P492"  "P1887" "P848"  "P1964" "P859"  "P2971" "P2922"
+    ##   [1] "P962"  "P1128" "P984"  "P1129" "P3637" "P1126" "P1971" "P572"  "P3021" "P2871" "P1139"
+    ##  [12] "P921"  "P2858" "P3054" "P3019" "P2995" "P2848" "P2870" "P1117" "P2929" "P929"  "P2835"
+    ##  [23] "P2983" "P2946" "P2865" "P2910" "P3007" "P3015" "P2964" "P2975" "P2876" "P2937" "P2831"
+    ##  [34] "P2953" "P2986" "P1018" "P2950" "P2883" "P1878" "P2917" "P2866" "P2997" "P2880" "P908" 
+    ##  [45] "P2978" "P2864" "P3005" "P2974" "P3026" "P2904" "P2994" "P1111" "P2846" "P2913" "P2886"
+    ##  [56] "P2905" "P3533" "P914"  "P2888" "P2867" "P1983" "P3574" "P1840" "P3545" "P2993" "P976" 
+    ##  [67] "P2973" "P2967" "P3029" "P3548" "P3000" "P2959" "P2956" "P2982" "P3475" "P2854" "P1068"
+    ##  [78] "P3476" "P3674" "P3660" "P2004" "P3666" "P2190" "P2839" "P2861" "P1885" "P2947" "P606" 
+    ##  [89] "P1149" "P609"  "P2843" "P3228" "P2845" "P2868" "P2860" "P3024" "P2852" "P2990" "P2969"
+    ## [100] "P809"  "P2909" "P924"  "P1914" "P1056" "P2847" "P1046" "P1118" "P541"  "P3651" "P3221"
+    ## [111] "P2903" "P2979" "P3537" "P2981" "P3237" "P1127" "P1916" "P2832" "P1828" "P3571" "P996" 
+    ## [122] "P2869" "P2836" "P2879" "P1900" "P2891" "P3608" "P2882" "P2951" "P1673" "P993"  "P1910"
+    ## [133] "P548"  "P492"  "P1887" "P848"  "P1964" "P859"  "P2971" "P2922"
 
 ``` r
 aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo)
-laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suffixes = c("","'"))
+laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]],
+                            by="Effect", suffixes = c("","'"))
 
 (df = get_anova_table(aov))
 ```
@@ -388,6 +410,11 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 | score.tde.pre |   1 | 978 | 5874.442 |   0 | \*     | 0.857 |
 | grupo         |   1 | 978 |   24.670 |   0 | \*     | 0.025 |
 
+``` r
+pwc <- emmeans_test(wdat, score.tde.pos ~ grupo, covariate = score.tde.pre,
+                    p.adjust.method = "bonferroni")
+```
+
 | term                 | .y.           | group1   | group2       |  df | statistic |   p | p.adj | p.adj.signif |
 |:---------------------|:--------------|:---------|:-------------|----:|----------:|----:|------:|:-------------|
 | score.tde.pre\*grupo | score.tde.pos | Controle | Experimental | 978 |    -4.967 |   0 |     0 | \*\*\*\*     |
@@ -396,7 +423,9 @@ laov[["grupo"]] <- merge(get_anova_table(aov), laov[["grupo"]], by="Effect", suf
 pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "grupo"),
                          score.tde ~ time,
                          p.adjust.method = "bonferroni")
-lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]], by=c("grupo","term",".y.","group1","group2"), suffixes = c("","'"))
+lpwc[["grupo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo"]],
+                            by=c("grupo","term",".y.","group1","group2"),
+                            suffixes = c("","'"))
 ```
 
 | grupo        | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -410,35 +439,35 @@ ds <- merge(ds[ds$variable != "score.tde.pre",],
             ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
             by = "grupo", all.x = T, suffixes = c("", ".score.tde.pre"))
 ds <- merge(get_emmeans(pwc), ds, by = "grupo", suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
+ds <- ds[,c("grupo","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+            "emmean","se.emms","conf.low","conf.high")]
 
 colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
+                  paste0(c("M","SE"), " (unadj)"),
+                  paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
 
 lemms[["grupo"]] <- merge(ds, lemms[["grupo"]], by=c("grupo"), suffixes = c("","'"))
 ```
 
-| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 424 |  37.351 |    0.975 |    35.432 |      1.018 |  35.112 |    0.358 |
-| Experimental | 557 |  36.770 |    0.741 |    37.230 |      0.777 |  37.473 |    0.313 |
+| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 424 |  37.351 |    0.975 |    35.432 |      1.018 |  35.112 |    0.358 |   34.409 |    35.815 |
+| Experimental | 557 |  36.770 |    0.741 |    37.230 |      0.777 |  37.473 |    0.313 |   36.860 |    38.087 |
 
 ### Plots for ancova
 
 ``` r
 plots <- oneWayAncovaPlots(
-  wdat, "score.tde.pos", "grupo", aov, list("grupo"=pwc), addParam = c("mean_se"),
+  wdat, "score.tde.pos", "grupo", aov, list("grupo"=pwc), addParam = c("mean_ci"),
   font.label.size=10, step.increase=0.05, p.label="p.adj",
   subtitle = which(aov$Effect == "grupo"))
 ```
 
 ``` r
 if (!is.null(nrow(plots[["grupo"]]$data)))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+  plots[["grupo"]] +
+  if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
@@ -451,7 +480,9 @@ plots <- oneWayAncovaBoxPlots(
 
 ``` r
 if (length(unique(wdat[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+  plots[["grupo"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
@@ -459,13 +490,14 @@ if (length(unique(wdat[["grupo"]])) > 1)
 ``` r
 if (length(unique(wdat.long[["grupo"]])) > 1)
   plots <- oneWayAncovaBoxPlots(
-    wdat.long, "score.tde", "grupo", aov, pwc.long, pre.post = "time",
-    theme = "classic", color = color$prepost)
+    wdat.long, "score.tde", "grupo", aov, pwc.long,
+    pre.post = "time", theme = "classic", color = color$prepost)
 ```
 
 ``` r
 if (length(unique(wdat.long[["grupo"]])) > 1)
-  plots[["grupo"]] + ggplot2::ylab("TDE - Escrita")
+  plots[["grupo"]] + ggplot2::ylab("Writing (TDE)") +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax) 
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
@@ -477,7 +509,10 @@ ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
-  )
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
@@ -511,99 +546,117 @@ levene_test(res, .resid ~ grupo)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),], "score.tde.pos", c("grupo","Sexo"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Sexo"]]),],
+                         "score.tde.pos", c("grupo","Sexo"))
+pdat = pdat[pdat[["Sexo"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Sexo"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Sexo"]] = factor(
+  pdat[["Sexo"]],
+  level[["Sexo"]][level[["Sexo"]] %in% unique(pdat[["Sexo"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Sexo")], pdat[,c("id","grupo","Sexo")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
-laov[["grupo:Sexo"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Sexo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Sexo), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Sexo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Sexo), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Sexo")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- ds
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Sexo"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Sexo")], wdat[,c("id","grupo","Sexo")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Sexo"]] = wdat
+  
+  (non.normal)
+}
 ```
 
-    ##   [1] "P962"  "P1128" "P984"  "P1129" "P3637" "P1126" "P1971" "P2995" "P2871" "P572"  "P921"  "P3019" "P2994"
-    ##  [14] "P2880" "P2848" "P2983" "P908"  "P3021" "P3054" "P1139" "P2858" "P2835" "P2904" "P1117" "P3015" "P2870"
-    ##  [27] "P2929" "P2910" "P2886" "P914"  "P2913" "P1111" "P2974" "P2964" "P2867" "P2876" "P2937" "P1840" "P2973"
-    ##  [40] "P3007" "P2861" "P2969" "P2953" "P2986" "P2883" "P2831" "P2975" "P1018" "P3476" "P2997" "P3005" "P1878"
-    ##  [53] "P2866" "P2950" "P2993" "P3545" "P2917" "P2978" "P3029" "P2864" "P2888" "P976"  "P2854" "P2959" "P3548"
-    ##  [66] "P2190" "P929"  "P3574" "P2947" "P2845" "P1983" "P3674" "P1149" "P1068" "P3475" "P2004" "P2860" "P2982"
-    ##  [79] "P2839" "P3024" "P1885" "P2868" "P609"  "P2990" "P2946" "P1056" "P2933" "P3020" "P2879" "P873"  "P1887"
-    ##  [92] "P2865" "P3026" "P3660" "P2956" "P3080" "P3666" "P2846" "P3533" "P3228" "P2948" "P2850" "P3000" "P809" 
-    ## [105] "P2905" "P1046" "P1118" "P3221" "P1665" "P2903" "P1597" "P2836" "P3537" "P584"  "P854"  "P1127" "P1804"
-    ## [118] "P2869" "P2979" "P3571" "P1652" "P924"  "P1803" "P3088" "P1592" "P2901" "P3608" "P848"  "P1964" "P2971"
-    ## [131] "P1900" "P996"  "P3732" "P492"  "P2922" "P859"  "P2980" "P1916" "P2832" "P1858" "P1151" "P2375" "P3156"
+    ##   [1] "P962"  "P1128" "P984"  "P1129" "P3637" "P1126" "P1971" "P2995" "P2871" "P572"  "P921" 
+    ##  [12] "P3019" "P2994" "P2880" "P2848" "P2983" "P908"  "P3021" "P3054" "P1139" "P2858" "P2835"
+    ##  [23] "P2904" "P1117" "P3015" "P2870" "P2929" "P2910" "P2886" "P914"  "P2913" "P1111" "P2974"
+    ##  [34] "P2964" "P2867" "P2876" "P2937" "P1840" "P2973" "P3007" "P2861" "P2969" "P2953" "P2986"
+    ##  [45] "P2883" "P2831" "P2975" "P1018" "P3476" "P2997" "P3005" "P1878" "P2866" "P2950" "P2993"
+    ##  [56] "P3545" "P2917" "P2978" "P3029" "P2864" "P2888" "P976"  "P2854" "P2959" "P3548" "P2190"
+    ##  [67] "P929"  "P3574" "P2947" "P2845" "P1983" "P3674" "P1149" "P1068" "P3475" "P2004" "P2860"
+    ##  [78] "P2982" "P2839" "P3024" "P1885" "P2868" "P609"  "P2990" "P2946" "P1056" "P2933" "P3020"
+    ##  [89] "P2879" "P873"  "P1887" "P2865" "P3026" "P3660" "P2956" "P3080" "P3666" "P2846" "P3533"
+    ## [100] "P3228" "P2948" "P2850" "P3000" "P809"  "P2905" "P1046" "P1118" "P3221" "P1665" "P2903"
+    ## [111] "P1597" "P2836" "P3537" "P584"  "P854"  "P1127" "P1804" "P2869" "P2979" "P3571" "P1652"
+    ## [122] "P924"  "P1803" "P3088" "P1592" "P2901" "P3608" "P848"  "P1964" "P2971" "P1900" "P996" 
+    ## [133] "P3732" "P492"  "P2922" "P859"  "P2980" "P1916" "P2832" "P1858" "P1151" "P2375" "P3156"
     ## [144] "P3030" "P3061" "P2327" "P2894"
 
 ``` r
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
-laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Sexo)
+  laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##          Effect DFn DFd        F        p p<.05      ges
-    ## 1 score.tde.pre   1 969 5974.401 0.00e+00     * 8.60e-01
-    ## 2         grupo   1 969   23.992 1.13e-06     * 2.40e-02
-    ## 3          Sexo   1 969    0.058 8.10e-01       5.94e-05
-    ## 4    grupo:Sexo   1 969    0.548 4.59e-01       5.65e-04
 
 | Effect        | DFn | DFd |        F |     p | p\<.05 |   ges |
 |:--------------|----:|----:|---------:|------:|:-------|------:|
@@ -613,16 +666,18 @@ laov[["grupo:Sexo"]] <- merge(get_anova_table(aov), laov[["grupo:Sexo"]], by="Ef
 | grupo:Sexo    |   1 | 969 |    0.548 | 0.459 |        | 0.001 |
 
 ``` r
-pwcs <- list()
-pwcs[["Sexo"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Sexo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Sexo), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
-pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Sexo"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Sexo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Sexo), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Sexo"]])
+  pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo")])]
+}
 ```
 
 | grupo        | Sexo | term                 | .y.           | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
@@ -633,10 +688,15 @@ pwc <- pwc[,c("grupo","Sexo", colnames(pwc)[!colnames(pwc) %in% c("grupo","Sexo"
 | Experimental |      | score.tde.pre\*Sexo  | score.tde.pos | F        | M            | 969 |     0.663 | 0.507 | 0.507 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo"]], by=c("grupo","Sexo","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Sexo")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Sexo"]],
+                                         by=c("grupo","Sexo","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Sexo | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -647,38 +707,55 @@ lpwc[["grupo:Sexo"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Sexo
 | Experimental | M    | time | score.tde | pre    | pos    | 1940 |    -0.251 | 0.802 | 0.802 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Sexo"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]], by=c("grupo","Sexo"), suffixes = c("","'"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Sexo"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Sexo"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Sexo"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Sexo","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Sexo", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Sexo"]] <- merge(ds, lemms[["grupo:Sexo"]],
+                                          by=c("grupo","Sexo"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | F    | 208 |  40.635 |    1.278 |    38.615 |      1.351 |  35.106 |    0.503 |
-| Controle     | M    | 211 |  33.934 |    1.457 |    32.393 |      1.517 |  35.389 |    0.499 |
-| Experimental | F    | 276 |  39.623 |    1.053 |    40.272 |      1.123 |  37.744 |    0.436 |
-| Experimental | M    | 279 |  34.082 |    1.030 |    34.484 |      1.053 |  37.335 |    0.434 |
+| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | F    | 208 |  40.635 |    1.278 |    38.615 |      1.351 |  35.106 |    0.503 |   34.119 |    36.093 |
+| Controle     | M    | 211 |  33.934 |    1.457 |    32.393 |      1.517 |  35.389 |    0.499 |   34.410 |    36.368 |
+| Experimental | F    | 276 |  39.623 |    1.053 |    40.272 |      1.123 |  37.744 |    0.436 |   36.889 |    38.600 |
+| Experimental | M    | 279 |  34.082 |    1.030 |    34.484 |      1.053 |  37.335 |    0.434 |   36.483 |    38.187 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Sexo"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
+
 ``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Sexo"]])
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Sexo", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -687,60 +764,99 @@ if (!is.null(plots[["grupo"]]))
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Sexo"]]))
-  plots[["Sexo"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Sexo"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Sexo"]],
-  subtitle = which(aov$Effect == "grupo:Sexo"))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Sexo"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Sexo"]],
+    subtitle = which(aov$Effect == "grupo:Sexo"))
+}
 ```
 
 ``` r
-plots[["grupo:Sexo"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots[["grupo:Sexo"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Sexo"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Sexo"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Sexo"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  plots[["grupo:Sexo"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
 
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Sexo"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Sexo"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Sexo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Sexo"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Sexo", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Sexo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Sexo, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Sexo"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -749,7 +865,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.997  0.0375
 
 ``` r
-levene_test(res, .resid ~ grupo*Sexo)
+if (length(unique(pdat[["Sexo"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Sexo)
 ```
 
     ## # A tibble: 1 × 4
@@ -762,92 +879,109 @@ levene_test(res, .resid ~ grupo*Sexo)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),], "score.tde.pos", c("grupo","Zona"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Zona"]]),],
+                         "score.tde.pos", c("grupo","Zona"))
+pdat = pdat[pdat[["Zona"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Zona"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Zona"]] = factor(
+  pdat[["Zona"]],
+  level[["Zona"]][level[["Zona"]] %in% unique(pdat[["Zona"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Zona")], pdat[,c("id","grupo","Zona")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
-laov[["grupo:Zona"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
+  laov[["grupo:Zona"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Zona,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Zona), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Zona,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Zona), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Zona")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- ds
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Zona"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Zona")], wdat[,c("id","grupo","Zona")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Zona"]] = wdat
+  
+  (non.normal)
+}
 ```
 
-    ##  [1] "P962"  "P984"  "P1971" "P2929" "P1117" "P2848" "P2917" "P2870" "P2871" "P2835" "P921"  "P2959" "P3029"
-    ## [14] "P1139" "P572"  "P2983" "P2858" "P3021" "P3080" "P606"  "P2933" "P914"  "P2831" "P2946" "P3533" "P2953"
-    ## [27] "P2886" "P3548" "P3476" "P2861" "P2880" "P2982" "P2995" "P3674" "P2864" "P2883" "P2950" "P2004" "P3475"
-    ## [40] "P3012" "P3010" "P3015" "P2975" "P2937" "P3660" "P2910" "P1691" "P2868" "P2860" "P1878" "P609"  "P908" 
-    ## [53] "P2997" "P2956" "P2973" "P2879" "P2854" "P3024" "P2967" "P2948" "P2909" "P1056" "P2964"
+    ##  [1] "P962"  "P984"  "P1971" "P2929" "P1117" "P2848" "P2917" "P2870" "P2871" "P2835" "P921" 
+    ## [12] "P2959" "P3029" "P1139" "P572"  "P2983" "P2858" "P3021" "P3080" "P606"  "P2933" "P914" 
+    ## [23] "P2831" "P2946" "P3533" "P2953" "P2886" "P3548" "P3476" "P2861" "P2880" "P2982" "P2995"
+    ## [34] "P3674" "P2864" "P2883" "P2950" "P2004" "P3475" "P3012" "P3010" "P3015" "P2975" "P2937"
+    ## [45] "P3660" "P2910" "P1691" "P2868" "P2860" "P1878" "P609"  "P908"  "P2997" "P2956" "P2973"
+    ## [56] "P2879" "P2854" "P3024" "P2967" "P2948" "P2909" "P1056" "P2964"
 
 ``` r
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
-laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Zona)
+  laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##          Effect DFn DFd        F         p p<.05   ges
-    ## 1 score.tde.pre   1 735 3559.226 6.09e-284     * 0.829
-    ## 2         grupo   1 735   26.138  4.06e-07     * 0.034
-    ## 3          Zona   1 735   54.679  3.88e-13     * 0.069
-    ## 4    grupo:Zona   1 735   14.155  1.82e-04     * 0.019
 
 | Effect        | DFn | DFd |        F |   p | p\<.05 |   ges |
 |:--------------|----:|----:|---------:|----:|:-------|------:|
@@ -857,16 +991,18 @@ laov[["grupo:Zona"]] <- merge(get_anova_table(aov), laov[["grupo:Zona"]], by="Ef
 | grupo:Zona    |   1 | 735 |   14.155 |   0 | \*     | 0.019 |
 
 ``` r
-pwcs <- list()
-pwcs[["Zona"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Zona,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Zona), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
-pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Zona"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Zona,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Zona), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Zona"]])
+  pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona")])]
+}
 ```
 
 | grupo        | Zona   | term                 | .y.           | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
@@ -877,10 +1013,15 @@ pwc <- pwc[,c("grupo","Zona", colnames(pwc)[!colnames(pwc) %in% c("grupo","Zona"
 | Experimental |        | score.tde.pre\*Zona  | score.tde.pos | Rural    | Urbana       | 735 |     3.188 | 0.001 | 0.001 | \*\*         |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona"]], by=c("grupo","Zona","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Zona")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Zona"]],
+                                         by=c("grupo","Zona","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Zona   | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -891,38 +1032,41 @@ lpwc[["grupo:Zona"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Zona
 | Experimental | Urbana | time | score.tde | pre    | pos    | 1472 |     1.001 | 0.317 | 0.317 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Zona"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]], by=c("grupo","Zona"), suffixes = c("","'"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Zona"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Zona"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Zona"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Zona","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Zona", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Zona"]] <- merge(ds, lemms[["grupo:Zona"]],
+                                          by=c("grupo","Zona"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | Rural  | 228 |  35.956 |    1.330 |    34.978 |      1.426 |  35.358 |    0.547 |
-| Controle     | Urbana | 101 |  39.743 |    1.823 |    31.099 |      2.044 |  27.763 |    0.824 |
-| Experimental | Rural  | 260 |  34.215 |    1.113 |    34.777 |      1.186 |  36.865 |    0.514 |
-| Experimental | Urbana | 151 |  38.318 |    1.389 |    36.099 |      1.501 |  34.161 |    0.673 |
+| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | Rural  | 228 |  35.956 |    1.330 |    34.978 |      1.426 |  35.358 |    0.547 |   34.284 |    36.432 |
+| Controle     | Urbana | 101 |  39.743 |    1.823 |    31.099 |      2.044 |  27.763 |    0.824 |   26.145 |    29.380 |
+| Experimental | Rural  | 260 |  34.215 |    1.113 |    34.777 |      1.186 |  36.865 |    0.514 |   35.857 |    37.874 |
+| Experimental | Urbana | 151 |  38.318 |    1.389 |    36.099 |      1.501 |  34.161 |    0.673 |   32.840 |    35.483 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Zona"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Zona"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Zona"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Zona", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -931,8 +1075,12 @@ if (!is.null(plots[["grupo"]]))
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Zona"]]))
-  plots[["Zona"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -941,26 +1089,40 @@ if (!is.null(plots[["Zona"]]))
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-67-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Zona"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Zona"]],
-  subtitle = which(aov$Effect == "grupo:Zona"))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Zona"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Zona"]],
+    subtitle = which(aov$Effect == "grupo:Zona"))
+}
 ```
 
 ``` r
-plots[["grupo:Zona"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots[["grupo:Zona"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
+
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Zona"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Zona"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Zona"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  plots[["grupo:Zona"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
@@ -968,23 +1130,58 @@ plots[["grupo:Zona"]] + ggplot2::ylab("TDE - Escrita")
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Zona"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Zona"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Zona", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Zona"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Zona", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Zona)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
+    ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Zona, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Zona"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -993,7 +1190,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.995  0.0253
 
 ``` r
-levene_test(res, .resid ~ grupo*Zona)
+if (length(unique(pdat[["Zona"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Zona)
 ```
 
     ## # A tibble: 1 × 4
@@ -1006,7 +1204,8 @@ levene_test(res, .resid ~ grupo*Zona)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),], "score.tde.pos", c("grupo","Cor.Raca"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),],
+                         "score.tde.pos", c("grupo","Cor.Raca"))
 ```
 
     ## Warning: There was 1 warning in `mutate()`.
@@ -1018,88 +1217,105 @@ pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Cor.Raca"]]),
     ## ! NaNs produced
 
 ``` r
+pdat = pdat[pdat[["Cor.Raca"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Cor.Raca"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Cor.Raca"]] = factor(
+  pdat[["Cor.Raca"]],
+  level[["Cor.Raca"]][level[["Cor.Raca"]] %in% unique(pdat[["Cor.Raca"]])])
+
 pdat.long <- rbind(pdat[,c("id","grupo","Cor.Raca")], pdat[,c("id","grupo","Cor.Raca")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Cor.Raca,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Cor.Raca), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Cor.Raca,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Cor.Raca), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Cor.Raca")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- ds
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Cor.Raca"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Cor.Raca")], wdat[,c("id","grupo","Cor.Raca")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Cor.Raca"]] = wdat
+  
+  (non.normal)
+}
 ```
 
-    ##  [1] "P1128" "P1126" "P908"  "P2995" "P1139" "P3021" "P2871" "P2858" "P3637" "P2870" "P1117" "P572"  "P2978"
-    ## [14] "P2975" "P2983" "P2904" "P2835" "P3000" "P2888" "P2993" "P2905" "P1118" "P1804" "P3007" "P3228" "P3029"
-    ## [27] "P2865" "P2967" "P1018" "P2994" "P2953" "P2997" "P3476" "P3054" "P606"
+    ##  [1] "P1128" "P1126" "P908"  "P2995" "P1139" "P3021" "P2871" "P2858" "P3637" "P2870" "P1117"
+    ## [12] "P572"  "P2978" "P2975" "P2983" "P2904" "P2835" "P3000" "P2888" "P2993" "P2905" "P1118"
+    ## [23] "P1804" "P3007" "P3228" "P3029" "P2865" "P2967" "P1018" "P2994" "P2953" "P2997" "P3476"
+    ## [34] "P3054" "P606"
 
 ``` r
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
-laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Cor.Raca)
+  laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##           Effect DFn DFd        F         p p<.05   ges
-    ## 1  score.tde.pre   1 447 1620.497 9.35e-151     * 0.784
-    ## 2          grupo   1 447    7.311  7.00e-03     * 0.016
-    ## 3       Cor.Raca   2 447    3.357  3.60e-02     * 0.015
-    ## 4 grupo:Cor.Raca   2 447    1.174  3.10e-01       0.005
 
 | Effect         | DFn | DFd |        F |     p | p\<.05 |   ges |
 |:---------------|----:|----:|---------:|------:|:-------|------:|
@@ -1109,91 +1325,91 @@ laov[["grupo:Cor.Raca"]] <- merge(get_anova_table(aov), laov[["grupo:Cor.Raca"]]
 | grupo:Cor.Raca |   2 | 447 |    1.174 | 0.310 |        | 0.005 |
 
 ``` r
-pwcs <- list()
-pwcs[["Cor.Raca"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Cor.Raca,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Cor.Raca), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
-pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Cor.Raca"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Cor.Raca,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Cor.Raca), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Cor.Raca"]])
+  pwc <- pwc[,c("grupo","Cor.Raca", colnames(pwc)[!colnames(pwc) %in% c("grupo","Cor.Raca")])]
+}
 ```
 
 | grupo        | Cor.Raca | term                    | .y.           | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
 |:-------------|:---------|:------------------------|:--------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | Branca   | score.tde.pre\*grupo    | score.tde.pos | Controle | Experimental | 447 |    -2.442 | 0.015 | 0.015 | \*           |
-|              | Indígena | score.tde.pre\*grupo    | score.tde.pos | Controle | Experimental | 447 |     0.274 | 0.784 | 0.784 | ns           |
 |              | Parda    | score.tde.pre\*grupo    | score.tde.pos | Controle | Experimental | 447 |    -1.911 | 0.057 | 0.057 | ns           |
-| Controle     |          | score.tde.pre\*Cor.Raca | score.tde.pos | Branca   | Indígena     | 447 |    -2.687 | 0.007 | 0.022 | \*           |
-| Controle     |          | score.tde.pre\*Cor.Raca | score.tde.pos | Branca   | Parda        | 447 |    -1.334 | 0.183 | 0.549 | ns           |
-| Controle     |          | score.tde.pre\*Cor.Raca | score.tde.pos | Indígena | Parda        | 447 |     2.163 | 0.031 | 0.093 | ns           |
-| Experimental |          | score.tde.pre\*Cor.Raca | score.tde.pos | Branca   | Indígena     | 447 |    -1.060 | 0.290 | 0.870 | ns           |
-| Experimental |          | score.tde.pre\*Cor.Raca | score.tde.pos | Branca   | Parda        | 447 |     0.308 | 0.759 | 1.000 | ns           |
-| Experimental |          | score.tde.pre\*Cor.Raca | score.tde.pos | Indígena | Parda        | 447 |     1.314 | 0.190 | 0.569 | ns           |
+|              | Indígena | score.tde.pre\*grupo    | score.tde.pos | Controle | Experimental | 447 |     0.274 | 0.784 | 0.784 | ns           |
+|              | Branca   | score.tde.pre\*grupo    | score.tde.pos | Controle | Experimental | 447 |    -2.442 | 0.015 | 0.015 | \*           |
+| Controle     |          | score.tde.pre\*Cor.Raca | score.tde.pos | Parda    | Indígena     | 447 |    -2.163 | 0.031 | 0.093 | ns           |
+| Controle     |          | score.tde.pre\*Cor.Raca | score.tde.pos | Parda    | Branca       | 447 |     1.334 | 0.183 | 0.549 | ns           |
+| Controle     |          | score.tde.pre\*Cor.Raca | score.tde.pos | Indígena | Branca       | 447 |     2.687 | 0.007 | 0.022 | \*           |
+| Experimental |          | score.tde.pre\*Cor.Raca | score.tde.pos | Parda    | Indígena     | 447 |    -1.314 | 0.190 | 0.569 | ns           |
+| Experimental |          | score.tde.pre\*Cor.Raca | score.tde.pos | Parda    | Branca       | 447 |    -0.308 | 0.759 | 1.000 | ns           |
+| Experimental |          | score.tde.pre\*Cor.Raca | score.tde.pos | Indígena | Branca       | 447 |     1.060 | 0.290 | 0.870 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Cor.Raca")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Cor.Raca"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Cor.Raca"]],
+                                         by=c("grupo","Cor.Raca","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Cor.Raca | term | .y.       | group1 | group2 |  df | statistic |     p | p.adj | p.adj.signif |
 |:-------------|:---------|:-----|:----------|:-------|:-------|----:|----------:|------:|------:|:-------------|
-| Controle     | Branca   | time | score.tde | pre    | pos    | 896 |     1.172 | 0.241 | 0.241 | ns           |
-| Controle     | Indígena | time | score.tde | pre    | pos    | 896 |    -0.441 | 0.659 | 0.659 | ns           |
 | Controle     | Parda    | time | score.tde | pre    | pos    | 896 |     1.090 | 0.276 | 0.276 | ns           |
-| Experimental | Branca   | time | score.tde | pre    | pos    | 896 |    -0.019 | 0.985 | 0.985 | ns           |
-| Experimental | Indígena | time | score.tde | pre    | pos    | 896 |    -0.463 | 0.644 | 0.644 | ns           |
+| Controle     | Indígena | time | score.tde | pre    | pos    | 896 |    -0.441 | 0.659 | 0.659 | ns           |
+| Controle     | Branca   | time | score.tde | pre    | pos    | 896 |     1.172 | 0.241 | 0.241 | ns           |
 | Experimental | Parda    | time | score.tde | pre    | pos    | 896 |     0.163 | 0.870 | 0.870 | ns           |
+| Experimental | Indígena | time | score.tde | pre    | pos    | 896 |    -0.463 | 0.644 | 0.644 | ns           |
+| Experimental | Branca   | time | score.tde | pre    | pos    | 896 |    -0.019 | 0.985 | 0.985 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]], by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Cor.Raca"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Cor.Raca"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Cor.Raca"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Cor.Raca","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Cor.Raca", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Cor.Raca"]] <- merge(ds, lemms[["grupo:Cor.Raca"]],
+                                          by=c("grupo","Cor.Raca"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | Branca   |  45 |  41.378 |    2.626 |    36.600 |      3.007 |  30.951 |    1.399 |
-| Controle     | Indígena |  11 |  42.000 |    5.215 |    45.636 |      6.009 |  39.393 |    2.820 |
-| Controle     | Parda    | 150 |  36.320 |    1.578 |    33.887 |      1.695 |  33.075 |    0.763 |
-| Experimental | Branca   |  58 |  34.517 |    2.651 |    34.586 |      2.746 |  35.499 |    1.226 |
-| Experimental | Indígena |  15 |  27.067 |    4.406 |    30.333 |      4.574 |  38.371 |    2.420 |
-| Experimental | Parda    | 175 |  33.851 |    1.343 |    33.514 |      1.460 |  35.064 |    0.707 |
+| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | Branca   |  45 |  41.378 |    2.626 |    36.600 |      3.007 |  30.951 |    1.399 |   28.202 |    33.701 |
+| Controle     | Indígena |  11 |  42.000 |    5.215 |    45.636 |      6.009 |  39.393 |    2.820 |   33.851 |    44.935 |
+| Controle     | Parda    | 150 |  36.320 |    1.578 |    33.887 |      1.695 |  33.075 |    0.763 |   31.576 |    34.574 |
+| Experimental | Branca   |  58 |  34.517 |    2.651 |    34.586 |      2.746 |  35.499 |    1.226 |   33.088 |    37.909 |
+| Experimental | Indígena |  15 |  27.067 |    4.406 |    30.333 |      4.574 |  38.371 |    2.420 |   33.616 |    43.126 |
+| Experimental | Parda    | 175 |  33.851 |    1.343 |    33.514 |      1.460 |  35.064 |    0.707 |   33.674 |    36.453 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Cor.Raca"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Cor.Raca"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-90-1.png)<!-- -->
-
-``` r
-if (!is.null(plots[["Cor.Raca"]]))
-  plots[["Cor.Raca"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Cor.Raca", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
@@ -1202,50 +1418,113 @@ if (!is.null(plots[["Cor.Raca"]]))
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Cor.Raca"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Cor.Raca"]],
-  subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Cor.Raca", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
+```
+
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Cor.Raca"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Cor.Raca"]],
+    subtitle = which(aov$Effect == "grupo:Cor.Raca"))
+}
 ```
 
 ``` r
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-93-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Cor.Raca"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Cor.Raca"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
 ```
 
 ``` r
-plots[["grupo:Cor.Raca"]] + ggplot2::ylab("TDE - Escrita")
-```
-
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
-
-### Checking linearity assumption
-
-``` r
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  plots[["grupo:Cor.Raca"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
 
+### Checking linearity assumption
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Cor.Raca", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Cor.Raca", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Cor.Raca)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
+    ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
+
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Cor.Raca, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1254,7 +1533,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.992  0.0140
 
 ``` r
-levene_test(res, .resid ~ grupo*Cor.Raca)
+if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Cor.Raca)
 ```
 
     ## # A tibble: 1 × 4
@@ -1267,92 +1547,109 @@ levene_test(res, .resid ~ grupo*Cor.Raca)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),], "score.tde.pos", c("grupo","Serie"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["Serie"]]),],
+                         "score.tde.pos", c("grupo","Serie"))
+pdat = pdat[pdat[["Serie"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["Serie"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["Serie"]] = factor(
+  pdat[["Serie"]],
+  level[["Serie"]][level[["Serie"]] %in% unique(pdat[["Serie"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Serie")], pdat[,c("id","grupo","Serie")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
-laov[["grupo:Serie"]] <- get_anova_table(aov)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
+  laov[["grupo:Serie"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ Serie,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, Serie), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ Serie,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, Serie), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","Serie")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- ds
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:Serie"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","Serie")], wdat[,c("id","grupo","Serie")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:Serie"]] = wdat
+  
+  (non.normal)
+}
 ```
 
-    ##  [1] "P962"  "P1128" "P984"  "P1129" "P1971" "P1126" "P1139" "P2835" "P2983" "P572"  "P1117" "P3571" "P3537"
-    ## [14] "P3574" "P1983" "P2848" "P809"  "P3637" "P2910" "P976"  "P2870" "P2969" "P2866" "P3732" "P2913" "P921" 
-    ## [27] "P1018" "P2964" "P1111" "P2967" "P3228" "P929"  "P2959" "P2886" "P914"  "P2995" "P2982" "P2375" "P3241"
-    ## [40] "P2975" "P908"  "P2905" "P2986" "P1068" "P2946" "P2904" "P1878" "P2883" "P2973" "P3533" "P3019" "P2865"
-    ## [53] "P2864" "P1056" "P1152" "P2937" "P2876" "P3007" "P2978" "P2950" "P2871" "P2953" "P2917" "P2948" "P609"
+    ##  [1] "P962"  "P1128" "P984"  "P1129" "P1971" "P1126" "P1139" "P2835" "P2983" "P572"  "P1117"
+    ## [12] "P3571" "P3537" "P3574" "P1983" "P2848" "P809"  "P3637" "P2910" "P976"  "P2870" "P2969"
+    ## [23] "P2866" "P3732" "P2913" "P921"  "P1018" "P2964" "P1111" "P2967" "P3228" "P929"  "P2959"
+    ## [34] "P2886" "P914"  "P2995" "P2982" "P2375" "P3241" "P2975" "P908"  "P2905" "P2986" "P1068"
+    ## [45] "P2946" "P2904" "P1878" "P2883" "P2973" "P3533" "P3019" "P2865" "P2864" "P1056" "P1152"
+    ## [56] "P2937" "P2876" "P3007" "P2978" "P2950" "P2871" "P2953" "P2917" "P2948" "P609"
 
 ``` r
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
-laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*Serie)
+  laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##          Effect DFn  DFd        F        p p<.05   ges
-    ## 1 score.tde.pre   1 1047 3720.788 0.00e+00     * 0.780
-    ## 2         grupo   1 1047   23.855 1.20e-06     * 0.022
-    ## 3         Serie   3 1047   34.727 2.13e-21     * 0.090
-    ## 4   grupo:Serie   3 1047    3.528 1.50e-02     * 0.010
 
 | Effect        | DFn |  DFd |        F |     p | p\<.05 |   ges |
 |:--------------|----:|-----:|---------:|------:|:-------|------:|
@@ -1362,16 +1659,18 @@ laov[["grupo:Serie"]] <- merge(get_anova_table(aov), laov[["grupo:Serie"]], by="
 | grupo:Serie   |   3 | 1047 |    3.528 | 0.015 | \*     | 0.010 |
 
 ``` r
-pwcs <- list()
-pwcs[["Serie"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ Serie,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, Serie), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
-pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["Serie"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ Serie,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, Serie), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["Serie"]])
+  pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Serie")])]
+}
 ```
 
 | grupo        | Serie | term                 | .y.           | group1   | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1394,10 +1693,15 @@ pwc <- pwc[,c("grupo","Serie", colnames(pwc)[!colnames(pwc) %in% c("grupo","Seri
 | Experimental |       | score.tde.pre\*Serie | score.tde.pos | 8 ano    | 9 ano        | 1047 |    -0.688 | 0.492 | 1.000 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Serie"]], by=c("grupo","Serie","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","Serie")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:Serie"]],
+                                         by=c("grupo","Serie","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | Serie | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1412,106 +1716,157 @@ lpwc[["grupo:Serie"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:Ser
 | Experimental | 9 ano | time | score.tde | pre    | pos    | 2096 |    -1.132 | 0.258 | 0.258 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","Serie"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]], by=c("grupo","Serie"), suffixes = c("","'"))
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","Serie"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","Serie"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","Serie"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","Serie","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","Serie", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:Serie"]] <- merge(ds, lemms[["grupo:Serie"]],
+                                          by=c("grupo","Serie"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 6 ano | 126 |  28.444 |    1.766 |    24.619 |      1.828 |  32.399 |    0.756 |
-| Controle     | 7 ano | 127 |  34.024 |    1.632 |    28.000 |      1.773 |  30.663 |    0.744 |
-| Controle     | 8 ano |  86 |  42.430 |    1.785 |    40.337 |      1.933 |  35.292 |    0.906 |
-| Controle     | 9 ano | 116 |  46.612 |    1.611 |    46.914 |      1.537 |  38.034 |    0.790 |
-| Experimental | 6 ano | 150 |  28.607 |    1.324 |    25.020 |      1.367 |  32.651 |    0.694 |
-| Experimental | 7 ano | 170 |  36.294 |    1.168 |    34.500 |      1.284 |  35.081 |    0.642 |
-| Experimental | 8 ano | 141 |  39.248 |    1.525 |    41.255 |      1.600 |  39.128 |    0.705 |
-| Experimental | 9 ano | 140 |  43.143 |    1.354 |    45.514 |      1.288 |  39.815 |    0.713 |
+| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 6 ano | 126 |  28.444 |    1.766 |    24.619 |      1.828 |  32.399 |    0.756 |   30.915 |    33.882 |
+| Controle     | 7 ano | 127 |  34.024 |    1.632 |    28.000 |      1.773 |  30.663 |    0.744 |   29.204 |    32.123 |
+| Controle     | 8 ano |  86 |  42.430 |    1.785 |    40.337 |      1.933 |  35.292 |    0.906 |   33.514 |    37.069 |
+| Controle     | 9 ano | 116 |  46.612 |    1.611 |    46.914 |      1.537 |  38.034 |    0.790 |   36.483 |    39.584 |
+| Experimental | 6 ano | 150 |  28.607 |    1.324 |    25.020 |      1.367 |  32.651 |    0.694 |   31.288 |    34.013 |
+| Experimental | 7 ano | 170 |  36.294 |    1.168 |    34.500 |      1.284 |  35.081 |    0.642 |   33.822 |    36.340 |
+| Experimental | 8 ano | 141 |  39.248 |    1.525 |    41.255 |      1.600 |  39.128 |    0.705 |   37.744 |    40.512 |
+| Experimental | 9 ano | 140 |  43.143 |    1.354 |    45.514 |      1.288 |  39.815 |    0.713 |   38.416 |    41.215 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","Serie"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["Serie"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-114-1.png)<!-- -->
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-116-1.png)<!-- -->
 
 ``` r
-if (!is.null(plots[["Serie"]]))
-  plots[["Serie"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
-
-    ## Warning: `position_dodge()` requires non-overlapping x intervals
-
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-115-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","Serie"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:Serie"]],
-  subtitle = which(aov$Effect == "grupo:Serie"))
-```
-
-``` r
-plots[["grupo:Serie"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
-```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-117-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","Serie"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","Serie"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:Serie"]],
+    subtitle = which(aov$Effect == "grupo:Serie"))
+}
 ```
 
 ``` r
-plots[["grupo:Serie"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots[["grupo:Serie"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-119-1.png)<!-- -->
 
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","Serie"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
+```
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  plots[["grupo:Serie"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-121-1.png)<!-- -->
+
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","Serie"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","Serie"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-120-1.png)<!-- -->
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-122-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "Serie", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["Serie"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "Serie", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = Serie)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
+    ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-124-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*Serie, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["Serie"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1520,7 +1875,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.996 0.00727
 
 ``` r
-levene_test(res, .resid ~ grupo*Serie)
+if (length(unique(pdat[["Serie"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*Serie)
 ```
 
     ## # A tibble: 1 × 4
@@ -1533,95 +1889,113 @@ levene_test(res, .resid ~ grupo*Serie)
 ## Without remove non-normal data
 
 ``` r
-pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["score.tde.quintile"]]),], "score.tde.pos", c("grupo","score.tde.quintile"))
+pdat = remove_group_data(dat[!is.na(dat[["grupo"]]) & !is.na(dat[["score.tde.quintile"]]),],
+                         "score.tde.pos", c("grupo","score.tde.quintile"))
+pdat = pdat[pdat[["score.tde.quintile"]] %in% do.call(
+  intersect, lapply(unique(pdat[["grupo"]]), FUN = function(x) {
+    unique(pdat[["score.tde.quintile"]][which(pdat[["grupo"]] == x)])
+  })),]
+pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
+pdat[["score.tde.quintile"]] = factor(
+  pdat[["score.tde.quintile"]],
+  level[["score.tde.quintile"]][level[["score.tde.quintile"]] %in% unique(pdat[["score.tde.quintile"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","score.tde.quintile")], pdat[,c("id","grupo","score.tde.quintile")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
 pdat.long[["time"]] <- factor(pdat.long[["time"]], c("pre","pos"))
 pdat.long[["score.tde"]] <- c(pdat[["score.tde.pre"]], pdat[["score.tde.pos"]])
 
-aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
-laov[["grupo:score.tde.quintile"]] <- get_anova_table(aov)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  aov = anova_test(pdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
+  laov[["grupo:score.tde.quintile"]] <- get_anova_table(aov)
+}
 ```
 
 ``` r
-pwcs <- list()
-pwcs[["score.tde.quintile"]] <- emmeans_test(
-  group_by(pdat, grupo), score.tde.pos ~ score.tde.quintile,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(pdat, score.tde.quintile), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
-pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["score.tde.quintile"]] <- emmeans_test(
+    group_by(pdat, grupo), score.tde.pos ~ score.tde.quintile,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(pdat, score.tde.quintile), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
+  pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+}
 ```
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","score.tde.quintile")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:score.tde.quintile"]] <- plyr::rbind.fill(pwc, pwc.long)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(pdat.long, c("grupo","score.tde.quintile")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:score.tde.quintile"]] <- plyr::rbind.fill(pwc, pwc.long)
+}
 ```
 
 ``` r
-ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:score.tde.quintile"]] <- ds
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ds <- get.descriptives(pdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre","mean","se",
+              "emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:score.tde.quintile"]] <- ds
+}
 ```
 
 ## Computing ANCOVA and PairWise After removing non-normal data (OK)
 
 ``` r
-wdat = pdat 
-
-res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
-non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
-
-wdat = wdat[!wdat$id %in% non.normal,]
-
-wdat.long <- rbind(wdat[,c("id","grupo","score.tde.quintile")], wdat[,c("id","grupo","score.tde.quintile")])
-wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
-wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
-wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
-
-
-ldat[["grupo:score.tde.quintile"]] = wdat
-
-(non.normal)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  wdat = pdat 
+  
+  res = residuals(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
+  non.normal = getNonNormal(res, wdat$id, plimit = 0.05)
+  
+  wdat = wdat[!wdat$id %in% non.normal,]
+  
+  wdat.long <- rbind(wdat[,c("id","grupo","score.tde.quintile")], wdat[,c("id","grupo","score.tde.quintile")])
+  wdat.long[["time"]] <- c(rep("pre", nrow(wdat)), rep("pos", nrow(wdat)))
+  wdat.long[["time"]] <- factor(wdat.long[["time"]], c("pre","pos"))
+  wdat.long[["score.tde"]] <- c(wdat[["score.tde.pre"]], wdat[["score.tde.pos"]])
+  
+  
+  ldat[["grupo:score.tde.quintile"]] = wdat
+  
+  (non.normal)
+}
 ```
 
-    ##   [1] "P984"  "P1128" "P962"  "P1129" "P3637" "P1971" "P1117" "P1126" "P2950" "P2883" "P2910" "P3019" "P2982"
-    ##  [14] "P2904" "P2864" "P2959" "P3054" "P1139" "P2835" "P921"  "P2983" "P2994" "P2880" "P2917" "P2848" "P2866"
-    ##  [27] "P3005" "P929"  "P2870" "P572"  "P3674" "P3548" "P3021" "P809"  "P3080" "P2997" "P3666" "P3660" "P2867"
-    ##  [40] "P1878" "P2858" "P2846" "P1840" "P3007" "P3545" "P3533" "P2861" "P2993" "P2953" "P1111" "P2969" "P1804"
-    ##  [53] "P2876" "P1018" "P3228" "P2854" "P2871" "P2929" "P908"  "P2964" "P1046" "P2190" "P2879" "P2948" "P1118"
-    ##  [66] "P2967" "P2956" "P2973" "P2946" "P2865" "P2831" "P3000" "P2995" "P976"  "P2937" "P1145" "P3029" "P2971"
-    ##  [79] "P2951" "P2886" "P2913" "P2977" "P1885" "P3026" "P931"  "P3475" "P924"  "P2952" "P2974" "P1024" "P3520"
-    ##  [92] "P3136" "P914"  "P3280" "P1130" "P1825" "P2850" "P2888" "P1968" "P1083" "P1887" "P2905" "P3459" "P3574"
+    ##   [1] "P984"  "P1128" "P962"  "P1129" "P3637" "P1971" "P1117" "P1126" "P2950" "P2883" "P2910"
+    ##  [12] "P3019" "P2982" "P2904" "P2864" "P2959" "P3054" "P1139" "P2835" "P921"  "P2983" "P2994"
+    ##  [23] "P2880" "P2917" "P2848" "P2866" "P3005" "P929"  "P2870" "P572"  "P3674" "P3548" "P3021"
+    ##  [34] "P809"  "P3080" "P2997" "P3666" "P3660" "P2867" "P1878" "P2858" "P2846" "P1840" "P3007"
+    ##  [45] "P3545" "P3533" "P2861" "P2993" "P2953" "P1111" "P2969" "P1804" "P2876" "P1018" "P3228"
+    ##  [56] "P2854" "P2871" "P2929" "P908"  "P2964" "P1046" "P2190" "P2879" "P2948" "P1118" "P2967"
+    ##  [67] "P2956" "P2973" "P2946" "P2865" "P2831" "P3000" "P2995" "P976"  "P2937" "P1145" "P3029"
+    ##  [78] "P2971" "P2951" "P2886" "P2913" "P2977" "P1885" "P3026" "P931"  "P3475" "P924"  "P2952"
+    ##  [89] "P2974" "P1024" "P3520" "P3136" "P914"  "P3280" "P1130" "P1825" "P2850" "P2888" "P1968"
+    ## [100] "P1083" "P1887" "P2905" "P3459" "P3574"
 
 ``` r
-aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
-laov[["grupo:score.tde.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:score.tde.quintile"]], by="Effect", suffixes = c("","'"))
-
-(df = get_anova_table(aov))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  aov = anova_test(wdat, score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile)
+  laov[["grupo:score.tde.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:score.tde.quintile"]],
+                                         by="Effect", suffixes = c("","'"))
+  df = get_anova_table(aov)
+}
 ```
-
-    ## ANOVA Table (type II tests)
-    ## 
-    ##                     Effect DFn  DFd       F        p p<.05   ges
-    ## 1            score.tde.pre   1 1006 264.709 5.14e-53     * 0.208
-    ## 2                    grupo   1 1006  37.367 1.40e-09     * 0.036
-    ## 3       score.tde.quintile   4 1006   3.315 1.00e-02     * 0.013
-    ## 4 grupo:score.tde.quintile   4 1006   2.738 2.80e-02     * 0.011
 
 | Effect                   | DFn |  DFd |       F |     p | p\<.05 |   ges |
 |:-------------------------|----:|-----:|--------:|------:|:-------|------:|
@@ -1631,16 +2005,18 @@ laov[["grupo:score.tde.quintile"]] <- merge(get_anova_table(aov), laov[["grupo:s
 | grupo:score.tde.quintile |   4 | 1006 |   2.738 | 0.028 | \*     | 0.011 |
 
 ``` r
-pwcs <- list()
-pwcs[["score.tde.quintile"]] <- emmeans_test(
-  group_by(wdat, grupo), score.tde.pos ~ score.tde.quintile,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-pwcs[["grupo"]] <- emmeans_test(
-  group_by(wdat, score.tde.quintile), score.tde.pos ~ grupo,
-  covariate = score.tde.pre, p.adjust.method = "bonferroni")
-
-pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
-pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwcs <- list()
+  pwcs[["score.tde.quintile"]] <- emmeans_test(
+    group_by(wdat, grupo), score.tde.pos ~ score.tde.quintile,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  pwcs[["grupo"]] <- emmeans_test(
+    group_by(wdat, score.tde.quintile), score.tde.pos ~ grupo,
+    covariate = score.tde.pre, p.adjust.method = "bonferroni")
+  
+  pwc <- plyr::rbind.fill(pwcs[["grupo"]], pwcs[["score.tde.quintile"]])
+  pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c("grupo","score.tde.quintile")])]
+}
 ```
 
 | grupo        | score.tde.quintile | term                              | .y.           | group1       | group2       |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1672,10 +2048,15 @@ pwc <- pwc[,c("grupo","score.tde.quintile", colnames(pwc)[!colnames(pwc) %in% c(
 | Experimental |                    | score.tde.pre\*score.tde.quintile | score.tde.pos | 4th quintile | 5th quintile | 1006 |     0.707 | 0.480 | 1.000 | ns           |
 
 ``` r
-pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","score.tde.quintile")),
-                         score.tde ~ time,
-                         p.adjust.method = "bonferroni")
-lpwc[["grupo:score.tde.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpwc[["grupo:score.tde.quintile"]], by=c("grupo","score.tde.quintile","term",".y.","group1","group2"), suffixes = c("","'"))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, c("grupo","score.tde.quintile")),
+                           score.tde ~ time,
+                           p.adjust.method = "bonferroni")
+  lpwc[["grupo:score.tde.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long),
+                                         lpwc[["grupo:score.tde.quintile"]],
+                                         by=c("grupo","score.tde.quintile","term",".y.","group1","group2"),
+                                         suffixes = c("","'"))
+}
 ```
 
 | grupo        | score.tde.quintile | term | .y.       | group1 | group2 |   df | statistic |     p | p.adj | p.adj.signif |
@@ -1692,108 +2073,162 @@ lpwc[["grupo:score.tde.quintile"]] <- merge(plyr::rbind.fill(pwc, pwc.long), lpw
 | Experimental | 5th quintile       | time | score.tde | pre    | pos    | 2014 |     1.120 | 0.263 | 0.263 | ns           |
 
 ``` r
-ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
-ds <- merge(ds[ds$variable != "score.tde.pre",],
-            ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
-            by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
-ds <- merge(get_emmeans(pwcs[["grupo"]]), ds, by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
-ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre","mean","se","emmean","se.emms")]
-
-colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
-                  paste0(c("M","SE"), " (unadj)"), paste0(c("M", "SE"), " (adj)"))
-
-lemms[["grupo:score.tde.quintile"]] <- merge(ds, lemms[["grupo:score.tde.quintile"]], by=c("grupo","score.tde.quintile"), suffixes = c("","'"))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ds <- get.descriptives(wdat, "score.tde.pos", c("grupo","score.tde.quintile"), covar = "score.tde.pre")
+  ds <- merge(ds[ds$variable != "score.tde.pre",],
+              ds[ds$variable == "score.tde.pre", !colnames(ds) %in% c("variable")],
+              by = c("grupo","score.tde.quintile"), all.x = T, suffixes = c("", ".score.tde.pre"))
+  ds <- merge(get_emmeans(pwcs[["grupo"]]), ds,
+              by = c("grupo","score.tde.quintile"), suffixes = c(".emms", ""))
+  ds <- ds[,c("grupo","score.tde.quintile","n","mean.score.tde.pre","se.score.tde.pre",
+              "mean","se","emmean","se.emms","conf.low","conf.high")]
+  
+  colnames(ds) <- c("grupo","score.tde.quintile", "N", paste0(c("M","SE")," (pre)"),
+                    paste0(c("M","SE"), " (unadj)"),
+                    paste0(c("M", "SE"), " (adj)"), "conf.low", "conf.high")
+  
+  lemms[["grupo:score.tde.quintile"]] <- merge(ds, lemms[["grupo:score.tde.quintile"]],
+                                          by=c("grupo","score.tde.quintile"), suffixes = c("","'"))
+}
 ```
 
-| grupo        | score.tde.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |
-|:-------------|:-------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|
-| Controle     | 1st quintile       | 112 |   9.152 |    0.522 |     8.205 |      0.750 |  34.585 |    1.783 |
-| Controle     | 2nd quintile       |  51 |  24.392 |    0.530 |    20.137 |      1.288 |  32.089 |    1.322 |
-| Controle     | 3rd quintile       |  42 |  38.905 |    0.489 |    31.667 |      1.800 |  29.879 |    1.216 |
-| Controle     | 4th quintile       | 125 |  47.544 |    0.223 |    44.840 |      0.850 |  34.874 |    0.932 |
-| Controle     | 5th quintile       | 116 |  58.819 |    0.505 |    56.362 |      0.792 |  35.722 |    1.463 |
-| Experimental | 1st quintile       | 108 |   9.602 |    0.522 |    10.935 |      0.788 |  36.889 |    1.765 |
-| Experimental | 2nd quintile       | 101 |  25.842 |    0.347 |    25.040 |      0.976 |  35.619 |    1.016 |
-| Experimental | 3rd quintile       | 116 |  37.371 |    0.301 |    37.233 |      0.859 |  36.898 |    0.729 |
-| Experimental | 4th quintile       | 120 |  46.800 |    0.230 |    47.308 |      0.725 |  38.047 |    0.915 |
-| Experimental | 5th quintile       | 126 |  58.563 |    0.448 |    57.587 |      0.700 |  37.189 |    1.435 |
+| grupo        | score.tde.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:-------------|:-------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
+| Controle     | 1st quintile       | 112 |   9.152 |    0.522 |     8.205 |      0.750 |  34.585 |    1.783 |   31.086 |    38.083 |
+| Controle     | 2nd quintile       |  51 |  24.392 |    0.530 |    20.137 |      1.288 |  32.089 |    1.322 |   29.495 |    34.682 |
+| Controle     | 3rd quintile       |  42 |  38.905 |    0.489 |    31.667 |      1.800 |  29.879 |    1.216 |   27.493 |    32.265 |
+| Controle     | 4th quintile       | 125 |  47.544 |    0.223 |    44.840 |      0.850 |  34.874 |    0.932 |   33.046 |    36.702 |
+| Controle     | 5th quintile       | 116 |  58.819 |    0.505 |    56.362 |      0.792 |  35.722 |    1.463 |   32.851 |    38.593 |
+| Experimental | 1st quintile       | 108 |   9.602 |    0.522 |    10.935 |      0.788 |  36.889 |    1.765 |   33.425 |    40.352 |
+| Experimental | 2nd quintile       | 101 |  25.842 |    0.347 |    25.040 |      0.976 |  35.619 |    1.016 |   33.625 |    37.613 |
+| Experimental | 3rd quintile       | 116 |  37.371 |    0.301 |    37.233 |      0.859 |  36.898 |    0.729 |   35.467 |    38.328 |
+| Experimental | 4th quintile       | 120 |  46.800 |    0.230 |    47.308 |      0.725 |  38.047 |    0.915 |   36.251 |    39.842 |
+| Experimental | 5th quintile       | 126 |  58.563 |    0.448 |    57.587 |      0.700 |  37.189 |    1.435 |   34.372 |    40.006 |
 
 ### Plots for ancova
 
 ``` r
-plots <- twoWayAncovaPlots(
-  wdat, "score.tde.pos", c("grupo","score.tde.quintile"), aov, pwcs, addParam = c("mean_se"),
-  font.label.size=10, step.increase=0.05, p.label="p.adj",
-  subtitle = which(aov$Effect == "grupo:score.tde.quintile"))
-```
-
-``` r
-if (!is.null(plots[["grupo"]]))
-  plots[["grupo"]] + ggplot2::scale_color_manual(values = color[["score.tde.quintile"]])
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggPlotAoC2(pwcs, "grupo", "score.tde.quintile", aov, ylab = "Writing (TDE)",
+             subtitle = which(aov$Effect == "grupo:score.tde.quintile"), addParam = "errorbar") +
+    ggplot2::scale_color_manual(values = color[["score.tde.quintile"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
-
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-138-1.png)<!-- -->
-
-``` r
-if (!is.null(plots[["score.tde.quintile"]]))
-  plots[["score.tde.quintile"]] + ggplot2::scale_color_manual(values = color[["grupo"]])
-```
-
-    ## Scale for colour is already present.
-    ## Adding another scale for colour, which will replace the existing scale.
-
-    ## Warning: `position_dodge()` requires non-overlapping x intervals
-
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-139-1.png)<!-- -->
-
-``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat, "score.tde.pos", c("grupo","score.tde.quintile"), aov, pwcs, covar = "score.tde.pre",
-  theme = "classic", color = color[["grupo:score.tde.quintile"]],
-  subtitle = which(aov$Effect == "grupo:score.tde.quintile"))
-```
-
-``` r
-plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("TDE - Escrita") + ggplot2::scale_x_discrete(labels=c('pre', 'pos'))
-```
 
 ![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-141-1.png)<!-- -->
 
 ``` r
-plots <- twoWayAncovaBoxPlots(
-  wdat.long, "score.tde", c("grupo","score.tde.quintile"), aov, pwc.long, pre.post = "time",
-  theme = "classic", color = color$prepost)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggPlotAoC2(pwcs, "score.tde.quintile", "grupo", aov, ylab = "Writing (TDE)",
+               subtitle = which(aov$Effect == "grupo:score.tde.quintile"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+}
+```
+
+    ## Scale for colour is already present.
+    ## Adding another scale for colour, which will replace the existing scale.
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-142-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat, "score.tde.pos", c("grupo","score.tde.quintile"), aov, pwcs, covar = "score.tde.pre",
+    theme = "classic", color = color[["grupo:score.tde.quintile"]],
+    subtitle = which(aov$Effect == "grupo:score.tde.quintile"))
+}
 ```
 
 ``` r
-plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("TDE - Escrita")
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("Writing (TDE)") +
+  ggplot2::scale_x_discrete(labels=c('pre', 'pos')) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-143-1.png)<!-- -->
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
+    ## values.
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-144-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  plots <- twoWayAncovaBoxPlots(
+    wdat.long, "score.tde", c("grupo","score.tde.quintile"), aov, pwc.long,
+    pre.post = "time",
+    theme = "classic", color = color$prepost)
+}
+```
+
+``` r
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) 
+  plots[["grupo:score.tde.quintile"]] + ggplot2::ylab("Writing (TDE)") +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-146-1.png)<!-- -->
 
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
-          facet.by = c("grupo","score.tde.quintile"), add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-  )
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            facet.by = c("grupo","score.tde.quintile"), add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
+    ) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
 ```
 
-![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-144-1.png)<!-- -->
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-147-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "grupo", facet.by = "score.tde.quintile", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:score.tde.quintile"))) +
+    ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-148-1.png)<!-- -->
+
+``` r
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) {
+  ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+            color = "score.tde.quintile", facet.by = "grupo", add = "reg.line")+
+    stat_regline_equation(
+      aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = score.tde.quintile)
+    ) +
+    ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:score.tde.quintile"))) +
+    ggplot2::scale_color_manual(values = color[["score.tde.quintile"]]) +
+    if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+}
+```
+
+![](aov-wordgen-score.tde_files/figure-gfm/unnamed-chunk-149-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
 ``` r
-res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) 
+  res <- augment(lm(score.tde.pos ~ score.tde.pre + grupo*score.tde.quintile, data = wdat))
 ```
 
 ``` r
-shapiro_test(res$.resid)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2)
+  shapiro_test(res$.resid)
 ```
 
     ## # A tibble: 1 × 3
@@ -1802,7 +2237,8 @@ shapiro_test(res$.resid)
     ## 1 res$.resid     0.996  0.0129
 
 ``` r
-levene_test(res, .resid ~ grupo*score.tde.quintile)
+if (length(unique(pdat[["score.tde.quintile"]])) >= 2) 
+  levene_test(res, .resid ~ grupo*score.tde.quintile)
 ```
 
     ## # A tibble: 1 × 4
@@ -1819,122 +2255,14 @@ df <- get.descriptives(ldat[["grupo"]], c(dv.pre, dv.pos), c("grupo"),
                        include.global = T, symmetry.test = T, normality.test = F)
 df <- plyr::rbind.fill(
   df, do.call(plyr::rbind.fill, lapply(lfatores2, FUN = function(f) {
-    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1)
+    if (nrow(dat) > 0 && sum(!is.na(unique(dat[[f]]))) > 1 && paste0("grupo:",f) %in% names(ldat))
       get.descriptives(ldat[[paste0("grupo:",f)]], c(dv.pre,dv.pos), c("grupo", f),
                        symmetry.test = T, normality.test = F)
     }))
 )
-(df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
-             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])])
+df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
+             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
-
-    ##           grupo Sexo   Zona Cor.Raca Serie score.tde.quintile      variable   n   mean median min max     sd
-    ## 1      Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre 424 37.351   45.0   0  75 20.069
-    ## 2  Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre 557 36.770   39.0   0  73 17.478
-    ## 3          <NA> <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pre 981 37.021   42.0   0  75 18.635
-    ## 4      Controle <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos 424 35.432   40.0   0  73 20.965
-    ## 5  Experimental <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos 557 37.230   40.0   0  74 18.335
-    ## 6          <NA> <NA>   <NA>     <NA>  <NA>               <NA> score.tde.pos 981 36.453   40.0   0  74 19.525
-    ## 7      Controle    F   <NA>     <NA>  <NA>               <NA> score.tde.pre 208 40.635   47.0   0  72 18.428
-    ## 8      Controle    M   <NA>     <NA>  <NA>               <NA> score.tde.pre 211 33.934   42.0   0  75 21.161
-    ## 9  Experimental    F   <NA>     <NA>  <NA>               <NA> score.tde.pre 276 39.623   43.5   0  73 17.500
-    ## 10 Experimental    M   <NA>     <NA>  <NA>               <NA> score.tde.pre 279 34.082   36.0   0  71 17.200
-    ## 11     Controle    F   <NA>     <NA>  <NA>               <NA> score.tde.pos 208 38.615   44.0   0  71 19.482
-    ## 12     Controle    M   <NA>     <NA>  <NA>               <NA> score.tde.pos 211 32.393   33.0   0  73 22.040
-    ## 13 Experimental    F   <NA>     <NA>  <NA>               <NA> score.tde.pos 276 40.272   45.0   0  73 18.658
-    ## 14 Experimental    M   <NA>     <NA>  <NA>               <NA> score.tde.pos 279 34.484   37.0   0  74 17.582
-    ## 15     Controle <NA>  Rural     <NA>  <NA>               <NA> score.tde.pre 228 35.956   43.5   0  69 20.084
-    ## 16     Controle <NA> Urbana     <NA>  <NA>               <NA> score.tde.pre 101 39.743   45.0   1  75 18.324
-    ## 17 Experimental <NA>  Rural     <NA>  <NA>               <NA> score.tde.pre 260 34.215   34.5   0  73 17.945
-    ## 18 Experimental <NA> Urbana     <NA>  <NA>               <NA> score.tde.pre 151 38.318   42.0   0  71 17.068
-    ## 19     Controle <NA>  Rural     <NA>  <NA>               <NA> score.tde.pos 228 34.978   42.0   0  72 21.528
-    ## 20     Controle <NA> Urbana     <NA>  <NA>               <NA> score.tde.pos 101 31.099   30.0   0  73 20.538
-    ## 21 Experimental <NA>  Rural     <NA>  <NA>               <NA> score.tde.pos 260 34.777   36.0   0  72 19.125
-    ## 22 Experimental <NA> Urbana     <NA>  <NA>               <NA> score.tde.pos 151 36.099   40.0   0  74 18.449
-    ## 23     Controle <NA>   <NA>   Branca  <NA>               <NA> score.tde.pre  45 41.378   46.0   2  67 17.619
-    ## 24     Controle <NA>   <NA> Indígena  <NA>               <NA> score.tde.pre  11 42.000   46.0   4  65 17.297
-    ## 25     Controle <NA>   <NA>    Parda  <NA>               <NA> score.tde.pre 150 36.320   43.0   0  66 19.333
-    ## 26 Experimental <NA>   <NA>   Branca  <NA>               <NA> score.tde.pre  58 34.517   35.5   0  73 20.186
-    ## 27 Experimental <NA>   <NA> Indígena  <NA>               <NA> score.tde.pre  15 27.067   26.0   6  54 17.065
-    ## 28 Experimental <NA>   <NA>    Parda  <NA>               <NA> score.tde.pre 175 33.851   35.0   0  68 17.760
-    ## 29     Controle <NA>   <NA>   Branca  <NA>               <NA> score.tde.pos  45 36.600   43.0   0  72 20.175
-    ## 30     Controle <NA>   <NA> Indígena  <NA>               <NA> score.tde.pos  11 45.636   52.0   4  63 19.931
-    ## 31     Controle <NA>   <NA>    Parda  <NA>               <NA> score.tde.pos 150 33.887   39.5   0  68 20.756
-    ## 32 Experimental <NA>   <NA>   Branca  <NA>               <NA> score.tde.pos  58 34.586   34.5   0  72 20.910
-    ## 33 Experimental <NA>   <NA> Indígena  <NA>               <NA> score.tde.pos  15 30.333   26.0   1  57 17.715
-    ## 34 Experimental <NA>   <NA>    Parda  <NA>               <NA> score.tde.pos 175 33.514   32.0   0  71 19.317
-    ## 35     Controle <NA>   <NA>     <NA> 6 ano               <NA> score.tde.pre 126 28.444   25.0   0  63 19.827
-    ## 36     Controle <NA>   <NA>     <NA> 7 ano               <NA> score.tde.pre 127 34.024   41.0   0  69 18.393
-    ## 37     Controle <NA>   <NA>     <NA> 8 ano               <NA> score.tde.pre  86 42.430   46.5   0  72 16.556
-    ## 38     Controle <NA>   <NA>     <NA> 9 ano               <NA> score.tde.pre 116 46.612   51.0   0  75 17.352
-    ## 39 Experimental <NA>   <NA>     <NA> 6 ano               <NA> score.tde.pre 150 28.607   29.0   0  65 16.217
-    ## 40 Experimental <NA>   <NA>     <NA> 7 ano               <NA> score.tde.pre 170 36.294   37.0   0  68 15.233
-    ## 41 Experimental <NA>   <NA>     <NA> 8 ano               <NA> score.tde.pre 141 39.248   44.0   0  73 18.114
-    ## 42 Experimental <NA>   <NA>     <NA> 9 ano               <NA> score.tde.pre 140 43.143   45.0   0  71 16.016
-    ## 43     Controle <NA>   <NA>     <NA> 6 ano               <NA> score.tde.pos 126 24.619   20.0   0  66 20.516
-    ## 44     Controle <NA>   <NA>     <NA> 7 ano               <NA> score.tde.pos 127 28.000   24.0   0  70 19.979
-    ## 45     Controle <NA>   <NA>     <NA> 8 ano               <NA> score.tde.pos  86 40.337   43.5   0  71 17.930
-    ## 46     Controle <NA>   <NA>     <NA> 9 ano               <NA> score.tde.pos 116 46.914   50.0   0  73 16.558
-    ## 47 Experimental <NA>   <NA>     <NA> 6 ano               <NA> score.tde.pos 150 25.020   23.0   0  65 16.738
-    ## 48 Experimental <NA>   <NA>     <NA> 7 ano               <NA> score.tde.pos 170 34.500   37.0   0  67 16.741
-    ## 49 Experimental <NA>   <NA>     <NA> 8 ano               <NA> score.tde.pos 141 41.255   45.0   0  73 18.995
-    ## 50 Experimental <NA>   <NA>     <NA> 9 ano               <NA> score.tde.pos 140 45.514   49.0   0  74 15.245
-    ## 51     Controle <NA>   <NA>     <NA>  <NA>       1st quintile score.tde.pre 112  9.152   10.0   0  18  5.522
-    ## 52     Controle <NA>   <NA>     <NA>  <NA>       2nd quintile score.tde.pre  51 24.392   25.0  19  31  3.785
-    ##       se     ci   iqr symmetry     skewness    kurtosis
-    ## 1  0.975  1.916 34.00      YES -0.404185114 -1.16523877
-    ## 2  0.741  1.455 26.00      YES -0.312541352 -0.79618416
-    ## 3  0.595  1.168 29.00      YES -0.358240953 -0.97079556
-    ## 4  1.018  2.001 38.00      YES -0.276998341 -1.21695538
-    ## 5  0.777  1.526 27.00      YES -0.294157067 -0.85835599
-    ## 6  0.623  1.223 31.00      YES -0.304832079 -1.00824864
-    ## 7  1.278  2.519 28.00       NO -0.660142927 -0.76379323
-    ## 8  1.457  2.872 38.00      YES -0.125797643 -1.37478969
-    ## 9  1.053  2.074 26.00      YES -0.489928907 -0.69156479
-    ## 10 1.030  2.027 26.00      YES -0.173673815 -0.82271076
-    ## 11 1.351  2.663 30.00       NO -0.531727893 -0.97450073
-    ## 12 1.517  2.991 38.00      YES -0.017929050 -1.33188747
-    ## 13 1.123  2.211 28.25      YES -0.483929682 -0.80485976
-    ## 14 1.053  2.072 25.00      YES -0.204536937 -0.75661261
-    ## 15 1.330  2.621 37.00      YES -0.398189401 -1.29610783
-    ## 16 1.823  3.617 28.00      YES -0.349471884 -0.77109665
-    ## 17 1.113  2.192 27.50      YES -0.096071953 -0.90501700
-    ## 18 1.389  2.745 23.50       NO -0.526377673 -0.56307700
-    ## 19 1.426  2.809 38.25      YES -0.286238890 -1.28012368
-    ## 20 2.044  4.054 36.00      YES  0.126267135 -1.23246876
-    ## 21 1.186  2.336 32.00      YES -0.054685985 -1.05626091
-    ## 22 1.501  2.967 25.50      YES -0.390758198 -0.82065972
-    ## 23 2.626  5.293 15.00       NO -0.795219752 -0.47297813
-    ## 24 5.215 11.621  9.50       NO -1.004510894 -0.10394060
-    ## 25 1.578  3.119 33.00       NO -0.562526557 -1.08524807
-    ## 26 2.651  5.308 34.50      YES -0.029858998 -1.11832665
-    ## 27 4.406  9.450 27.00      YES  0.125830264 -1.42236449
-    ## 28 1.343  2.650 28.00      YES -0.110036177 -0.95483165
-    ## 29 3.007  6.061 28.00      YES -0.397927469 -0.99736609
-    ## 30 6.009 13.390 19.50       NO -0.968198478 -0.64463830
-    ## 31 1.695  3.349 39.50      YES -0.286194217 -1.37508986
-    ## 32 2.746  5.498 32.00      YES  0.002059070 -1.16285080
-    ## 33 4.574  9.810 30.50      YES  0.117323915 -1.54214722
-    ## 34 1.460  2.882 31.00      YES  0.015037041 -1.09181935
-    ## 35 1.766  3.496 37.00      YES  0.113863160 -1.54902493
-    ## 36 1.632  3.230 30.00      YES -0.192107612 -1.27682809
-    ## 37 1.785  3.550 18.50       NO -0.821221865  0.14329383
-    ## 38 1.611  3.191 14.25       NO -1.081146413  0.45424678
-    ## 39 1.324  2.617 24.75      YES  0.005867111 -0.95465663
-    ## 40 1.168  2.306 22.00      YES -0.132135261 -0.76482869
-    ## 41 1.525  3.016 26.00       NO -0.544765231 -0.69147985
-    ## 42 1.354  2.676 22.25       NO -0.645832142 -0.06639883
-    ## 43 1.828  3.617 40.75      YES  0.334639618 -1.35628919
-    ## 44 1.773  3.508 34.50      YES  0.320794964 -1.22355885
-    ## 45 1.933  3.844 26.75       NO -0.595004070 -0.45061231
-    ## 46 1.537  3.045 18.25       NO -0.868718862  0.16967270
-    ## 47 1.367  2.701 27.00      YES  0.452424118 -0.66715449
-    ## 48 1.284  2.535 25.75      YES -0.209044020 -0.86307624
-    ## 49 1.600  3.163 26.00       NO -0.560871375 -0.64207657
-    ## 50 1.288  2.547 19.50       NO -0.760984857  0.32960407
-    ## 51 0.522  1.034  8.50      YES -0.089439507 -1.22473719
-    ## 52 0.530  1.064  6.50      YES -0.049054024 -1.18339548
-    ##  [ reached 'max' / getOption("max.print") -- omitted 18 rows ]
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | score.tde.quintile | variable      |   n |   mean | median | min | max |     sd |    se |     ci |   iqr | symmetry | skewness | kurtosis |
 |:-------------|:-----|:-------|:---------|:------|:-------------------|:--------------|----:|-------:|-------:|----:|----:|-------:|------:|-------:|------:|:---------|---------:|---------:|
@@ -1960,18 +2288,18 @@ df <- plyr::rbind.fill(
 | Controle     |      | Urbana |          |       |                    | score.tde.pos | 101 | 31.099 |   30.0 |   0 |  73 | 20.538 | 2.044 |  4.054 | 36.00 | YES      |    0.126 |   -1.232 |
 | Experimental |      | Rural  |          |       |                    | score.tde.pos | 260 | 34.777 |   36.0 |   0 |  72 | 19.125 | 1.186 |  2.336 | 32.00 | YES      |   -0.055 |   -1.056 |
 | Experimental |      | Urbana |          |       |                    | score.tde.pos | 151 | 36.099 |   40.0 |   0 |  74 | 18.449 | 1.501 |  2.967 | 25.50 | YES      |   -0.391 |   -0.821 |
-| Controle     |      |        | Branca   |       |                    | score.tde.pre |  45 | 41.378 |   46.0 |   2 |  67 | 17.619 | 2.626 |  5.293 | 15.00 | NO       |   -0.795 |   -0.473 |
-| Controle     |      |        | Indígena |       |                    | score.tde.pre |  11 | 42.000 |   46.0 |   4 |  65 | 17.297 | 5.215 | 11.621 |  9.50 | NO       |   -1.005 |   -0.104 |
 | Controle     |      |        | Parda    |       |                    | score.tde.pre | 150 | 36.320 |   43.0 |   0 |  66 | 19.333 | 1.578 |  3.119 | 33.00 | NO       |   -0.563 |   -1.085 |
-| Experimental |      |        | Branca   |       |                    | score.tde.pre |  58 | 34.517 |   35.5 |   0 |  73 | 20.186 | 2.651 |  5.308 | 34.50 | YES      |   -0.030 |   -1.118 |
-| Experimental |      |        | Indígena |       |                    | score.tde.pre |  15 | 27.067 |   26.0 |   6 |  54 | 17.065 | 4.406 |  9.450 | 27.00 | YES      |    0.126 |   -1.422 |
+| Controle     |      |        | Indígena |       |                    | score.tde.pre |  11 | 42.000 |   46.0 |   4 |  65 | 17.297 | 5.215 | 11.621 |  9.50 | NO       |   -1.005 |   -0.104 |
+| Controle     |      |        | Branca   |       |                    | score.tde.pre |  45 | 41.378 |   46.0 |   2 |  67 | 17.619 | 2.626 |  5.293 | 15.00 | NO       |   -0.795 |   -0.473 |
 | Experimental |      |        | Parda    |       |                    | score.tde.pre | 175 | 33.851 |   35.0 |   0 |  68 | 17.760 | 1.343 |  2.650 | 28.00 | YES      |   -0.110 |   -0.955 |
-| Controle     |      |        | Branca   |       |                    | score.tde.pos |  45 | 36.600 |   43.0 |   0 |  72 | 20.175 | 3.007 |  6.061 | 28.00 | YES      |   -0.398 |   -0.997 |
-| Controle     |      |        | Indígena |       |                    | score.tde.pos |  11 | 45.636 |   52.0 |   4 |  63 | 19.931 | 6.009 | 13.390 | 19.50 | NO       |   -0.968 |   -0.645 |
+| Experimental |      |        | Indígena |       |                    | score.tde.pre |  15 | 27.067 |   26.0 |   6 |  54 | 17.065 | 4.406 |  9.450 | 27.00 | YES      |    0.126 |   -1.422 |
+| Experimental |      |        | Branca   |       |                    | score.tde.pre |  58 | 34.517 |   35.5 |   0 |  73 | 20.186 | 2.651 |  5.308 | 34.50 | YES      |   -0.030 |   -1.118 |
 | Controle     |      |        | Parda    |       |                    | score.tde.pos | 150 | 33.887 |   39.5 |   0 |  68 | 20.756 | 1.695 |  3.349 | 39.50 | YES      |   -0.286 |   -1.375 |
-| Experimental |      |        | Branca   |       |                    | score.tde.pos |  58 | 34.586 |   34.5 |   0 |  72 | 20.910 | 2.746 |  5.498 | 32.00 | YES      |    0.002 |   -1.163 |
-| Experimental |      |        | Indígena |       |                    | score.tde.pos |  15 | 30.333 |   26.0 |   1 |  57 | 17.715 | 4.574 |  9.810 | 30.50 | YES      |    0.117 |   -1.542 |
+| Controle     |      |        | Indígena |       |                    | score.tde.pos |  11 | 45.636 |   52.0 |   4 |  63 | 19.931 | 6.009 | 13.390 | 19.50 | NO       |   -0.968 |   -0.645 |
+| Controle     |      |        | Branca   |       |                    | score.tde.pos |  45 | 36.600 |   43.0 |   0 |  72 | 20.175 | 3.007 |  6.061 | 28.00 | YES      |   -0.398 |   -0.997 |
 | Experimental |      |        | Parda    |       |                    | score.tde.pos | 175 | 33.514 |   32.0 |   0 |  71 | 19.317 | 1.460 |  2.882 | 31.00 | YES      |    0.015 |   -1.092 |
+| Experimental |      |        | Indígena |       |                    | score.tde.pos |  15 | 30.333 |   26.0 |   1 |  57 | 17.715 | 4.574 |  9.810 | 30.50 | YES      |    0.117 |   -1.542 |
+| Experimental |      |        | Branca   |       |                    | score.tde.pos |  58 | 34.586 |   34.5 |   0 |  72 | 20.910 | 2.746 |  5.498 | 32.00 | YES      |    0.002 |   -1.163 |
 | Controle     |      |        |          | 6 ano |                    | score.tde.pre | 126 | 28.444 |   25.0 |   0 |  63 | 19.827 | 1.766 |  3.496 | 37.00 | YES      |    0.114 |   -1.549 |
 | Controle     |      |        |          | 7 ano |                    | score.tde.pre | 127 | 34.024 |   41.0 |   0 |  69 | 18.393 | 1.632 |  3.230 | 30.00 | YES      |   -0.192 |   -1.277 |
 | Controle     |      |        |          | 8 ano |                    | score.tde.pre |  86 | 42.430 |   46.5 |   0 |  72 | 16.556 | 1.785 |  3.550 | 18.50 | NO       |   -0.821 |    0.143 |
@@ -2013,35 +2341,8 @@ df <- plyr::rbind.fill(
 
 ``` r
 df <- do.call(plyr::rbind.fill, laov)
-(df <- df[!duplicated(df$Effect),])
+df <- df[!duplicated(df$Effect),]
 ```
-
-    ##                      Effect DFn  DFd        F        p p<.05      ges DFn' DFd'       F'        p' p<.05'
-    ## 1                     grupo   1  978   24.670 8.03e-07     * 2.50e-02    1 1118   13.989  1.93e-04      *
-    ## 2             score.tde.pre   1  978 5874.442 0.00e+00     * 8.57e-01    1 1118 2814.834 1.23e-307      *
-    ## 4                grupo:Sexo   1  969    0.548 4.59e-01       5.65e-04    1 1116    0.305  5.81e-01       
-    ## 6                      Sexo   1  969    0.058 8.10e-01       5.94e-05    1 1116    0.148  7.00e-01       
-    ## 8                grupo:Zona   1  735   14.155 1.82e-04     * 1.90e-02    1  798    9.749  2.00e-03      *
-    ## 10                     Zona   1  735   54.679 3.88e-13     * 6.90e-02    1  798   35.734  3.41e-09      *
-    ## 11                 Cor.Raca   2  447    3.357 3.60e-02     * 1.50e-02    2  482    3.984  1.90e-02      *
-    ## 13           grupo:Cor.Raca   2  447    1.174 3.10e-01       5.00e-03    2  482    1.222  2.96e-01       
-    ## 16              grupo:Serie   3 1047    3.528 1.50e-02     * 1.00e-02    3 1112    2.801  3.90e-02      *
-    ## 18                    Serie   3 1047   34.727 2.13e-21     * 9.00e-02    3 1112   30.848  3.71e-19      *
-    ## 20 grupo:score.tde.quintile   4 1006    2.738 2.80e-02     * 1.10e-02    4 1110    1.400  2.32e-01       
-    ## 22       score.tde.quintile   4 1006    3.315 1.00e-02     * 1.30e-02    4 1110    3.862  4.00e-03      *
-    ##        ges'
-    ## 1  0.012000
-    ## 2  0.716000
-    ## 4  0.000273
-    ## 6  0.000133
-    ## 8  0.012000
-    ## 10 0.043000
-    ## 11 0.016000
-    ## 13 0.005000
-    ## 16 0.008000
-    ## 18 0.077000
-    ## 20 0.005000
-    ## 22 0.014000
 
 |     | Effect                   | DFn |  DFd |        F |     p | p\<.05 |   ges | DFn’ | DFd’ |       F’ |    p’ | p\<.05’ |  ges’ |
 |:----|:-------------------------|----:|-----:|---------:|------:|:-------|------:|-----:|-----:|---------:|------:|:--------|------:|
@@ -2062,7 +2363,8 @@ df <- do.call(plyr::rbind.fill, laov)
 
 ``` r
 df <- do.call(plyr::rbind.fill, lpwc)
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
 ```
 
 | grupo        | Sexo | Zona   | Cor.Raca | Serie | score.tde.quintile | group1       | group2       |   df | statistic |     p | p.adj | p.adj.signif |  df’ | statistic’ |    p’ | p.adj’ | p.adj.signif’ |
@@ -2088,15 +2390,15 @@ df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",
 |              |      | Urbana |          |       |                    | Controle     | Experimental |  735 |    -6.023 | 0.000 | 0.000 | \*\*\*\*     |  798 |     -4.521 | 0.000 |  0.000 | \*\*\*\*      |
 | Controle     |      |        | Branca   |       |                    | pre          | pos          |  896 |     1.172 | 0.241 | 0.241 | ns           |  966 |      1.861 | 0.063 |  0.063 | ns            |
 | Controle     |      |        | Indígena |       |                    | pre          | pos          |  896 |    -0.441 | 0.659 | 0.659 | ns           |  966 |     -0.443 | 0.658 |  0.658 | ns            |
-| Controle     |      |        |          |       |                    | Branca       | Indígena     |  447 |    -2.687 | 0.007 | 0.022 | \*           |  482 |     -2.857 | 0.004 |  0.013 | \*            |
-| Controle     |      |        |          |       |                    | Branca       | Parda        |  447 |    -1.334 | 0.183 | 0.549 | ns           |  482 |     -1.348 | 0.178 |  0.535 | ns            |
-| Controle     |      |        |          |       |                    | Indígena     | Parda        |  447 |     2.163 | 0.031 | 0.093 | ns           |  482 |      2.350 | 0.019 |  0.057 | ns            |
+| Controle     |      |        |          |       |                    | Indígena     | Branca       |  447 |     2.687 | 0.007 | 0.022 | \*           |  482 |      2.857 | 0.004 |  0.013 | \*            |
+| Controle     |      |        |          |       |                    | Parda        | Branca       |  447 |     1.334 | 0.183 | 0.549 | ns           |  482 |      1.348 | 0.178 |  0.535 | ns            |
+| Controle     |      |        |          |       |                    | Parda        | Indígena     |  447 |    -2.163 | 0.031 | 0.093 | ns           |  482 |     -2.350 | 0.019 |  0.057 | ns            |
 | Controle     |      |        | Parda    |       |                    | pre          | pos          |  896 |     1.090 | 0.276 | 0.276 | ns           |  966 |      2.002 | 0.046 |  0.046 | \*            |
 | Experimental |      |        | Branca   |       |                    | pre          | pos          |  896 |    -0.019 | 0.985 | 0.985 | ns           |  966 |      0.377 | 0.707 |  0.707 | ns            |
 | Experimental |      |        | Indígena |       |                    | pre          | pos          |  896 |    -0.463 | 0.644 | 0.644 | ns           |  966 |     -0.465 | 0.642 |  0.642 | ns            |
-| Experimental |      |        |          |       |                    | Branca       | Indígena     |  447 |    -1.060 | 0.290 | 0.870 | ns           |  482 |     -1.201 | 0.230 |  0.691 | ns            |
-| Experimental |      |        |          |       |                    | Branca       | Parda        |  447 |     0.308 | 0.759 | 1.000 | ns           |  482 |      0.313 | 0.755 |  1.000 | ns            |
-| Experimental |      |        |          |       |                    | Indígena     | Parda        |  447 |     1.314 | 0.190 | 0.569 | ns           |  482 |      1.461 | 0.145 |  0.434 | ns            |
+| Experimental |      |        |          |       |                    | Indígena     | Branca       |  447 |     1.060 | 0.290 | 0.870 | ns           |  482 |      1.201 | 0.230 |  0.691 | ns            |
+| Experimental |      |        |          |       |                    | Parda        | Branca       |  447 |    -0.308 | 0.759 | 1.000 | ns           |  482 |     -0.313 | 0.755 |  1.000 | ns            |
+| Experimental |      |        |          |       |                    | Parda        | Indígena     |  447 |    -1.314 | 0.190 | 0.569 | ns           |  482 |     -1.461 | 0.145 |  0.434 | ns            |
 | Experimental |      |        | Parda    |       |                    | pre          | pos          |  896 |     0.163 | 0.870 | 0.870 | ns           |  966 |      0.915 | 0.360 |  0.360 | ns            |
 |              |      |        | Branca   |       |                    | Controle     | Experimental |  447 |    -2.442 | 0.015 | 0.015 | \*           |  482 |     -2.420 | 0.016 |  0.016 | \*            |
 |              |      |        | Indígena |       |                    | Controle     | Experimental |  447 |     0.274 | 0.784 | 0.784 | ns           |  482 |      0.354 | 0.723 |  0.723 | ns            |
@@ -2166,42 +2468,43 @@ df <- df[,c(names(lfatores), names(df)[!names(df) %in% c(names(lfatores),"term",
 ``` r
 df <- do.call(plyr::rbind.fill, lemms)
 df[["N-N'"]] <- df[["N"]] - df[["N'"]]
-df <- df[,c(names(lfatores), names(df)[!names(df) %in% names(lfatores)])]
+df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
+            names(df)[!names(df) %in% names(lfatores)])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie | score.tde.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | N-N’ |
-|:-------------|:-----|:-------|:---------|:------|:-------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|-----:|
-| Controle     |      |        |          |       |                    | 424 |  37.351 |    0.975 |    35.432 |      1.018 |  35.112 |    0.358 | 485 |   37.631 |     0.871 |     33.816 |       0.953 |   33.348 |     0.480 |  -61 |
-| Experimental |      |        |          |       |                    | 557 |  36.770 |    0.741 |    37.230 |      0.777 |  37.473 |    0.313 | 636 |   36.748 |     0.670 |     35.376 |       0.749 |   35.733 |     0.419 |  -79 |
-| Controle     | F    |        |          |       |                    | 208 |  40.635 |    1.278 |    38.615 |      1.351 |  35.106 |    0.503 | 247 |   40.652 |     1.098 |     36.567 |       1.265 |   33.273 |     0.676 |  -39 |
-| Controle     | M    |        |          |       |                    | 211 |  33.934 |    1.457 |    32.393 |      1.517 |  35.389 |    0.499 | 238 |   34.496 |     1.332 |     30.962 |       1.410 |   33.427 |     0.688 |  -27 |
-| Experimental | F    |        |          |       |                    | 276 |  39.623 |    1.053 |    40.272 |      1.123 |  37.744 |    0.436 | 319 |   39.408 |     0.941 |     38.138 |       1.086 |   36.008 |     0.594 |  -43 |
-| Experimental | M    |        |          |       |                    | 279 |  34.082 |    1.030 |    34.484 |      1.053 |  37.335 |    0.434 | 317 |   34.073 |     0.931 |     32.596 |       1.011 |   35.457 |     0.597 |  -38 |
-| Controle     |      | Rural  |          |       |                    | 228 |  35.956 |    1.330 |    34.978 |      1.426 |  35.358 |    0.547 | 243 |   36.181 |     1.259 |     34.243 |       1.380 |   34.462 |     0.669 |  -15 |
-| Controle     |      | Urbana |          |       |                    | 101 |  39.743 |    1.823 |    31.099 |      2.044 |  27.763 |    0.824 | 109 |   39.468 |     1.727 |     29.835 |       1.951 |   26.939 |     1.001 |   -8 |
-| Experimental |      | Rural  |          |       |                    | 260 |  34.215 |    1.113 |    34.777 |      1.186 |  36.865 |    0.514 | 284 |   34.592 |     1.036 |     33.627 |       1.141 |   35.352 |     0.620 |  -24 |
-| Experimental |      | Urbana |          |       |                    | 151 |  38.318 |    1.389 |    36.099 |      1.501 |  34.161 |    0.673 | 167 |   37.850 |     1.287 |     34.108 |       1.462 |   32.745 |     0.807 |  -16 |
-| Controle     |      |        | Branca   |       |                    |  45 |  41.378 |    2.626 |    36.600 |      3.007 |  30.951 |    1.399 |  50 |   41.460 |     2.396 |     34.300 |       2.902 |   29.123 |     1.619 |   -5 |
-| Controle     |      |        | Indígena |       |                    |  11 |  42.000 |    5.215 |    45.636 |      6.009 |  39.393 |    2.820 |  11 |   42.000 |     5.215 |     45.636 |       6.009 |   39.964 |     3.439 |    0 |
-| Controle     |      |        | Parda    |       |                    | 150 |  36.320 |    1.578 |    33.887 |      1.695 |  33.075 |    0.763 | 162 |   36.741 |     1.485 |     32.463 |       1.634 |   31.613 |     0.895 |  -12 |
-| Experimental |      |        | Branca   |       |                    |  58 |  34.517 |    2.651 |    34.586 |      2.746 |  35.499 |    1.226 |  61 |   34.623 |     2.526 |     33.311 |       2.713 |   34.404 |     1.459 |   -3 |
-| Experimental |      |        | Indígena |       |                    |  15 |  27.067 |    4.406 |    30.333 |      4.574 |  38.371 |    2.420 |  15 |   27.067 |     4.406 |     30.333 |       4.574 |   38.355 |     2.952 |    0 |
-| Experimental |      |        | Parda    |       |                    | 175 |  33.851 |    1.343 |    33.514 |      1.460 |  35.064 |    0.707 | 190 |   34.253 |     1.272 |     32.447 |       1.412 |   33.879 |     0.828 |  -15 |
-| Controle     |      |        |          | 6 ano |                    | 126 |  28.444 |    1.766 |    24.619 |      1.828 |  32.399 |    0.756 | 134 |   28.993 |     1.687 |     24.231 |       1.741 |   31.423 |     0.889 |   -8 |
-| Controle     |      |        |          | 7 ano |                    | 127 |  34.024 |    1.632 |    28.000 |      1.773 |  30.663 |    0.744 | 141 |   34.716 |     1.503 |     28.362 |       1.739 |   30.495 |     0.856 |  -14 |
-| Controle     |      |        |          | 8 ano |                    |  86 |  42.430 |    1.785 |    40.337 |      1.933 |  35.292 |    0.906 |  89 |   42.584 |     1.737 |     39.787 |       1.897 |   34.967 |     1.081 |   -3 |
-| Controle     |      |        |          | 9 ano |                    | 116 |  46.612 |    1.611 |    46.914 |      1.537 |  38.034 |    0.790 | 121 |   46.950 |     1.557 |     46.397 |       1.495 |   37.718 |     0.940 |   -5 |
-| Experimental |      |        |          | 6 ano |                    | 150 |  28.607 |    1.324 |    25.020 |      1.367 |  32.651 |    0.694 | 159 |   29.000 |     1.265 |     24.094 |       1.329 |   31.279 |     0.819 |   -9 |
-| Experimental |      |        |          | 7 ano |                    | 170 |  36.294 |    1.168 |    34.500 |      1.284 |  35.081 |    0.642 | 187 |   36.540 |     1.089 |     33.524 |       1.254 |   34.046 |     0.743 |  -17 |
-| Experimental |      |        |          | 8 ano |                    | 141 |  39.248 |    1.525 |    41.255 |      1.600 |  39.128 |    0.705 | 143 |   39.000 |     1.516 |     41.042 |       1.604 |   39.390 |     0.850 |   -2 |
-| Experimental |      |        |          | 9 ano |                    | 140 |  43.143 |    1.354 |    45.514 |      1.288 |  39.815 |    0.713 | 147 |   43.204 |     1.307 |     44.422 |       1.331 |   39.054 |     0.845 |   -7 |
-| Controle     |      |        |          |       | 1st quintile       | 112 |   9.152 |    0.522 |     8.205 |      0.750 |  34.585 |    1.783 | 113 |    9.230 |     0.523 |      8.522 |       0.808 |   37.046 |     2.325 |   -1 |
-| Controle     |      |        |          |       | 2nd quintile       |  51 |  24.392 |    0.530 |    20.137 |      1.288 |  32.089 |    1.322 |  59 |   24.542 |     0.492 |     19.966 |       1.686 |   32.835 |     1.666 |   -8 |
-| Controle     |      |        |          |       | 3rd quintile       |  42 |  38.905 |    0.489 |    31.667 |      1.800 |  29.879 |    1.216 |  54 |   38.815 |     0.409 |     30.185 |       2.082 |   28.463 |     1.437 |  -12 |
-| Controle     |      |        |          |       | 4th quintile       | 125 |  47.544 |    0.223 |    44.840 |      0.850 |  34.874 |    0.932 | 135 |   47.370 |     0.222 |     43.215 |       0.978 |   32.746 |     1.190 |  -10 |
-| Controle     |      |        |          |       | 5th quintile       | 116 |  58.819 |    0.505 |    56.362 |      0.792 |  35.722 |    1.463 | 124 |   58.621 |     0.482 |     54.806 |       0.979 |   32.835 |     1.876 |   -8 |
-| Experimental |      |        |          |       | 1st quintile       | 108 |   9.602 |    0.522 |    10.935 |      0.788 |  36.889 |    1.765 | 112 |    9.777 |     0.515 |     11.384 |       0.898 |   39.349 |     2.290 |   -4 |
-| Experimental |      |        |          |       | 2nd quintile       | 101 |  25.842 |    0.347 |    25.040 |      0.976 |  35.619 |    1.016 | 117 |   25.855 |     0.316 |     24.675 |       1.128 |   36.203 |     1.292 |  -16 |
-| Experimental |      |        |          |       | 3rd quintile       | 116 |  37.371 |    0.301 |    37.233 |      0.859 |  36.898 |    0.729 | 141 |   37.383 |     0.268 |     34.872 |       1.096 |   34.614 |     0.886 |  -25 |
-| Experimental |      |        |          |       | 4th quintile       | 120 |  46.800 |    0.230 |    47.308 |      0.725 |  38.047 |    0.915 | 132 |   46.697 |     0.217 |     45.030 |       0.924 |   35.250 |     1.166 |  -12 |
-| Experimental |      |        |          |       | 5th quintile       | 126 |  58.563 |    0.448 |    57.587 |      0.700 |  37.189 |    1.435 | 134 |   58.336 |     0.434 |     55.791 |       0.917 |   34.111 |     1.839 |   -8 |
+| grupo        | Sexo | Zona   | Cor.Raca | Serie | score.tde.quintile |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | conf.low’ | conf.high’ | N-N’ |
+|:-------------|:-----|:-------|:---------|:------|:-------------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|----------:|-----------:|-----:|
+| Controle     |      |        |          |       |                    | 424 |  37.351 |    0.975 |    35.432 |      1.018 |  35.112 |    0.358 |   34.409 |    35.815 | 485 |   37.631 |     0.871 |     33.816 |       0.953 |   33.348 |     0.480 |    32.405 |     34.290 |  -61 |
+| Experimental |      |        |          |       |                    | 557 |  36.770 |    0.741 |    37.230 |      0.777 |  37.473 |    0.313 |   36.860 |    38.087 | 636 |   36.748 |     0.670 |     35.376 |       0.749 |   35.733 |     0.419 |    34.910 |     36.556 |  -79 |
+| Controle     | F    |        |          |       |                    | 208 |  40.635 |    1.278 |    38.615 |      1.351 |  35.106 |    0.503 |   34.119 |    36.093 | 247 |   40.652 |     1.098 |     36.567 |       1.265 |   33.273 |     0.676 |    31.945 |     34.600 |  -39 |
+| Controle     | M    |        |          |       |                    | 211 |  33.934 |    1.457 |    32.393 |      1.517 |  35.389 |    0.499 |   34.410 |    36.368 | 238 |   34.496 |     1.332 |     30.962 |       1.410 |   33.427 |     0.688 |    32.077 |     34.776 |  -27 |
+| Experimental | F    |        |          |       |                    | 276 |  39.623 |    1.053 |    40.272 |      1.123 |  37.744 |    0.436 |   36.889 |    38.600 | 319 |   39.408 |     0.941 |     38.138 |       1.086 |   36.008 |     0.594 |    34.842 |     37.173 |  -43 |
+| Experimental | M    |        |          |       |                    | 279 |  34.082 |    1.030 |    34.484 |      1.053 |  37.335 |    0.434 |   36.483 |    38.187 | 317 |   34.073 |     0.931 |     32.596 |       1.011 |   35.457 |     0.597 |    34.285 |     36.628 |  -38 |
+| Controle     |      | Rural  |          |       |                    | 228 |  35.956 |    1.330 |    34.978 |      1.426 |  35.358 |    0.547 |   34.284 |    36.432 | 243 |   36.181 |     1.259 |     34.243 |       1.380 |   34.462 |     0.669 |    33.149 |     35.775 |  -15 |
+| Controle     |      | Urbana |          |       |                    | 101 |  39.743 |    1.823 |    31.099 |      2.044 |  27.763 |    0.824 |   26.145 |    29.380 | 109 |   39.468 |     1.727 |     29.835 |       1.951 |   26.939 |     1.001 |    24.975 |     28.903 |   -8 |
+| Experimental |      | Rural  |          |       |                    | 260 |  34.215 |    1.113 |    34.777 |      1.186 |  36.865 |    0.514 |   35.857 |    37.874 | 284 |   34.592 |     1.036 |     33.627 |       1.141 |   35.352 |     0.620 |    34.136 |     36.569 |  -24 |
+| Experimental |      | Urbana |          |       |                    | 151 |  38.318 |    1.389 |    36.099 |      1.501 |  34.161 |    0.673 |   32.840 |    35.483 | 167 |   37.850 |     1.287 |     34.108 |       1.462 |   32.745 |     0.807 |    31.160 |     34.330 |  -16 |
+| Controle     |      |        | Branca   |       |                    |  45 |  41.378 |    2.626 |    36.600 |      3.007 |  30.951 |    1.399 |   28.202 |    33.701 |  50 |   41.460 |     2.396 |     34.300 |       2.902 |   29.123 |     1.619 |    25.941 |     32.304 |   -5 |
+| Controle     |      |        | Indígena |       |                    |  11 |  42.000 |    5.215 |    45.636 |      6.009 |  39.393 |    2.820 |   33.851 |    44.935 |  11 |   42.000 |     5.215 |     45.636 |       6.009 |   39.964 |     3.439 |    33.206 |     46.722 |    0 |
+| Controle     |      |        | Parda    |       |                    | 150 |  36.320 |    1.578 |    33.887 |      1.695 |  33.075 |    0.763 |   31.576 |    34.574 | 162 |   36.741 |     1.485 |     32.463 |       1.634 |   31.613 |     0.895 |    29.854 |     33.373 |  -12 |
+| Experimental |      |        | Branca   |       |                    |  58 |  34.517 |    2.651 |    34.586 |      2.746 |  35.499 |    1.226 |   33.088 |    37.909 |  61 |   34.623 |     2.526 |     33.311 |       2.713 |   34.404 |     1.459 |    31.537 |     37.270 |   -3 |
+| Experimental |      |        | Indígena |       |                    |  15 |  27.067 |    4.406 |    30.333 |      4.574 |  38.371 |    2.420 |   33.616 |    43.126 |  15 |   27.067 |     4.406 |     30.333 |       4.574 |   38.355 |     2.952 |    32.554 |     44.155 |    0 |
+| Experimental |      |        | Parda    |       |                    | 175 |  33.851 |    1.343 |    33.514 |      1.460 |  35.064 |    0.707 |   33.674 |    36.453 | 190 |   34.253 |     1.272 |     32.447 |       1.412 |   33.879 |     0.828 |    32.253 |     35.505 |  -15 |
+| Controle     |      |        |          | 6 ano |                    | 126 |  28.444 |    1.766 |    24.619 |      1.828 |  32.399 |    0.756 |   30.915 |    33.882 | 134 |   28.993 |     1.687 |     24.231 |       1.741 |   31.423 |     0.889 |    29.678 |     33.168 |   -8 |
+| Controle     |      |        |          | 7 ano |                    | 127 |  34.024 |    1.632 |    28.000 |      1.773 |  30.663 |    0.744 |   29.204 |    32.123 | 141 |   34.716 |     1.503 |     28.362 |       1.739 |   30.495 |     0.856 |    28.815 |     32.175 |  -14 |
+| Controle     |      |        |          | 8 ano |                    |  86 |  42.430 |    1.785 |    40.337 |      1.933 |  35.292 |    0.906 |   33.514 |    37.069 |  89 |   42.584 |     1.737 |     39.787 |       1.897 |   34.967 |     1.081 |    32.846 |     37.087 |   -3 |
+| Controle     |      |        |          | 9 ano |                    | 116 |  46.612 |    1.611 |    46.914 |      1.537 |  38.034 |    0.790 |   36.483 |    39.584 | 121 |   46.950 |     1.557 |     46.397 |       1.495 |   37.718 |     0.940 |    35.874 |     39.562 |   -5 |
+| Experimental |      |        |          | 6 ano |                    | 150 |  28.607 |    1.324 |    25.020 |      1.367 |  32.651 |    0.694 |   31.288 |    34.013 | 159 |   29.000 |     1.265 |     24.094 |       1.329 |   31.279 |     0.819 |    29.673 |     32.885 |   -9 |
+| Experimental |      |        |          | 7 ano |                    | 170 |  36.294 |    1.168 |    34.500 |      1.284 |  35.081 |    0.642 |   33.822 |    36.340 | 187 |   36.540 |     1.089 |     33.524 |       1.254 |   34.046 |     0.743 |    32.588 |     35.503 |  -17 |
+| Experimental |      |        |          | 8 ano |                    | 141 |  39.248 |    1.525 |    41.255 |      1.600 |  39.128 |    0.705 |   37.744 |    40.512 | 143 |   39.000 |     1.516 |     41.042 |       1.604 |   39.390 |     0.850 |    37.722 |     41.057 |   -2 |
+| Experimental |      |        |          | 9 ano |                    | 140 |  43.143 |    1.354 |    45.514 |      1.288 |  39.815 |    0.713 |   38.416 |    41.215 | 147 |   43.204 |     1.307 |     44.422 |       1.331 |   39.054 |     0.845 |    37.397 |     40.711 |   -7 |
+| Controle     |      |        |          |       | 1st quintile       | 112 |   9.152 |    0.522 |     8.205 |      0.750 |  34.585 |    1.783 |   31.086 |    38.083 | 113 |    9.230 |     0.523 |      8.522 |       0.808 |   37.046 |     2.325 |    32.484 |     41.608 |   -1 |
+| Controle     |      |        |          |       | 2nd quintile       |  51 |  24.392 |    0.530 |    20.137 |      1.288 |  32.089 |    1.322 |   29.495 |    34.682 |  59 |   24.542 |     0.492 |     19.966 |       1.686 |   32.835 |     1.666 |    29.566 |     36.104 |   -8 |
+| Controle     |      |        |          |       | 3rd quintile       |  42 |  38.905 |    0.489 |    31.667 |      1.800 |  29.879 |    1.216 |   27.493 |    32.265 |  54 |   38.815 |     0.409 |     30.185 |       2.082 |   28.463 |     1.437 |    25.644 |     31.282 |  -12 |
+| Controle     |      |        |          |       | 4th quintile       | 125 |  47.544 |    0.223 |    44.840 |      0.850 |  34.874 |    0.932 |   33.046 |    36.702 | 135 |   47.370 |     0.222 |     43.215 |       0.978 |   32.746 |     1.190 |    30.411 |     35.080 |  -10 |
+| Controle     |      |        |          |       | 5th quintile       | 116 |  58.819 |    0.505 |    56.362 |      0.792 |  35.722 |    1.463 |   32.851 |    38.593 | 124 |   58.621 |     0.482 |     54.806 |       0.979 |   32.835 |     1.876 |    29.155 |     36.516 |   -8 |
+| Experimental |      |        |          |       | 1st quintile       | 108 |   9.602 |    0.522 |    10.935 |      0.788 |  36.889 |    1.765 |   33.425 |    40.352 | 112 |    9.777 |     0.515 |     11.384 |       0.898 |   39.349 |     2.290 |    34.856 |     43.842 |   -4 |
+| Experimental |      |        |          |       | 2nd quintile       | 101 |  25.842 |    0.347 |    25.040 |      0.976 |  35.619 |    1.016 |   33.625 |    37.613 | 117 |   25.855 |     0.316 |     24.675 |       1.128 |   36.203 |     1.292 |    33.668 |     38.737 |  -16 |
+| Experimental |      |        |          |       | 3rd quintile       | 116 |  37.371 |    0.301 |    37.233 |      0.859 |  36.898 |    0.729 |   35.467 |    38.328 | 141 |   37.383 |     0.268 |     34.872 |       1.096 |   34.614 |     0.886 |    32.876 |     36.352 |  -25 |
+| Experimental |      |        |          |       | 4th quintile       | 120 |  46.800 |    0.230 |    47.308 |      0.725 |  38.047 |    0.915 |   36.251 |    39.842 | 132 |   46.697 |     0.217 |     45.030 |       0.924 |   35.250 |     1.166 |    32.963 |     37.537 |  -12 |
+| Experimental |      |        |          |       | 5th quintile       | 126 |  58.563 |    0.448 |    57.587 |      0.700 |  37.189 |    1.435 |   34.372 |    40.006 | 134 |   58.336 |     0.434 |     55.791 |       0.917 |   34.111 |     1.839 |    30.503 |     37.720 |   -8 |
