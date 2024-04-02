@@ -162,8 +162,8 @@ for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
 }
 
 
-gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
-gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$Stari.Grupo)),]
+tdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- tdat[which(is.na(tdat$Necessidade.Deficiencia) & !is.na(tdat$Stari.Grupo)),]
 
 
 
@@ -1911,5 +1911,8 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
 ```{r, echo=FALSE, purl=FALSE}
 kable(df, digits = 3)
 ```
+
+## Table of distribution
+
 
 

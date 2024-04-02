@@ -64,6 +64,16 @@ Geiser C. Challco <geiser@alumni.usp.br>
   - [ANCOVA Table Comparison](#ancova-table-comparison)
   - [PairWise Table Comparison](#pairwise-table-comparison)
   - [EMMS Table Comparison](#emms-table-comparison)
+  - [CONSORT tables](#consort-tables)
+    - [Enrolment participants table](#enrolment-participants-table)
+    - [Allocated participants table (after removed students with
+      disabilities/special
+      needs)](#allocated-participants-table-after-removed-students-with-disabilitiesspecial-needs)
+    - [Follow-up participants table (after removed students with
+      does-not have pre and
+      post-test)](#follow-up-participants-table-after-removed-students-with-does-not-have-pre-and-post-test)
+    - [Participants table for Analysis (after exclude non-normal
+      data)](#participants-table-for-analysis-after-exclude-non-normal-data)
 
 **NOTE**:
 
@@ -161,11 +171,11 @@ for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
     "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
 }
 
+tdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+tdat <- tdat[!is.na(tdat[["WG.Grupo"]]),]
+tdat$grupo <- factor(tdat[["WG.Grupo"]], level[["grupo"]]) 
 
-gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
-gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
-
-
+gdat <- tdat[which(is.na(tdat$Necessidade.Deficiencia) & !is.na(tdat$WG.Grupo)),]
 
 dat <- gdat
 dat$grupo <- factor(dat[["WG.Grupo"]], level[["grupo"]])
@@ -462,6 +472,10 @@ plots <- oneWayAncovaPlots(
 ``` r
 if (!is.null(nrow(plots[["grupo"]]$data)))
   plots[["grupo"]] +
+  ggplot2::ylab("Vocabulary (post-test)") +
+  theme(axis.title = element_text(size = 14),
+        legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
   if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
 
@@ -501,15 +515,28 @@ if (length(unique(wdat.long[["grupo"]])) > 1)
 ### Checking linearity assumption
 
 ``` r
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
+ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
   ) +
   ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  ggplot2::ylab("Vocabulary (post-test)") +
+  ggplot2::xlab("Vocabulary (pre-test)") +
+  theme(axis.title = element_text(size = 14),
+        legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
   if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
+
+    ## Warning: The dot-dot notation (`..eq.label..`) was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `after_stat(eq.label)` instead.
+    ## ℹ The deprecated feature was likely used in the ggpubr package.
+    ##   Please report the issue at <https://github.com/kassambara/ggpubr/issues>.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
@@ -723,6 +750,10 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -737,6 +768,10 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
   ggPlotAoC2(pwcs, "Sexo", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      ggplot2::ylab("Vocabulary (post-test)") +
+      theme(axis.title = element_text(size = 14),
+            legend.text = element_text(size = 16),
+            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -763,8 +798,8 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the
+    ## data's colour values.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 
@@ -793,7 +828,12 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
             facet.by = c("grupo","Sexo"), add = "reg.line")+
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-    ) +
+    )  +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -809,6 +849,11 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -824,6 +869,11 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
     ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1043,6 +1093,10 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Zona", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1057,6 +1111,10 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
   ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      ggplot2::ylab("Vocabulary (post-test)") +
+      theme(axis.title = element_text(size = 14),
+            legend.text = element_text(size = 16),
+            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1083,8 +1141,8 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the
+    ## data's colour values.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
 
@@ -1114,6 +1172,11 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1129,6 +1192,11 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1144,6 +1212,11 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
     ggplot2::scale_color_manual(values = color[["Zona"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1385,6 +1458,10 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Cor.Raca", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1399,6 +1476,10 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
   ggPlotAoC2(pwcs, "Cor.Raca", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      ggplot2::ylab("Vocabulary (post-test)") +
+      theme(axis.title = element_text(size = 14),
+            legend.text = element_text(size = 16),
+            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1425,8 +1506,8 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the
+    ## data's colour values.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
 
@@ -1456,6 +1537,11 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1471,6 +1557,11 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1486,6 +1577,11 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
     ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1725,6 +1821,10 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1739,6 +1839,10 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
   ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      ggplot2::ylab("Vocabulary (post-test)") +
+      theme(axis.title = element_text(size = 14),
+            legend.text = element_text(size = 16),
+            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1793,6 +1897,11 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1808,6 +1917,11 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1823,6 +1937,11 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
     ggplot2::scale_color_manual(values = color[["Serie"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -2074,6 +2193,10 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "vocab.teach.quintile", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"), addParam = "errorbar") +
+  ggplot2::ylab("Vocabulary (post-test)") +
+  theme(axis.title = element_text(size = 14),
+        legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
     ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]]) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
@@ -2088,6 +2211,10 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
   ggPlotAoC2(pwcs, "vocab.teach.quintile", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"), addParam = "errorbar") +
+      ggplot2::ylab("Vocabulary (post-test)") +
+      theme(axis.title = element_text(size = 14),
+            legend.text = element_text(size = 16),
+            plot.subtitle = element_text(size = 18)) +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
@@ -2115,8 +2242,8 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the
+    ## data's colour values.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-144-1.png)<!-- -->
 
@@ -2146,6 +2273,11 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -2161,6 +2293,11 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:vocab.teach.quintile"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -2176,6 +2313,11 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:vocab.teach.quintile"))) +
     ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]]) +
+    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::xlab("Vocabulary (pre-test)") +
+    theme(axis.title = element_text(size = 14),
+          legend.text = element_text(size = 16),
+          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -2471,3 +2613,794 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
 | Experimental |      |        |          |       | 3rd quintile         | 273 |   4.451 |    0.030 |     5.154 |      0.125 |   5.242 |    0.121 |    5.004 |     5.480 | 273 |    4.451 |     0.030 |      5.154 |       0.125 |    5.245 |     0.122 |     5.004 |      5.485 |    0 |
 | Experimental |      |        |          |       | 4th quintile         |  99 |   6.000 |    0.000 |     5.778 |      0.219 |   5.188 |    0.237 |    4.724 |     5.652 |  99 |    6.000 |     0.000 |      5.778 |       0.219 |    5.172 |     0.239 |     4.703 |      5.642 |    0 |
 | Experimental |      |        |          |       | 5th quintile         | 143 |   7.762 |    0.086 |     7.133 |      0.182 |   5.772 |    0.340 |    5.105 |     6.439 | 143 |    7.762 |     0.086 |      7.133 |       0.182 |    5.736 |     0.343 |     5.062 |      6.410 |    0 |
+
+## CONSORT tables
+
+### Enrolment participants table
+
+``` r
+df <- do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
+  tdat2 <- tdat
+  tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
+  count_(group_by(tdat2, grupo), x)
+}))
+```
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+| grupo        | Sexo |   n | Zona         | Cor.Raca     | Serie | Idade |
+|:-------------|:-----|----:|:-------------|:-------------|:------|:------|
+| Controle     | F    | 376 |              |              |       |       |
+| Controle     | M    | 393 |              |              |       |       |
+| Experimental | F    | 508 |              |              |       |       |
+| Experimental | M    | 528 |              |              |       |       |
+| Controle     |      | 211 | Not declared |              |       |       |
+| Controle     |      | 351 | Rural        |              |       |       |
+| Controle     |      | 207 | Urbana       |              |       |       |
+| Experimental |      | 321 | Not declared |              |       |       |
+| Experimental |      | 426 | Rural        |              |       |       |
+| Experimental |      | 289 | Urbana       |              |       |       |
+| Controle     |      |  77 |              | Branca       |       |       |
+| Controle     |      |  21 |              | Indígena     |       |       |
+| Controle     |      | 416 |              | Not declared |       |       |
+| Controle     |      | 254 |              | Parda        |       |       |
+| Controle     |      |   1 |              | Preta        |       |       |
+| Experimental |      |   3 |              | Amarela      |       |       |
+| Experimental |      |  92 |              | Branca       |       |       |
+| Experimental |      |  22 |              | Indígena     |       |       |
+| Experimental |      | 619 |              | Not declared |       |       |
+| Experimental |      | 299 |              | Parda        |       |       |
+| Experimental |      |   1 |              | Preta        |       |       |
+| Controle     |      | 215 |              |              | 6 ano |       |
+| Controle     |      | 214 |              |              | 7 ano |       |
+| Controle     |      | 163 |              |              | 8 ano |       |
+| Controle     |      | 177 |              |              | 9 ano |       |
+| Experimental |      | 250 |              |              | 6 ano |       |
+| Experimental |      | 283 |              |              | 7 ano |       |
+| Experimental |      | 258 |              |              | 8 ano |       |
+| Experimental |      | 245 |              |              | 9 ano |       |
+| Controle     |      | 112 |              |              |       | 11    |
+| Controle     |      | 162 |              |              |       | 12    |
+| Controle     |      | 183 |              |              |       | 13    |
+| Controle     |      | 172 |              |              |       | 14    |
+| Controle     |      |  90 |              |              |       | 15    |
+| Controle     |      |  30 |              |              |       | 16    |
+| Controle     |      |   9 |              |              |       | 17    |
+| Controle     |      |   5 |              |              |       | 18    |
+| Controle     |      |   1 |              |              |       | 19    |
+| Controle     |      |   2 |              |              |       | 20    |
+| Controle     |      |   1 |              |              |       | 21    |
+| Controle     |      |   1 |              |              |       | 22    |
+| Controle     |      |   1 |              |              |       | 34    |
+| Experimental |      |   1 |              |              |       | 1     |
+| Experimental |      | 160 |              |              |       | 11    |
+| Experimental |      | 215 |              |              |       | 12    |
+| Experimental |      | 226 |              |              |       | 13    |
+| Experimental |      | 220 |              |              |       | 14    |
+| Experimental |      | 126 |              |              |       | 15    |
+| Experimental |      |  52 |              |              |       | 16    |
+| Experimental |      |  21 |              |              |       | 17    |
+| Experimental |      |   7 |              |              |       | 18    |
+| Experimental |      |   3 |              |              |       | 19    |
+| Experimental |      |   1 |              |              |       | 20    |
+| Experimental |      |   1 |              |              |       | 21    |
+| Experimental |      |   1 |              |              |       | 23    |
+| Experimental |      |   1 |              |              |       | 4     |
+| Experimental |      |   1 |              |              |       | 9     |
+
+### Allocated participants table (after removed students with disabilities/special needs)
+
+``` r
+df <- do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
+  tdat2 <- gdat
+  tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
+  count_(group_by(tdat2, grupo), x)
+}))
+```
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+| grupo        | Sexo |   n | Zona         | Cor.Raca     | Serie | Idade |
+|:-------------|:-----|----:|:-------------|:-------------|:------|:------|
+| Controle     | F    | 367 |              |              |       |       |
+| Controle     | M    | 386 |              |              |       |       |
+| Experimental | F    | 502 |              |              |       |       |
+| Experimental | M    | 515 |              |              |       |       |
+| Controle     |      | 208 | Not declared |              |       |       |
+| Controle     |      | 343 | Rural        |              |       |       |
+| Controle     |      | 202 | Urbana       |              |       |       |
+| Experimental |      | 315 | Not declared |              |       |       |
+| Experimental |      | 421 | Rural        |              |       |       |
+| Experimental |      | 281 | Urbana       |              |       |       |
+| Controle     |      |  76 |              | Branca       |       |       |
+| Controle     |      |  20 |              | Indígena     |       |       |
+| Controle     |      | 404 |              | Not declared |       |       |
+| Controle     |      | 252 |              | Parda        |       |       |
+| Controle     |      |   1 |              | Preta        |       |       |
+| Experimental |      |   2 |              | Amarela      |       |       |
+| Experimental |      |  89 |              | Branca       |       |       |
+| Experimental |      |  22 |              | Indígena     |       |       |
+| Experimental |      | 610 |              | Not declared |       |       |
+| Experimental |      | 293 |              | Parda        |       |       |
+| Experimental |      |   1 |              | Preta        |       |       |
+| Controle     |      | 213 |              |              | 6 ano |       |
+| Controle     |      | 209 |              |              | 7 ano |       |
+| Controle     |      | 158 |              |              | 8 ano |       |
+| Controle     |      | 173 |              |              | 9 ano |       |
+| Experimental |      | 245 |              |              | 6 ano |       |
+| Experimental |      | 277 |              |              | 7 ano |       |
+| Experimental |      | 253 |              |              | 8 ano |       |
+| Experimental |      | 242 |              |              | 9 ano |       |
+| Controle     |      | 112 |              |              |       | 11    |
+| Controle     |      | 161 |              |              |       | 12    |
+| Controle     |      | 181 |              |              |       | 13    |
+| Controle     |      | 166 |              |              |       | 14    |
+| Controle     |      |  87 |              |              |       | 15    |
+| Controle     |      |  30 |              |              |       | 16    |
+| Controle     |      |   7 |              |              |       | 17    |
+| Controle     |      |   5 |              |              |       | 18    |
+| Controle     |      |   1 |              |              |       | 20    |
+| Controle     |      |   1 |              |              |       | 21    |
+| Controle     |      |   1 |              |              |       | 22    |
+| Controle     |      |   1 |              |              |       | 34    |
+| Experimental |      |   1 |              |              |       | 1     |
+| Experimental |      | 157 |              |              |       | 11    |
+| Experimental |      | 214 |              |              |       | 12    |
+| Experimental |      | 220 |              |              |       | 13    |
+| Experimental |      | 218 |              |              |       | 14    |
+| Experimental |      | 124 |              |              |       | 15    |
+| Experimental |      |  50 |              |              |       | 16    |
+| Experimental |      |  19 |              |              |       | 17    |
+| Experimental |      |   6 |              |              |       | 18    |
+| Experimental |      |   3 |              |              |       | 19    |
+| Experimental |      |   1 |              |              |       | 20    |
+| Experimental |      |   1 |              |              |       | 21    |
+| Experimental |      |   1 |              |              |       | 23    |
+| Experimental |      |   1 |              |              |       | 4     |
+| Experimental |      |   1 |              |              |       | 9     |
+
+### Follow-up participants table (after removed students with does-not have pre and post-test)
+
+``` r
+df <- do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
+  tdat2 <- gdat[gdat$id %in% dat$id,]  
+  tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
+  count_(group_by(tdat2, grupo), x)
+}))
+```
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+| grupo        | Sexo |   n | Zona         | Cor.Raca     | Serie | Idade |
+|:-------------|:-----|----:|:-------------|:-------------|:------|:------|
+| Controle     | F    | 259 |              |              |       |       |
+| Controle     | M    | 257 |              |              |       |       |
+| Experimental | F    | 368 |              |              |       |       |
+| Experimental | M    | 345 |              |              |       |       |
+| Controle     |      | 149 | Not declared |              |       |       |
+| Controle     |      | 253 | Rural        |              |       |       |
+| Controle     |      | 114 | Urbana       |              |       |       |
+| Experimental |      | 230 | Not declared |              |       |       |
+| Experimental |      | 294 | Rural        |              |       |       |
+| Experimental |      | 189 | Urbana       |              |       |       |
+| Controle     |      |  54 |              | Branca       |       |       |
+| Controle     |      |  13 |              | Indígena     |       |       |
+| Controle     |      | 280 |              | Not declared |       |       |
+| Controle     |      | 168 |              | Parda        |       |       |
+| Controle     |      |   1 |              | Preta        |       |       |
+| Experimental |      |   1 |              | Amarela      |       |       |
+| Experimental |      |  62 |              | Branca       |       |       |
+| Experimental |      |  18 |              | Indígena     |       |       |
+| Experimental |      | 430 |              | Not declared |       |       |
+| Experimental |      | 201 |              | Parda        |       |       |
+| Experimental |      |   1 |              | Preta        |       |       |
+| Controle     |      | 146 |              |              | 6 ano |       |
+| Controle     |      | 152 |              |              | 7 ano |       |
+| Controle     |      | 100 |              |              | 8 ano |       |
+| Controle     |      | 118 |              |              | 9 ano |       |
+| Experimental |      | 165 |              |              | 6 ano |       |
+| Experimental |      | 196 |              |              | 7 ano |       |
+| Experimental |      | 181 |              |              | 8 ano |       |
+| Experimental |      | 171 |              |              | 9 ano |       |
+| Controle     |      |  88 |              |              |       | 11    |
+| Controle     |      | 122 |              |              |       | 12    |
+| Controle     |      | 125 |              |              |       | 13    |
+| Controle     |      | 113 |              |              |       | 14    |
+| Controle     |      |  43 |              |              |       | 15    |
+| Controle     |      |  17 |              |              |       | 16    |
+| Controle     |      |   5 |              |              |       | 17    |
+| Controle     |      |   2 |              |              |       | 18    |
+| Controle     |      |   1 |              |              |       | 34    |
+| Experimental |      | 119 |              |              |       | 11    |
+| Experimental |      | 155 |              |              |       | 12    |
+| Experimental |      | 159 |              |              |       | 13    |
+| Experimental |      | 155 |              |              |       | 14    |
+| Experimental |      |  80 |              |              |       | 15    |
+| Experimental |      |  27 |              |              |       | 16    |
+| Experimental |      |   9 |              |              |       | 17    |
+| Experimental |      |   3 |              |              |       | 18    |
+| Experimental |      |   1 |              |              |       | 19    |
+| Experimental |      |   1 |              |              |       | 20    |
+| Experimental |      |   1 |              |              |       | 21    |
+| Experimental |      |   1 |              |              |       | 23    |
+| Experimental |      |   1 |              |              |       | 4     |
+| Experimental |      |   1 |              |              |       | 9     |
+
+### Participants table for Analysis (after exclude non-normal data)
+
+``` r
+df <- do.call(rbind, lapply(names(ldat), FUN = function(tname) {
+  dat2 <- ldat[[tname]]
+  data.frame(
+    "For Analysis of ANCOVA" = tname,
+    do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
+      tdat2 <- gdat[gdat$id %in% dat2$id,]  
+      tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
+      count_(group_by(tdat2, grupo), x)
+  })))
+}))  
+```
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: `count_()` was deprecated in dplyr 0.7.0.
+    ## ℹ Please use `count()` instead.
+    ## ℹ See vignette('programming') for more help
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+| For.Analysis.of.ANCOVA     | grupo        | Sexo |   n | Zona         | Cor.Raca     | Serie | Idade |
+|:---------------------------|:-------------|:-----|----:|:-------------|:-------------|:------|:------|
+| grupo                      | Controle     | F    | 258 |              |              |       |       |
+| grupo                      | Controle     | M    | 257 |              |              |       |       |
+| grupo                      | Experimental | F    | 368 |              |              |       |       |
+| grupo                      | Experimental | M    | 345 |              |              |       |       |
+| grupo                      | Controle     |      | 149 | Not declared |              |       |       |
+| grupo                      | Controle     |      | 252 | Rural        |              |       |       |
+| grupo                      | Controle     |      | 114 | Urbana       |              |       |       |
+| grupo                      | Experimental |      | 230 | Not declared |              |       |       |
+| grupo                      | Experimental |      | 294 | Rural        |              |       |       |
+| grupo                      | Experimental |      | 189 | Urbana       |              |       |       |
+| grupo                      | Controle     |      |  54 |              | Branca       |       |       |
+| grupo                      | Controle     |      |  13 |              | Indígena     |       |       |
+| grupo                      | Controle     |      | 279 |              | Not declared |       |       |
+| grupo                      | Controle     |      | 168 |              | Parda        |       |       |
+| grupo                      | Controle     |      |   1 |              | Preta        |       |       |
+| grupo                      | Experimental |      |   1 |              | Amarela      |       |       |
+| grupo                      | Experimental |      |  62 |              | Branca       |       |       |
+| grupo                      | Experimental |      |  18 |              | Indígena     |       |       |
+| grupo                      | Experimental |      | 430 |              | Not declared |       |       |
+| grupo                      | Experimental |      | 201 |              | Parda        |       |       |
+| grupo                      | Experimental |      |   1 |              | Preta        |       |       |
+| grupo                      | Controle     |      | 146 |              |              | 6 ano |       |
+| grupo                      | Controle     |      | 152 |              |              | 7 ano |       |
+| grupo                      | Controle     |      | 100 |              |              | 8 ano |       |
+| grupo                      | Controle     |      | 117 |              |              | 9 ano |       |
+| grupo                      | Experimental |      | 165 |              |              | 6 ano |       |
+| grupo                      | Experimental |      | 196 |              |              | 7 ano |       |
+| grupo                      | Experimental |      | 181 |              |              | 8 ano |       |
+| grupo                      | Experimental |      | 171 |              |              | 9 ano |       |
+| grupo                      | Controle     |      |  88 |              |              |       | 11    |
+| grupo                      | Controle     |      | 122 |              |              |       | 12    |
+| grupo                      | Controle     |      | 125 |              |              |       | 13    |
+| grupo                      | Controle     |      | 113 |              |              |       | 14    |
+| grupo                      | Controle     |      |  43 |              |              |       | 15    |
+| grupo                      | Controle     |      |  17 |              |              |       | 16    |
+| grupo                      | Controle     |      |   5 |              |              |       | 17    |
+| grupo                      | Controle     |      |   1 |              |              |       | 18    |
+| grupo                      | Controle     |      |   1 |              |              |       | 34    |
+| grupo                      | Experimental |      | 119 |              |              |       | 11    |
+| grupo                      | Experimental |      | 155 |              |              |       | 12    |
+| grupo                      | Experimental |      | 159 |              |              |       | 13    |
+| grupo                      | Experimental |      | 155 |              |              |       | 14    |
+| grupo                      | Experimental |      |  80 |              |              |       | 15    |
+| grupo                      | Experimental |      |  27 |              |              |       | 16    |
+| grupo                      | Experimental |      |   9 |              |              |       | 17    |
+| grupo                      | Experimental |      |   3 |              |              |       | 18    |
+| grupo                      | Experimental |      |   1 |              |              |       | 19    |
+| grupo                      | Experimental |      |   1 |              |              |       | 20    |
+| grupo                      | Experimental |      |   1 |              |              |       | 21    |
+| grupo                      | Experimental |      |   1 |              |              |       | 23    |
+| grupo                      | Experimental |      |   1 |              |              |       | 4     |
+| grupo                      | Experimental |      |   1 |              |              |       | 9     |
+| grupo:Sexo                 | Controle     | F    | 258 |              |              |       |       |
+| grupo:Sexo                 | Controle     | M    | 257 |              |              |       |       |
+| grupo:Sexo                 | Experimental | F    | 368 |              |              |       |       |
+| grupo:Sexo                 | Experimental | M    | 345 |              |              |       |       |
+| grupo:Sexo                 | Controle     |      | 149 | Not declared |              |       |       |
+| grupo:Sexo                 | Controle     |      | 252 | Rural        |              |       |       |
+| grupo:Sexo                 | Controle     |      | 114 | Urbana       |              |       |       |
+| grupo:Sexo                 | Experimental |      | 230 | Not declared |              |       |       |
+| grupo:Sexo                 | Experimental |      | 294 | Rural        |              |       |       |
+| grupo:Sexo                 | Experimental |      | 189 | Urbana       |              |       |       |
+| grupo:Sexo                 | Controle     |      |  54 |              | Branca       |       |       |
+| grupo:Sexo                 | Controle     |      |  13 |              | Indígena     |       |       |
+| grupo:Sexo                 | Controle     |      | 279 |              | Not declared |       |       |
+| grupo:Sexo                 | Controle     |      | 168 |              | Parda        |       |       |
+| grupo:Sexo                 | Controle     |      |   1 |              | Preta        |       |       |
+| grupo:Sexo                 | Experimental |      |   1 |              | Amarela      |       |       |
+| grupo:Sexo                 | Experimental |      |  62 |              | Branca       |       |       |
+| grupo:Sexo                 | Experimental |      |  18 |              | Indígena     |       |       |
+| grupo:Sexo                 | Experimental |      | 430 |              | Not declared |       |       |
+| grupo:Sexo                 | Experimental |      | 201 |              | Parda        |       |       |
+| grupo:Sexo                 | Experimental |      |   1 |              | Preta        |       |       |
+| grupo:Sexo                 | Controle     |      | 146 |              |              | 6 ano |       |
+| grupo:Sexo                 | Controle     |      | 152 |              |              | 7 ano |       |
+| grupo:Sexo                 | Controle     |      | 100 |              |              | 8 ano |       |
+| grupo:Sexo                 | Controle     |      | 117 |              |              | 9 ano |       |
+| grupo:Sexo                 | Experimental |      | 165 |              |              | 6 ano |       |
+| grupo:Sexo                 | Experimental |      | 196 |              |              | 7 ano |       |
+| grupo:Sexo                 | Experimental |      | 181 |              |              | 8 ano |       |
+| grupo:Sexo                 | Experimental |      | 171 |              |              | 9 ano |       |
+| grupo:Sexo                 | Controle     |      |  88 |              |              |       | 11    |
+| grupo:Sexo                 | Controle     |      | 122 |              |              |       | 12    |
+| grupo:Sexo                 | Controle     |      | 125 |              |              |       | 13    |
+| grupo:Sexo                 | Controle     |      | 113 |              |              |       | 14    |
+| grupo:Sexo                 | Controle     |      |  43 |              |              |       | 15    |
+| grupo:Sexo                 | Controle     |      |  17 |              |              |       | 16    |
+| grupo:Sexo                 | Controle     |      |   5 |              |              |       | 17    |
+| grupo:Sexo                 | Controle     |      |   1 |              |              |       | 18    |
+| grupo:Sexo                 | Controle     |      |   1 |              |              |       | 34    |
+| grupo:Sexo                 | Experimental |      | 119 |              |              |       | 11    |
+| grupo:Sexo                 | Experimental |      | 155 |              |              |       | 12    |
+| grupo:Sexo                 | Experimental |      | 159 |              |              |       | 13    |
+| grupo:Sexo                 | Experimental |      | 155 |              |              |       | 14    |
+| grupo:Sexo                 | Experimental |      |  80 |              |              |       | 15    |
+| grupo:Sexo                 | Experimental |      |  27 |              |              |       | 16    |
+| grupo:Sexo                 | Experimental |      |   9 |              |              |       | 17    |
+| grupo:Sexo                 | Experimental |      |   3 |              |              |       | 18    |
+| grupo:Sexo                 | Experimental |      |   1 |              |              |       | 19    |
+| grupo:Sexo                 | Experimental |      |   1 |              |              |       | 20    |
+| grupo:Sexo                 | Experimental |      |   1 |              |              |       | 21    |
+| grupo:Sexo                 | Experimental |      |   1 |              |              |       | 23    |
+| grupo:Sexo                 | Experimental |      |   1 |              |              |       | 4     |
+| grupo:Sexo                 | Experimental |      |   1 |              |              |       | 9     |
+| grupo:Zona                 | Controle     | F    | 183 |              |              |       |       |
+| grupo:Zona                 | Controle     | M    | 183 |              |              |       |       |
+| grupo:Zona                 | Experimental | F    | 241 |              |              |       |       |
+| grupo:Zona                 | Experimental | M    | 242 |              |              |       |       |
+| grupo:Zona                 | Controle     |      | 252 | Rural        |              |       |       |
+| grupo:Zona                 | Controle     |      | 114 | Urbana       |              |       |       |
+| grupo:Zona                 | Experimental |      | 294 | Rural        |              |       |       |
+| grupo:Zona                 | Experimental |      | 189 | Urbana       |              |       |       |
+| grupo:Zona                 | Controle     |      |  44 |              | Branca       |       |       |
+| grupo:Zona                 | Controle     |      |  12 |              | Indígena     |       |       |
+| grupo:Zona                 | Controle     |      | 178 |              | Not declared |       |       |
+| grupo:Zona                 | Controle     |      | 131 |              | Parda        |       |       |
+| grupo:Zona                 | Controle     |      |   1 |              | Preta        |       |       |
+| grupo:Zona                 | Experimental |      |  49 |              | Branca       |       |       |
+| grupo:Zona                 | Experimental |      |  17 |              | Indígena     |       |       |
+| grupo:Zona                 | Experimental |      | 250 |              | Not declared |       |       |
+| grupo:Zona                 | Experimental |      | 166 |              | Parda        |       |       |
+| grupo:Zona                 | Experimental |      |   1 |              | Preta        |       |       |
+| grupo:Zona                 | Controle     |      | 125 |              |              | 6 ano |       |
+| grupo:Zona                 | Controle     |      | 127 |              |              | 7 ano |       |
+| grupo:Zona                 | Controle     |      |  56 |              |              | 8 ano |       |
+| grupo:Zona                 | Controle     |      |  58 |              |              | 9 ano |       |
+| grupo:Zona                 | Experimental |      | 123 |              |              | 6 ano |       |
+| grupo:Zona                 | Experimental |      | 167 |              |              | 7 ano |       |
+| grupo:Zona                 | Experimental |      |  89 |              |              | 8 ano |       |
+| grupo:Zona                 | Experimental |      | 104 |              |              | 9 ano |       |
+| grupo:Zona                 | Controle     |      |  76 |              |              |       | 11    |
+| grupo:Zona                 | Controle     |      | 108 |              |              |       | 12    |
+| grupo:Zona                 | Controle     |      |  82 |              |              |       | 13    |
+| grupo:Zona                 | Controle     |      |  59 |              |              |       | 14    |
+| grupo:Zona                 | Controle     |      |  27 |              |              |       | 15    |
+| grupo:Zona                 | Controle     |      |  10 |              |              |       | 16    |
+| grupo:Zona                 | Controle     |      |   2 |              |              |       | 17    |
+| grupo:Zona                 | Controle     |      |   1 |              |              |       | 18    |
+| grupo:Zona                 | Controle     |      |   1 |              |              |       | 34    |
+| grupo:Zona                 | Experimental |      |  89 |              |              |       | 11    |
+| grupo:Zona                 | Experimental |      | 136 |              |              |       | 12    |
+| grupo:Zona                 | Experimental |      |  93 |              |              |       | 13    |
+| grupo:Zona                 | Experimental |      |  84 |              |              |       | 14    |
+| grupo:Zona                 | Experimental |      |  53 |              |              |       | 15    |
+| grupo:Zona                 | Experimental |      |  14 |              |              |       | 16    |
+| grupo:Zona                 | Experimental |      |   8 |              |              |       | 17    |
+| grupo:Zona                 | Experimental |      |   1 |              |              |       | 18    |
+| grupo:Zona                 | Experimental |      |   1 |              |              |       | 19    |
+| grupo:Zona                 | Experimental |      |   1 |              |              |       | 20    |
+| grupo:Zona                 | Experimental |      |   1 |              |              |       | 21    |
+| grupo:Zona                 | Experimental |      |   1 |              |              |       | 23    |
+| grupo:Zona                 | Experimental |      |   1 |              |              |       | 9     |
+| grupo:Cor.Raca             | Controle     | F    | 119 |              |              |       |       |
+| grupo:Cor.Raca             | Controle     | M    | 116 |              |              |       |       |
+| grupo:Cor.Raca             | Experimental | F    | 138 |              |              |       |       |
+| grupo:Cor.Raca             | Experimental | M    | 143 |              |              |       |       |
+| grupo:Cor.Raca             | Controle     |      |  48 | Not declared |              |       |       |
+| grupo:Cor.Raca             | Controle     |      | 145 | Rural        |              |       |       |
+| grupo:Cor.Raca             | Controle     |      |  42 | Urbana       |              |       |       |
+| grupo:Cor.Raca             | Experimental |      |  49 | Not declared |              |       |       |
+| grupo:Cor.Raca             | Experimental |      | 185 | Rural        |              |       |       |
+| grupo:Cor.Raca             | Experimental |      |  47 | Urbana       |              |       |       |
+| grupo:Cor.Raca             | Controle     |      |  54 |              | Branca       |       |       |
+| grupo:Cor.Raca             | Controle     |      |  13 |              | Indígena     |       |       |
+| grupo:Cor.Raca             | Controle     |      | 168 |              | Parda        |       |       |
+| grupo:Cor.Raca             | Experimental |      |  62 |              | Branca       |       |       |
+| grupo:Cor.Raca             | Experimental |      |  18 |              | Indígena     |       |       |
+| grupo:Cor.Raca             | Experimental |      | 201 |              | Parda        |       |       |
+| grupo:Cor.Raca             | Controle     |      |  66 |              |              | 6 ano |       |
+| grupo:Cor.Raca             | Controle     |      |  74 |              |              | 7 ano |       |
+| grupo:Cor.Raca             | Controle     |      |  42 |              |              | 8 ano |       |
+| grupo:Cor.Raca             | Controle     |      |  53 |              |              | 9 ano |       |
+| grupo:Cor.Raca             | Experimental |      |  75 |              |              | 6 ano |       |
+| grupo:Cor.Raca             | Experimental |      |  66 |              |              | 7 ano |       |
+| grupo:Cor.Raca             | Experimental |      |  72 |              |              | 8 ano |       |
+| grupo:Cor.Raca             | Experimental |      |  68 |              |              | 9 ano |       |
+| grupo:Cor.Raca             | Controle     |      |  48 |              |              |       | 11    |
+| grupo:Cor.Raca             | Controle     |      |  53 |              |              |       | 12    |
+| grupo:Cor.Raca             | Controle     |      |  58 |              |              |       | 13    |
+| grupo:Cor.Raca             | Controle     |      |  54 |              |              |       | 14    |
+| grupo:Cor.Raca             | Controle     |      |  12 |              |              |       | 15    |
+| grupo:Cor.Raca             | Controle     |      |   7 |              |              |       | 16    |
+| grupo:Cor.Raca             | Controle     |      |   3 |              |              |       | 17    |
+| grupo:Cor.Raca             | Experimental |      |  57 |              |              |       | 11    |
+| grupo:Cor.Raca             | Experimental |      |  49 |              |              |       | 12    |
+| grupo:Cor.Raca             | Experimental |      |  55 |              |              |       | 13    |
+| grupo:Cor.Raca             | Experimental |      |  61 |              |              |       | 14    |
+| grupo:Cor.Raca             | Experimental |      |  35 |              |              |       | 15    |
+| grupo:Cor.Raca             | Experimental |      |  17 |              |              |       | 16    |
+| grupo:Cor.Raca             | Experimental |      |   4 |              |              |       | 17    |
+| grupo:Cor.Raca             | Experimental |      |   1 |              |              |       | 18    |
+| grupo:Cor.Raca             | Experimental |      |   1 |              |              |       | 21    |
+| grupo:Cor.Raca             | Experimental |      |   1 |              |              |       | 23    |
+| grupo:Serie                | Controle     | F    | 258 |              |              |       |       |
+| grupo:Serie                | Controle     | M    | 257 |              |              |       |       |
+| grupo:Serie                | Experimental | F    | 368 |              |              |       |       |
+| grupo:Serie                | Experimental | M    | 345 |              |              |       |       |
+| grupo:Serie                | Controle     |      | 149 | Not declared |              |       |       |
+| grupo:Serie                | Controle     |      | 252 | Rural        |              |       |       |
+| grupo:Serie                | Controle     |      | 114 | Urbana       |              |       |       |
+| grupo:Serie                | Experimental |      | 230 | Not declared |              |       |       |
+| grupo:Serie                | Experimental |      | 294 | Rural        |              |       |       |
+| grupo:Serie                | Experimental |      | 189 | Urbana       |              |       |       |
+| grupo:Serie                | Controle     |      |  54 |              | Branca       |       |       |
+| grupo:Serie                | Controle     |      |  13 |              | Indígena     |       |       |
+| grupo:Serie                | Controle     |      | 279 |              | Not declared |       |       |
+| grupo:Serie                | Controle     |      | 168 |              | Parda        |       |       |
+| grupo:Serie                | Controle     |      |   1 |              | Preta        |       |       |
+| grupo:Serie                | Experimental |      |   1 |              | Amarela      |       |       |
+| grupo:Serie                | Experimental |      |  62 |              | Branca       |       |       |
+| grupo:Serie                | Experimental |      |  18 |              | Indígena     |       |       |
+| grupo:Serie                | Experimental |      | 430 |              | Not declared |       |       |
+| grupo:Serie                | Experimental |      | 201 |              | Parda        |       |       |
+| grupo:Serie                | Experimental |      |   1 |              | Preta        |       |       |
+| grupo:Serie                | Controle     |      | 146 |              |              | 6 ano |       |
+| grupo:Serie                | Controle     |      | 152 |              |              | 7 ano |       |
+| grupo:Serie                | Controle     |      | 100 |              |              | 8 ano |       |
+| grupo:Serie                | Controle     |      | 117 |              |              | 9 ano |       |
+| grupo:Serie                | Experimental |      | 165 |              |              | 6 ano |       |
+| grupo:Serie                | Experimental |      | 196 |              |              | 7 ano |       |
+| grupo:Serie                | Experimental |      | 181 |              |              | 8 ano |       |
+| grupo:Serie                | Experimental |      | 171 |              |              | 9 ano |       |
+| grupo:Serie                | Controle     |      |  88 |              |              |       | 11    |
+| grupo:Serie                | Controle     |      | 122 |              |              |       | 12    |
+| grupo:Serie                | Controle     |      | 125 |              |              |       | 13    |
+| grupo:Serie                | Controle     |      | 113 |              |              |       | 14    |
+| grupo:Serie                | Controle     |      |  43 |              |              |       | 15    |
+| grupo:Serie                | Controle     |      |  17 |              |              |       | 16    |
+| grupo:Serie                | Controle     |      |   5 |              |              |       | 17    |
+| grupo:Serie                | Controle     |      |   1 |              |              |       | 18    |
+| grupo:Serie                | Controle     |      |   1 |              |              |       | 34    |
+| grupo:Serie                | Experimental |      | 119 |              |              |       | 11    |
+| grupo:Serie                | Experimental |      | 155 |              |              |       | 12    |
+| grupo:Serie                | Experimental |      | 159 |              |              |       | 13    |
+| grupo:Serie                | Experimental |      | 155 |              |              |       | 14    |
+| grupo:Serie                | Experimental |      |  80 |              |              |       | 15    |
+| grupo:Serie                | Experimental |      |  27 |              |              |       | 16    |
+| grupo:Serie                | Experimental |      |   9 |              |              |       | 17    |
+| grupo:Serie                | Experimental |      |   3 |              |              |       | 18    |
+| grupo:Serie                | Experimental |      |   1 |              |              |       | 19    |
+| grupo:Serie                | Experimental |      |   1 |              |              |       | 20    |
+| grupo:Serie                | Experimental |      |   1 |              |              |       | 21    |
+| grupo:Serie                | Experimental |      |   1 |              |              |       | 23    |
+| grupo:Serie                | Experimental |      |   1 |              |              |       | 4     |
+| grupo:Serie                | Experimental |      |   1 |              |              |       | 9     |
+| grupo:vocab.teach.quintile | Controle     | F    | 258 |              |              |       |       |
+| grupo:vocab.teach.quintile | Controle     | M    | 257 |              |              |       |       |
+| grupo:vocab.teach.quintile | Experimental | F    | 368 |              |              |       |       |
+| grupo:vocab.teach.quintile | Experimental | M    | 345 |              |              |       |       |
+| grupo:vocab.teach.quintile | Controle     |      | 149 | Not declared |              |       |       |
+| grupo:vocab.teach.quintile | Controle     |      | 252 | Rural        |              |       |       |
+| grupo:vocab.teach.quintile | Controle     |      | 114 | Urbana       |              |       |       |
+| grupo:vocab.teach.quintile | Experimental |      | 230 | Not declared |              |       |       |
+| grupo:vocab.teach.quintile | Experimental |      | 294 | Rural        |              |       |       |
+| grupo:vocab.teach.quintile | Experimental |      | 189 | Urbana       |              |       |       |
+| grupo:vocab.teach.quintile | Controle     |      |  54 |              | Branca       |       |       |
+| grupo:vocab.teach.quintile | Controle     |      |  13 |              | Indígena     |       |       |
+| grupo:vocab.teach.quintile | Controle     |      | 279 |              | Not declared |       |       |
+| grupo:vocab.teach.quintile | Controle     |      | 168 |              | Parda        |       |       |
+| grupo:vocab.teach.quintile | Controle     |      |   1 |              | Preta        |       |       |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              | Amarela      |       |       |
+| grupo:vocab.teach.quintile | Experimental |      |  62 |              | Branca       |       |       |
+| grupo:vocab.teach.quintile | Experimental |      |  18 |              | Indígena     |       |       |
+| grupo:vocab.teach.quintile | Experimental |      | 430 |              | Not declared |       |       |
+| grupo:vocab.teach.quintile | Experimental |      | 201 |              | Parda        |       |       |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              | Preta        |       |       |
+| grupo:vocab.teach.quintile | Controle     |      | 146 |              |              | 6 ano |       |
+| grupo:vocab.teach.quintile | Controle     |      | 152 |              |              | 7 ano |       |
+| grupo:vocab.teach.quintile | Controle     |      | 100 |              |              | 8 ano |       |
+| grupo:vocab.teach.quintile | Controle     |      | 117 |              |              | 9 ano |       |
+| grupo:vocab.teach.quintile | Experimental |      | 165 |              |              | 6 ano |       |
+| grupo:vocab.teach.quintile | Experimental |      | 196 |              |              | 7 ano |       |
+| grupo:vocab.teach.quintile | Experimental |      | 181 |              |              | 8 ano |       |
+| grupo:vocab.teach.quintile | Experimental |      | 171 |              |              | 9 ano |       |
+| grupo:vocab.teach.quintile | Controle     |      |  88 |              |              |       | 11    |
+| grupo:vocab.teach.quintile | Controle     |      | 122 |              |              |       | 12    |
+| grupo:vocab.teach.quintile | Controle     |      | 125 |              |              |       | 13    |
+| grupo:vocab.teach.quintile | Controle     |      | 113 |              |              |       | 14    |
+| grupo:vocab.teach.quintile | Controle     |      |  43 |              |              |       | 15    |
+| grupo:vocab.teach.quintile | Controle     |      |  17 |              |              |       | 16    |
+| grupo:vocab.teach.quintile | Controle     |      |   5 |              |              |       | 17    |
+| grupo:vocab.teach.quintile | Controle     |      |   1 |              |              |       | 18    |
+| grupo:vocab.teach.quintile | Controle     |      |   1 |              |              |       | 34    |
+| grupo:vocab.teach.quintile | Experimental |      | 119 |              |              |       | 11    |
+| grupo:vocab.teach.quintile | Experimental |      | 155 |              |              |       | 12    |
+| grupo:vocab.teach.quintile | Experimental |      | 159 |              |              |       | 13    |
+| grupo:vocab.teach.quintile | Experimental |      | 155 |              |              |       | 14    |
+| grupo:vocab.teach.quintile | Experimental |      |  80 |              |              |       | 15    |
+| grupo:vocab.teach.quintile | Experimental |      |  27 |              |              |       | 16    |
+| grupo:vocab.teach.quintile | Experimental |      |   9 |              |              |       | 17    |
+| grupo:vocab.teach.quintile | Experimental |      |   3 |              |              |       | 18    |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              |              |       | 19    |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              |              |       | 20    |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              |              |       | 21    |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              |              |       | 23    |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              |              |       | 4     |
+| grupo:vocab.teach.quintile | Experimental |      |   1 |              |              |       | 9     |
