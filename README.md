@@ -9,6 +9,8 @@ Information for CONSORT diagram ([distribution participants](results/wordgen-des
 - Vocabulary of words did not teach in classes ([general](results/aov-wordgen-vocab.non.teach.md))
 
 - Writting Performance : Desempenho da Escrita ([general](results/aov-wordgen-score.tde.md))
+- Writting Performance : Desempenho da Escrita - Normalizado ([general](results/aov-wordgen-score.tde.norm.md))
+
 
 - Debat Flow State ([general](results/aov-wordgen-flow.debat.md))
 

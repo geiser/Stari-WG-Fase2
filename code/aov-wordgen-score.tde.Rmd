@@ -142,8 +142,10 @@ color[["grupo:Cor.Raca"]] = c(
 )
 
 
-for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
-               "TFL.lidas.per.min","TFL.corretas.per.min","TFL.erradas.per.min","TFL.omitidas.per.min",
+for (coln in c("vocab","vocab.teach","vocab.non.teach",
+               "score.tde","score.tde.norm",
+               "TFL.lidas.per.min","TFL.corretas.per.min",
+               "TFL.erradas.per.min","TFL.omitidas.per.min",
                "leitura.compreensao")) {
   color[[paste0(coln,".quintile")]] = c("#BF0040","#FF0000","#800080","#0000FF","#4000BF")
   level[[paste0(coln,".quintile")]] = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile")
@@ -166,8 +168,8 @@ tdat <- read_excel("../data/data.xlsx", sheet = "sumary")
 tdat <- tdat[!is.na(tdat[["WG.Grupo"]]),]
 tdat$grupo <- factor(tdat[["WG.Grupo"]], level[["grupo"]]) 
 
-gdat <- tdat[which(is.na(tdat$Necessidade.Deficiencia) & !is.na(tdat$WG.Grupo)),]
-
+gdat <- tdat[which(is.na(tdat$Necessidade.Deficiencia) &
+                     !is.na(tdat$WG.Grupo)),]
 
 
 dat <- gdat
@@ -349,10 +351,12 @@ plots <- oneWayAncovaPlots(
   subtitle = which(aov$Effect == "grupo"))
 ```
 
-```{r, dpi=300, fig.width=7, fig.height=7}
+```{r, dpi=300, fig.width=8, fig.height=8}
 if (!is.null(nrow(plots[["grupo"]]$data)))
   plots[["grupo"]]   +
-  ggplot2::ylab("Writing (TDE)") +
+  ggplot2::ylab("Escrita (TDE) pós-teste") + 
+  ggplot2::aes(color = grupo) +
+  ggplot2::scale_color_manual(values = color$grupo)+
   theme(axis.title = element_text(size = 14),
         legend.text = element_text(size = 16),
         plot.subtitle = element_text(size = 18)) +
@@ -401,6 +405,23 @@ ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
   ggplot2::xlab("Writing (TDE)") +
   ggplot2::ylab("Writing (TDE)") +
+  theme(axis.title = element_text(size = 14),
+        legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+
+```{r, dpi=300, fig.width=8, fig.height=8}
+ggscatter(wdat, x = "score.tde.pre", y = "score.tde.pos", size = 0.5,
+          color = "grupo", add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(pwc, detailed = T)) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  ggplot2::xlab("Escrita (TDE) pré-teste") +
+  ggplot2::ylab("Escrita (TDE) pós-teste") +
   theme(axis.title = element_text(size = 14),
         legend.text = element_text(size = 16),
         plot.subtitle = element_text(size = 18)) +

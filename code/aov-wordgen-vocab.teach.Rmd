@@ -346,10 +346,14 @@ plots <- oneWayAncovaPlots(
   subtitle = which(aov$Effect == "grupo"))
 ```
 
-```{r, dpi=300, fig.width=7, fig.height=7}
+
+
+```{r, dpi=300, fig.width=8, fig.height=8}
 if (!is.null(nrow(plots[["grupo"]]$data)))
   plots[["grupo"]] +
-  ggplot2::ylab("Vocabulary (post-test)") +
+  ggplot2::ylab("Vocabulário (pós-teste)") +
+  ggplot2::aes(color = grupo) +
+  ggplot2::scale_color_manual(values = color$grupo)+
   theme(axis.title = element_text(size = 14),
         legend.text = element_text(size = 16),
         plot.subtitle = element_text(size = 18)) +
@@ -396,13 +400,32 @@ ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
   ) +
   ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
-  ggplot2::ylab("Vocabulary (post-test)") +
-  ggplot2::xlab("Vocabulary (pre-test)") +
+  ggplot2::ylab("Vocabulário (pós-teste)") +
+  ggplot2::xlab("Vocabulário (pré-teste)") +
   theme(axis.title = element_text(size = 14),
         legend.text = element_text(size = 16),
         plot.subtitle = element_text(size = 18)) +
   if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
+
+
+
+```{r, dpi=300, fig.width=8, fig.height=8}
+ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
+          color = "grupo", add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(pwc, detailed = T)) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  ggplot2::ylab("Vocabulário (pós-teste)") +
+  ggplot2::xlab("Vocabulário (pré-teste)") +
+  theme(axis.title = element_text(size = 14),
+        legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
 
 ### Checking normality and homogeneity
 
@@ -595,16 +618,16 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 
 ### Plots for ancova
 
-```{r, dpi=300, fig.width=7, fig.height=7}
+```{r, dpi=300, fig.width=8, fig.height=8}
 if (length(unique(pdat[["Sexo"]])) >= 2) {
-  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Vocabulary taught",
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov,
              subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
-    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::scale_color_manual(values = color[["Sexo"]], labels = c("mulher","homen")) +
+    ggplot2::ylab("Vocabulário (pós-teste)") +
     theme(axis.title = element_text(size = 14),
           legend.text = element_text(size = 16),
           plot.subtitle = element_text(size = 18)) +
-    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+    ggplot2::ylim(4.5, 6.5)
 }
 ```
 

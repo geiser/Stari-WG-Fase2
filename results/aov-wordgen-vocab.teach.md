@@ -522,8 +522,8 @@ ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
   ) +
   ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
-  ggplot2::ylab("Vocabulary (post-test)") +
-  ggplot2::xlab("Vocabulary (pre-test)") +
+  ggplot2::ylab("Vocabulário (pós-teste)") +
+  ggplot2::xlab("Vocabulário (pré-teste)") +
   theme(axis.title = element_text(size = 14),
         legend.text = element_text(size = 16),
         plot.subtitle = element_text(size = 18)) +
@@ -539,6 +539,24 @@ ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
     ## generated.
 
 ![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+``` r
+ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
+          color = "grupo", add = "reg.line")+
+  stat_regline_equation(
+    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
+  ) +
+  ggplot2::labs(subtitle = rstatix::get_test_label(pwc, detailed = T)) +
+  ggplot2::scale_color_manual(values = color[["grupo"]]) +
+  ggplot2::ylab("Vocabulário (pós-teste)") +
+  ggplot2::xlab("Vocabulário (pré-teste)") +
+  theme(axis.title = element_text(size = 14),
+        legend.text = element_text(size = 16),
+        plot.subtitle = element_text(size = 18)) +
+  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
+```
+
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -747,21 +765,21 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
-  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Vocabulary taught",
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov,
              subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
-    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
+    ggplot2::scale_color_manual(values = color[["Sexo"]], labels = c("mulher","homen")) +
+    ggplot2::ylab("Vocabulário (pós-teste)") +
     theme(axis.title = element_text(size = 14),
           legend.text = element_text(size = 16),
           plot.subtitle = element_text(size = 18)) +
-    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
+    ggplot2::ylim(4.5, 6.5)
 }
 ```
 
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -779,7 +797,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -801,7 +819,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ## Warning: No shared levels found between `names(values)` of the manual scale and the
     ## data's colour values.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -818,7 +836,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -838,7 +856,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -858,7 +876,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -878,7 +896,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -1104,7 +1122,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-67-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1122,7 +1140,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-67-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1144,7 +1162,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ## Warning: No shared levels found between `names(values)` of the manual scale and the
     ## data's colour values.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-70-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1161,7 +1179,7 @@ if (length(unique(pdat[["Zona"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -1181,7 +1199,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1201,7 +1219,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1221,7 +1239,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-75-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -1469,7 +1487,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1487,7 +1505,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-93-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1509,7 +1527,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ## Warning: No shared levels found between `names(values)` of the manual scale and the
     ## data's colour values.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1526,7 +1544,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -1546,7 +1564,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1566,7 +1584,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1586,7 +1604,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-100-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -1832,7 +1850,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-116-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-117-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1850,7 +1868,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-117-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-118-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1869,7 +1887,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-119-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-120-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1886,7 +1904,7 @@ if (length(unique(pdat[["Serie"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-121-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-122-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -1906,7 +1924,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-122-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1926,7 +1944,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-124-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1946,7 +1964,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-124-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-125-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -2205,7 +2223,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-141-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-142-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
@@ -2223,7 +2241,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-142-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-143-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
@@ -2245,7 +2263,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ## Warning: No shared levels found between `names(values)` of the manual scale and the
     ## data's colour values.
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-144-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-145-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
@@ -2262,7 +2280,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-146-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-147-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -2282,7 +2300,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-147-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-148-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
@@ -2302,7 +2320,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-148-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-149-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
@@ -2322,7 +2340,7 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
 }
 ```
 
-![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-149-1.png)<!-- -->
+![](aov-wordgen-vocab.teach_files/figure-gfm/unnamed-chunk-150-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
