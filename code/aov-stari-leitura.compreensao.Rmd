@@ -1,3 +1,4 @@
+
 ---
 title: "ANCOVA in Reading Comprehension (Reading Comprehension)"
 author: Geiser C. Challco <geiser@alumni.usp.br>
@@ -346,15 +347,9 @@ plots <- oneWayAncovaPlots(
   subtitle = which(aov$Effect == "grupo"))
 ```
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=7, fig.height=7}
 if (!is.null(nrow(plots[["grupo"]]$data)))
   plots[["grupo"]] +
-  ggplot2::ylab("Compreensão leitora (pós-teste)") + 
-  ggplot2::aes(color = grupo) +
-  ggplot2::scale_color_manual(values = color$grupo)+
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
   if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
 
@@ -390,7 +385,7 @@ if (length(unique(wdat.long[["grupo"]])) > 1)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 ggscatter(wdat, x = "leitura.compreensao.pre", y = "leitura.compreensao.pos", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
@@ -400,24 +395,6 @@ ggscatter(wdat, x = "leitura.compreensao.pre", y = "leitura.compreensao.pos", si
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
   if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
-
-
-```{r, dpi=300, fig.width=8, fig.height=8}
-ggscatter(wdat, x = "leitura.compreensao.pre", y = "leitura.compreensao.pos", size = 0.5,
-          color = "grupo", add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
-  ) +
-  ggplot2::labs(subtitle = rstatix::get_test_label(pwc, detailed = T)) +
-  ggplot2::scale_color_manual(values = color[["grupo"]]) +
-  ggplot2::xlab("Compreensão leitora (pré-teste)") +
-  ggplot2::ylab("Compreensão leitora (pós-teste)") +
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
-  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
-```
-
 
 ### Checking normality and homogeneity
 
@@ -433,6 +410,25 @@ shapiro_test(res$.resid)
 levene_test(res, .resid ~ grupo)
 ```
 
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "leitura.compreensao.pos",
+    covar = "leitura.compreensao.pre",
+    iv = c("grupo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-leituracompreensaopos-from-leituracompreensaopre-grupo.rds')
+```
 
 # ANCOVA and Pairwise for two factors **grupo:Sexo**
 
@@ -722,6 +718,26 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "leitura.compreensao.pos",
+    covar = "leitura.compreensao.pre",
+    iv = c("grupo","Sexo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-leituracompreensaopos-from-leituracompreensaopre-grupo-Sexo.rds')
+```
+
+
+
 # ANCOVA and Pairwise for two factors **grupo:Zona**
 
 ## Without remove non-normal data
@@ -734,7 +750,9 @@ pdat = pdat[pdat[["Zona"]] %in% do.call(
     unique(pdat[["Zona"]][which(pdat[["grupo"]] == x)])
   })),]
 pdat[["grupo"]] = factor(pdat[["grupo"]], level[["grupo"]])
-pdat[["Zona"]] = factor(pdat$Zona, c("Urbana","Rural"))
+pdat[["Zona"]] = factor(
+  pdat[["Zona"]],
+  level[["Zona"]][level[["Zona"]] %in% unique(pdat[["Zona"]])])
 
 pdat.long <- rbind(pdat[,c("id","grupo","Zona")], pdat[,c("id","grupo","Zona")])
 pdat.long[["time"]] <- c(rep("pre", nrow(pdat)), rep("pos", nrow(pdat)))
@@ -906,17 +924,12 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 ```
 
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=7, fig.height=7}
 if (length(unique(pdat[["Zona"]])) >= 2) {
-  ggPlotAoC2(pwcs, "Zona", "grupo", aov, step.increase = 0.25,
-             ylab = "Compreensão leitora (pós-teste)",
-             subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
-    ggplot2::scale_color_manual(values = color[["grupo"]]) +
-    ggplot2::scale_x_discrete(limits = c("Urbana","Rural")) +
-    theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
-    ggplot2::ylim(-1.5, 6)
+  ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "Reading Comprehension",
+               subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
+      ggplot2::scale_color_manual(values = color[["grupo"]]) +
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
 
@@ -1011,6 +1024,26 @@ if (length(unique(pdat[["Zona"]])) >= 2)
 if (length(unique(pdat[["Zona"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Zona)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "leitura.compreensao.pos",
+    covar = "leitura.compreensao.pre",
+    iv = c("grupo","Zona"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-leituracompreensaopos-from-leituracompreensaopre-grupo-Zona.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Cor.Raca**
@@ -1301,6 +1334,26 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "leitura.compreensao.pos",
+    covar = "leitura.compreensao.pre",
+    iv = c("grupo","Cor.Raca"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-leituracompreensaopos-from-leituracompreensaopre-grupo-CorRaca.rds')
+```
+
+
+
 # ANCOVA and Pairwise for two factors **grupo:Serie**
 
 ## Without remove non-normal data
@@ -1587,6 +1640,26 @@ if (length(unique(pdat[["Serie"]])) >= 2)
 if (length(unique(pdat[["Serie"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Serie)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "leitura.compreensao.pos",
+    covar = "leitura.compreensao.pre",
+    iv = c("grupo","Serie"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-leituracompreensaopos-from-leituracompreensaopre-grupo-Serie.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:leitura.compreensao.quintile**
@@ -1877,6 +1950,26 @@ if (length(unique(pdat[["leitura.compreensao.quintile"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "leitura.compreensao.pos",
+    covar = "leitura.compreensao.pre",
+    iv = c("grupo","leitura.compreensao.quintile"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-leituracompreensaopos-from-leituracompreensaopre-grupo-leituracompreensaoquintile.rds')
+```
+
+
+
 
 # Summary of Results
 
@@ -1937,6 +2030,12 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
 
 ```{r, echo=FALSE, purl=FALSE}
 kable(df, digits = 3)
+```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(df, file = '/mnt/c/Users/geise/OneDrive/Workspace/Stari-WG-Fase2/code/aov-stari-leitura.compreensao-emms.rds')
 ```
 
 

@@ -1,3 +1,4 @@
+
 ---
 title: "ANCOVA in Vocabulary taught (Vocabulary taught)"
 author: Geiser C. Challco <geiser@alumni.usp.br>
@@ -384,19 +385,14 @@ if (length(unique(wdat.long[["grupo"]])) > 1)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
   ) +
   ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
-  ggplot2::ylab("Vocabulary (post-test)") +
-  ggplot2::xlab("Vocabulary (pre-test)") +
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
   if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
@@ -414,6 +410,25 @@ shapiro_test(res$.resid)
 levene_test(res, .resid ~ grupo)
 ```
 
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo.rds')
+```
 
 # ANCOVA and Pairwise for two factors **grupo:Sexo**
 
@@ -701,6 +716,26 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 if (length(unique(pdat[["Sexo"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Sexo)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Sexo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-Sexo.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Zona**
@@ -991,6 +1026,26 @@ if (length(unique(pdat[["Zona"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Zona"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-Zona.rds')
+```
+
+
+
 # ANCOVA and Pairwise for two factors **grupo:Cor.Raca**
 
 ## Without remove non-normal data
@@ -1279,6 +1334,26 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Cor.Raca"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-CorRaca.rds')
+```
+
+
+
 # ANCOVA and Pairwise for two factors **grupo:Serie**
 
 ## Without remove non-normal data
@@ -1460,25 +1535,17 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Serie"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
 
 
-```{r, dpi=300, fig.width=9, fig.height=7}
+```{r, dpi=300, fig.width=7, fig.height=7}
 if (length(unique(pdat[["Serie"]])) >= 2) {
   ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
-      ggplot2::ylab("Vocabulary (post-test)") +
-      theme(axis.title = element_text(size = 14),
-            legend.text = element_text(size = 16),
-            plot.subtitle = element_text(size = 18)) +
-      if (ymin.ci < 6.5) ggplot2::ylim(ymin.ci, 6.5)
+      if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
 
@@ -1573,6 +1640,26 @@ if (length(unique(pdat[["Serie"]])) >= 2)
 if (length(unique(pdat[["Serie"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Serie)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Serie"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-Serie.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:vocab.teach.quintile**
@@ -1863,6 +1950,26 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","vocab.teach.quintile"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-vocabteachquintile.rds')
+```
+
+
+
 
 # Summary of Results
 
@@ -1923,6 +2030,12 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
 
 ```{r, echo=FALSE, purl=FALSE}
 kable(df, digits = 3)
+```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(df, file = '/mnt/c/Users/geise/OneDrive/Workspace/Stari-WG-Fase2/code/aov-stari-vocab.teach-emms.rds')
 ```
 
 

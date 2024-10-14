@@ -287,3 +287,23 @@ if (length(unique(pdat[["{{ iv2 }}"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "{{ dv.pos }}",
+    covar = "{{ dv.pre }}",
+    iv = c("{{ iv1 }}","{{ iv2 }}"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = '{{ rds.prefix }}-ancova-{{ gsub("[^a-zA-Z0-9]","",dv.pos) }}-from-{{ gsub("[^a-zA-Z0-9]","",dv.pre) }}-{{ gsub("[^a-zA-Z0-9]","",iv1) }}-{{ gsub("[^a-zA-Z0-9]","",iv2) }}.rds')
+```
+
+
+

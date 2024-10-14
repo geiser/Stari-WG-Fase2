@@ -1,3 +1,4 @@
+
 ---
 title: "ANCOVA in {{ label.en }} ({{ label.pt }})"
 author: Geiser C. Challco <geiser@alumni.usp.br>

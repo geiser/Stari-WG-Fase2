@@ -193,3 +193,22 @@ levene_test(res, .resid ~ {{ iv }})
 ```
 
 
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "{{ dv.pos }}",
+    covar = "{{ dv.pre }}",
+    iv = c("{{ iv }}"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = '{{ rds.prefix }}-ancova-{{ gsub("[^a-zA-Z0-9]","",dv.pos) }}-from-{{ gsub("[^a-zA-Z0-9]","",dv.pre) }}-{{ gsub("[^a-zA-Z0-9]","",iv) }}.rds')
+```
+

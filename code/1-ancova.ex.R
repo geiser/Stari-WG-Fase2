@@ -43,7 +43,8 @@ generate_md <- function(
             pivot.key = "time", pivot.value = params$dv,
             fig.width = 7, fig.height = 7,
             fig.width.bar = 8, fig.height.bar = 6,
-            fig.width.pbar = 10, fig.height.pbar = 6
+            fig.width.pbar = 10, fig.height.pbar = 6,
+            rds.prefix = info$grupo
           )))
     })))
 
@@ -69,7 +70,8 @@ generate_md <- function(
         pivot.key = "time", pivot.value = params$dv, ylab = params$ylab,
         fig.width = 7, fig.height = 7,
         fig.width.bar = 8, fig.height.bar = 6,
-        fig.width.pbar = fig.width.pbar, fig.height.pbar = 6
+        fig.width.pbar = fig.width.pbar, fig.height.pbar = 6,
+        rds.prefix = info$grupo
       )))
   })))
 
@@ -77,6 +79,7 @@ generate_md <- function(
   txt <- paste0(collapse = "\n", c(txt, do.call(tmpl, c(
     list(".t" = paste(readLines("templates/aov-summary.Rmd"), collapse="\n")),
     list(
+      rds.prefix = paste0(info$prefix,'-',params$dv,suffix),
       title = "# Summary of Results"
     )))))
 

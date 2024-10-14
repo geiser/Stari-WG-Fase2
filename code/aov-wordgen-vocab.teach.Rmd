@@ -1,3 +1,4 @@
+
 ---
 title: "ANCOVA in Vocabulary taught (Vocabulary taught)"
 author: Geiser C. Challco <geiser@alumni.usp.br>
@@ -161,11 +162,11 @@ for (coln in c("vocab","vocab.teach","vocab.non.teach","score.tde",
     "Experimental:5th quintile"="#4000BF", "Controle:5th quintile"="#b299e5")
 }
 
-tdat <- read_excel("../data/data.xlsx", sheet = "sumary")
-tdat <- tdat[!is.na(tdat[["WG.Grupo"]]),]
-tdat$grupo <- factor(tdat[["WG.Grupo"]], level[["grupo"]]) 
 
-gdat <- tdat[which(is.na(tdat$Necessidade.Deficiencia) & !is.na(tdat$WG.Grupo)),]
+gdat <- read_excel("../data/data.xlsx", sheet = "sumary")
+gdat <- gdat[which(is.na(gdat$Necessidade.Deficiencia) & !is.na(gdat$WG.Grupo)),]
+
+
 
 dat <- gdat
 dat$grupo <- factor(dat[["WG.Grupo"]], level[["grupo"]])
@@ -346,17 +347,9 @@ plots <- oneWayAncovaPlots(
   subtitle = which(aov$Effect == "grupo"))
 ```
 
-
-
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=7, fig.height=7}
 if (!is.null(nrow(plots[["grupo"]]$data)))
   plots[["grupo"]] +
-  ggplot2::ylab("Vocabulário (pós-teste)") +
-  ggplot2::aes(color = grupo) +
-  ggplot2::scale_color_manual(values = color$grupo)+
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
   if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 ```
 
@@ -392,40 +385,16 @@ if (length(unique(wdat.long[["grupo"]])) > 1)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
+```{r, dpi=300, fig.width=12, fig.height=8}
+ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
           color = "grupo", add = "reg.line")+
   stat_regline_equation(
     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
   ) +
   ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo"))) +
   ggplot2::scale_color_manual(values = color[["grupo"]]) +
-  ggplot2::ylab("Vocabulário (pós-teste)") +
-  ggplot2::xlab("Vocabulário (pré-teste)") +
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
   if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
-
-
-
-```{r, dpi=300, fig.width=8, fig.height=8}
-ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.75,
-          color = "grupo", add = "reg.line")+
-  stat_regline_equation(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = grupo)
-  ) +
-  ggplot2::labs(subtitle = rstatix::get_test_label(pwc, detailed = T)) +
-  ggplot2::scale_color_manual(values = color[["grupo"]]) +
-  ggplot2::ylab("Vocabulário (pós-teste)") +
-  ggplot2::xlab("Vocabulário (pré-teste)") +
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
-  if (ymin < ymax) ggplot2::ylim(ymin, ymax)
-```
-
 
 ### Checking normality and homogeneity
 
@@ -441,6 +410,25 @@ shapiro_test(res$.resid)
 levene_test(res, .resid ~ grupo)
 ```
 
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'WG.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo.rds')
+```
 
 # ANCOVA and Pairwise for two factors **grupo:Sexo**
 
@@ -618,16 +606,12 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 
 ### Plots for ancova
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=7, fig.height=7}
 if (length(unique(pdat[["Sexo"]])) >= 2) {
-  ggPlotAoC2(pwcs, "grupo", "Sexo", aov,
+  ggPlotAoC2(pwcs, "grupo", "Sexo", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
-    ggplot2::scale_color_manual(values = color[["Sexo"]], labels = c("mulher","homen")) +
-    ggplot2::ylab("Vocabulário (pós-teste)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
-    ggplot2::ylim(4.5, 6.5)
+    ggplot2::scale_color_manual(values = color[["Sexo"]]) +
+    if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
 
@@ -637,10 +621,6 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
   ggPlotAoC2(pwcs, "Sexo", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Sexo"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
-      ggplot2::ylab("Vocabulary (post-test)") +
-      theme(axis.title = element_text(size = 14),
-            legend.text = element_text(size = 16),
-            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -682,23 +662,18 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Sexo"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             facet.by = c("grupo","Sexo"), add = "reg.line")+
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
-    )  +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
+    ) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Sexo"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             color = "grupo", facet.by = "Sexo", add = "reg.line")+
@@ -707,11 +682,6 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -726,11 +696,6 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Sexo"))) +
     ggplot2::scale_color_manual(values = color[["Sexo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -751,6 +716,26 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 if (length(unique(pdat[["Sexo"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Sexo)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Sexo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'WG.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-Sexo.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Zona**
@@ -934,10 +919,6 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Zona", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Zona"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -948,10 +929,6 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
   ggPlotAoC2(pwcs, "Zona", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Zona"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
-      ggplot2::ylab("Vocabulary (post-test)") +
-      theme(axis.title = element_text(size = 14),
-            legend.text = element_text(size = 16),
-            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -993,23 +970,18 @@ if (length(unique(pdat[["Zona"]])) >= 2)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Zona"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             facet.by = c("grupo","Zona"), add = "reg.line")+
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Zona"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             color = "grupo", facet.by = "Zona", add = "reg.line")+
@@ -1018,11 +990,6 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1037,11 +1004,6 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Zona"))) +
     ggplot2::scale_color_manual(values = color[["Zona"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1062,6 +1024,26 @@ if (length(unique(pdat[["Zona"]])) >= 2)
 if (length(unique(pdat[["Zona"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Zona)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Zona"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'WG.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-Zona.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Cor.Raca**
@@ -1245,10 +1227,6 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Cor.Raca", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1259,10 +1237,6 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
   ggPlotAoC2(pwcs, "Cor.Raca", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Cor.Raca"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
-      ggplot2::ylab("Vocabulary (post-test)") +
-      theme(axis.title = element_text(size = 14),
-            legend.text = element_text(size = 16),
-            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1304,23 +1278,18 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             facet.by = c("grupo","Cor.Raca"), add = "reg.line")+
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             color = "grupo", facet.by = "Cor.Raca", add = "reg.line")+
@@ -1329,11 +1298,6 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1348,11 +1312,6 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Cor.Raca"))) +
     ggplot2::scale_color_manual(values = color[["Cor.Raca"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1373,6 +1332,26 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Cor.Raca)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Cor.Raca"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'WG.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-CorRaca.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Serie**
@@ -1556,10 +1535,6 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "Serie", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
     ggplot2::scale_color_manual(values = color[["Serie"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1570,10 +1545,6 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
   ggPlotAoC2(pwcs, "Serie", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:Serie"), addParam = "errorbar") +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
-      ggplot2::ylab("Vocabulary (post-test)") +
-      theme(axis.title = element_text(size = 14),
-            legend.text = element_text(size = 16),
-            plot.subtitle = element_text(size = 18)) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
@@ -1615,23 +1586,18 @@ if (length(unique(pdat[["Serie"]])) >= 2)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Serie"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             facet.by = c("grupo","Serie"), add = "reg.line")+
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["Serie"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             color = "grupo", facet.by = "Serie", add = "reg.line")+
@@ -1640,11 +1606,6 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1659,11 +1620,6 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:Serie"))) +
     ggplot2::scale_color_manual(values = color[["Serie"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1684,6 +1640,26 @@ if (length(unique(pdat[["Serie"]])) >= 2)
 if (length(unique(pdat[["Serie"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Serie)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","Serie"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'WG.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-Serie.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:vocab.teach.quintile**
@@ -1866,24 +1842,16 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2)
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
   ggPlotAoC2(pwcs, "grupo", "vocab.teach.quintile", aov, ylab = "Vocabulary taught",
              subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"), addParam = "errorbar") +
-  ggplot2::ylab("Vocabulary (post-test)") +
-  theme(axis.title = element_text(size = 14),
-        legend.text = element_text(size = 16),
-        plot.subtitle = element_text(size = 18)) +
     ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]]) +
     if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
 ```
 
 
-```{r, dpi=300, fig.width=8, fig.height=7}
+```{r, dpi=300, fig.width=7, fig.height=7}
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
   ggPlotAoC2(pwcs, "vocab.teach.quintile", "grupo", aov, ylab = "Vocabulary taught",
                subtitle = which(aov$Effect == "grupo:vocab.teach.quintile"), addParam = "errorbar") +
-      ggplot2::ylab("Vocabulary (post-test)") +
-      theme(axis.title = element_text(size = 14),
-            legend.text = element_text(size = 16),
-            plot.subtitle = element_text(size = 18)) +
       ggplot2::scale_color_manual(values = color[["grupo"]]) +
       if (ymin.ci < ymax.ci) ggplot2::ylim(ymin.ci, ymax.ci)
 }
@@ -1926,23 +1894,18 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2)
 
 ### Checking linearity assumption
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             facet.by = c("grupo","vocab.teach.quintile"), add = "reg.line")+
     stat_regline_equation(
       aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"))
     ) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
 
-```{r, dpi=300, fig.width=8, fig.height=8}
+```{r, dpi=300, fig.width=12, fig.height=8}
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
   ggscatter(wdat, x = "vocab.teach.pre", y = "vocab.teach.pos", size = 0.5,
             color = "grupo", facet.by = "vocab.teach.quintile", add = "reg.line")+
@@ -1951,11 +1914,6 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:vocab.teach.quintile"))) +
     ggplot2::scale_color_manual(values = color[["grupo"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1970,11 +1928,6 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) {
     ) +
     ggplot2::labs(subtitle = rstatix::get_test_label(aov, detailed = T, row = which(aov$Effect == "grupo:vocab.teach.quintile"))) +
     ggplot2::scale_color_manual(values = color[["vocab.teach.quintile"]]) +
-    ggplot2::ylab("Vocabulary (post-test)") +
-    ggplot2::xlab("Vocabulary (pre-test)") +
-    theme(axis.title = element_text(size = 14),
-          legend.text = element_text(size = 16),
-          plot.subtitle = element_text(size = 18)) +
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 }
 ```
@@ -1995,6 +1948,26 @@ if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2)
 if (length(unique(pdat[["vocab.teach.quintile"]])) >= 2) 
   levene_test(res, .resid ~ grupo*vocab.teach.quintile)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "vocab.teach.pos",
+    covar = "vocab.teach.pre",
+    iv = c("grupo","vocab.teach.quintile"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'WG.Grupo-ancova-vocabteachpos-from-vocabteachpre-grupo-vocabteachquintile.rds')
+```
+
 
 
 
@@ -2060,73 +2033,9 @@ kable(df, digits = 3)
 ```
 
 
-
-## CONSORT tables
-
-### Enrolment participants table
-
-```{r}
-df <- do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
-  tdat2 <- tdat
-  tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
-  count_(group_by(tdat2, grupo), x)
-}))
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(df, file = '/mnt/c/Users/geise/OneDrive/Workspace/Stari-WG-Fase2/code/aov-wordgen-vocab.teach-emms.rds')
 ```
 
-```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
-```
-
-
-### Allocated participants table (after removed students with disabilities/special needs)
-
-```{r}
-df <- do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
-  tdat2 <- gdat
-  tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
-  count_(group_by(tdat2, grupo), x)
-}))
-```
-
-```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
-```
-
-
-### Follow-up participants table (after removed students with does-not have pre and post-test)
-
-
-```{r}
-df <- do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
-  tdat2 <- gdat[gdat$id %in% dat$id,]  
-  tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
-  count_(group_by(tdat2, grupo), x)
-}))
-```
-
-```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
-```
-
-
-### Participants table for Analysis (after exclude non-normal data)
-
-
-
-```{r}
-df <- do.call(rbind, lapply(names(ldat), FUN = function(tname) {
-  dat2 <- ldat[[tname]]
-  data.frame(
-    "For Analysis of ANCOVA" = tname,
-    do.call(rbind, lapply(c("Sexo","Zona","Cor.Raca","Serie","Idade"), FUN = function(x) {
-      tdat2 <- gdat[gdat$id %in% dat2$id,]  
-      tdat2[[x]][is.na(tdat2[[x]])] <- "Not declared" 
-      count_(group_by(tdat2, grupo), x)
-  })))
-}))  
-```
-
-```{r, echo=FALSE, purl=FALSE}
-kable(df, digits = 3)
-```
 

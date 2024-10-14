@@ -225,68 +225,68 @@ df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
             colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie | variable       |   n |  mean | median |   min |   max |    sd |    se |    ci |   iqr | symmetry | skewness | kurtosis |
-|:-------------|:-----|:-------|:---------|:------|:---------------|----:|------:|-------:|------:|------:|------:|------:|------:|------:|:---------|---------:|---------:|
-| Controle     |      |        |          |       | dfs.media.math |  99 | 3.290 |  3.222 | 2.333 | 4.444 | 0.487 | 0.049 | 0.097 | 0.556 | YES      |    0.309 |   -0.323 |
-| Experimental |      |        |          |       | dfs.media.math |  46 | 3.271 |  3.278 | 1.889 | 4.556 | 0.604 | 0.089 | 0.179 | 0.889 | YES      |   -0.118 |   -0.567 |
-|              |      |        |          |       | dfs.media.math | 145 | 3.284 |  3.222 | 1.889 | 4.556 | 0.525 | 0.044 | 0.086 | 0.778 | YES      |    0.100 |   -0.276 |
-| Controle     |      |        |          |       | fss.media.math |  99 | 3.426 |  3.444 | 2.444 | 5.000 | 0.546 | 0.055 | 0.109 | 0.764 | NO       |    0.577 |    0.193 |
-| Experimental |      |        |          |       | fss.media.math |  46 | 3.284 |  3.333 | 2.000 | 4.556 | 0.674 | 0.099 | 0.200 | 0.861 | YES      |    0.183 |   -0.872 |
-|              |      |        |          |       | fss.media.math | 145 | 3.381 |  3.333 | 2.000 | 5.000 | 0.591 | 0.049 | 0.097 | 0.750 | YES      |    0.330 |   -0.146 |
-| Controle     | F    |        |          |       | dfs.media.math |  45 | 3.310 |  3.333 | 2.444 | 4.444 | 0.464 | 0.069 | 0.139 | 0.667 | YES      |    0.293 |   -0.617 |
-| Controle     | M    |        |          |       | dfs.media.math |  54 | 3.273 |  3.222 | 2.333 | 4.444 | 0.509 | 0.069 | 0.139 | 0.556 | YES      |    0.328 |   -0.260 |
-| Experimental | F    |        |          |       | dfs.media.math |  17 | 3.046 |  3.000 | 1.889 | 4.556 | 0.688 | 0.167 | 0.354 | 0.667 | YES      |    0.455 |   -0.463 |
-| Experimental | M    |        |          |       | dfs.media.math |  29 | 3.402 |  3.444 | 2.222 | 4.333 | 0.517 | 0.096 | 0.197 | 0.667 | YES      |   -0.360 |   -0.523 |
-| Controle     | F    |        |          |       | fss.media.math |  45 | 3.389 |  3.333 | 2.444 | 4.556 | 0.507 | 0.076 | 0.152 | 0.667 | YES      |    0.401 |   -0.472 |
-| Controle     | M    |        |          |       | fss.media.math |  54 | 3.456 |  3.444 | 2.444 | 5.000 | 0.580 | 0.079 | 0.158 | 0.771 | NO       |    0.625 |    0.273 |
-| Experimental | F    |        |          |       | fss.media.math |  17 | 3.218 |  3.333 | 2.000 | 4.556 | 0.777 | 0.188 | 0.399 | 1.000 | YES      |    0.157 |   -1.234 |
-| Experimental | M    |        |          |       | fss.media.math |  29 | 3.323 |  3.333 | 2.222 | 4.556 | 0.617 | 0.115 | 0.235 | 0.889 | YES      |    0.295 |   -0.878 |
-| Controle     |      | Rural  |          |       | dfs.media.math |  54 | 3.274 |  3.111 | 2.333 | 4.444 | 0.553 | 0.075 | 0.151 | 0.719 | YES      |    0.404 |   -0.685 |
-| Controle     |      | Urbana |          |       | dfs.media.math |  17 | 3.222 |  3.222 | 2.333 | 4.000 | 0.480 | 0.116 | 0.247 | 0.667 | YES      |   -0.031 |   -1.067 |
-| Controle     |      |        |          |       | dfs.media.math |  28 | 3.361 |  3.333 | 2.667 | 4.222 | 0.340 | 0.064 | 0.132 | 0.444 | NO       |    0.667 |    0.374 |
-| Experimental |      | Rural  |          |       | dfs.media.math |  29 | 3.360 |  3.333 | 2.222 | 4.556 | 0.524 | 0.097 | 0.199 | 0.556 | YES      |    0.262 |   -0.189 |
-| Experimental |      | Urbana |          |       | dfs.media.math |   8 | 2.819 |  2.667 | 1.889 | 4.111 | 0.732 | 0.259 | 0.612 | 0.694 | YES      |    0.434 |   -1.220 |
-| Experimental |      |        |          |       | dfs.media.math |   9 | 3.383 |  3.667 | 2.444 | 4.111 | 0.614 | 0.205 | 0.472 | 1.111 | YES      |   -0.461 |   -1.699 |
-| Controle     |      | Rural  |          |       | fss.media.math |  54 | 3.406 |  3.444 | 2.444 | 4.667 | 0.528 | 0.072 | 0.144 | 0.556 | YES      |    0.139 |   -0.317 |
-| Controle     |      | Urbana |          |       | fss.media.math |  17 | 3.611 |  3.444 | 2.667 | 5.000 | 0.749 | 0.182 | 0.385 | 1.222 | NO       |    0.645 |   -1.076 |
-| Controle     |      |        |          |       | fss.media.math |  28 | 3.352 |  3.333 | 2.778 | 4.000 | 0.420 | 0.079 | 0.163 | 0.750 | YES      |    0.220 |   -1.413 |
-| Experimental |      | Rural  |          |       | fss.media.math |  29 | 3.280 |  3.333 | 2.000 | 4.556 | 0.653 | 0.121 | 0.248 | 0.778 | YES      |    0.093 |   -0.754 |
-| Experimental |      | Urbana |          |       | fss.media.math |   8 | 3.184 |  2.889 | 2.444 | 4.333 | 0.735 | 0.260 | 0.615 | 0.840 | NO       |    0.610 |   -1.484 |
-| Experimental |      |        |          |       | fss.media.math |   9 | 3.387 |  3.333 | 2.111 | 4.556 | 0.752 | 0.251 | 0.578 | 1.111 | YES      |   -0.059 |   -1.213 |
-| Controle     |      |        | Parda    |       | dfs.media.math |  46 | 3.346 |  3.333 | 2.333 | 4.444 | 0.552 | 0.081 | 0.164 | 0.750 | YES      |    0.106 |   -0.877 |
-| Controle     |      |        | Branca   |       | dfs.media.math |   9 | 3.395 |  3.333 | 2.889 | 4.444 | 0.553 | 0.184 | 0.425 | 0.444 | NO       |    0.749 |   -1.034 |
-| Controle     |      |        | Preta    |       | dfs.media.math |   1 | 2.889 |  2.889 | 2.889 | 2.889 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
-| Controle     |      |        |          |       | dfs.media.math |  43 | 3.217 |  3.222 | 2.333 | 4.111 | 0.392 | 0.060 | 0.121 | 0.444 | YES      |   -0.020 |   -0.194 |
-| Experimental |      |        | Parda    |       | dfs.media.math |  12 | 3.315 |  3.333 | 2.444 | 4.222 | 0.540 | 0.156 | 0.343 | 0.750 | YES      |    0.097 |   -1.312 |
-| Experimental |      |        | Indígena |       | dfs.media.math |   5 | 3.422 |  3.556 | 2.667 | 4.111 | 0.552 | 0.247 | 0.686 | 0.556 | YES      |   -0.140 |   -1.786 |
-| Experimental |      |        | Branca   |       | dfs.media.math |   6 | 3.093 |  3.333 | 2.222 | 3.667 | 0.568 | 0.232 | 0.596 | 0.667 | NO       |   -0.502 |   -1.742 |
-| Experimental |      |        | Amarela  |       | dfs.media.math |   1 | 3.778 |  3.778 | 3.778 | 3.778 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
-| Experimental |      |        |          |       | dfs.media.math |  22 | 3.237 |  3.111 | 1.889 | 4.556 | 0.683 | 0.146 | 0.303 | 1.056 | YES      |    0.004 |   -0.728 |
-| Controle     |      |        | Parda    |       | fss.media.math |  46 | 3.478 |  3.444 | 2.444 | 5.000 | 0.552 | 0.081 | 0.164 | 0.750 | YES      |    0.321 |   -0.031 |
-| Controle     |      |        | Branca   |       | fss.media.math |   9 | 3.481 |  3.556 | 2.444 | 4.667 | 0.603 | 0.201 | 0.464 | 0.444 | YES      |    0.254 |   -0.347 |
-| Controle     |      |        | Preta    |       | fss.media.math |   1 | 3.333 |  3.333 | 3.333 | 3.333 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
-| Controle     |      |        |          |       | fss.media.math |  43 | 3.361 |  3.222 | 2.667 | 5.000 | 0.540 | 0.082 | 0.166 | 0.778 | NO       |    0.899 |    0.451 |
-| Experimental |      |        | Parda    |       | fss.media.math |  12 | 3.259 |  3.278 | 2.111 | 4.333 | 0.589 | 0.170 | 0.374 | 0.722 | YES      |   -0.158 |   -0.653 |
-| Experimental |      |        | Indígena |       | fss.media.math |   5 | 3.778 |  4.111 | 2.556 | 4.556 | 0.793 | 0.355 | 0.985 | 0.778 | NO       |   -0.507 |   -1.657 |
-| Experimental |      |        | Branca   |       | fss.media.math |   6 | 3.319 |  3.333 | 2.667 | 4.250 | 0.577 | 0.236 | 0.606 | 0.639 | YES      |    0.332 |   -1.468 |
-| Experimental |      |        | Amarela  |       | fss.media.math |   1 | 3.375 |  3.375 | 3.375 | 3.375 |       |       |       | 0.000 | few data |    0.000 |    0.000 |
-| Experimental |      |        |          |       | fss.media.math |  22 | 3.172 |  3.111 | 2.000 | 4.556 | 0.721 | 0.154 | 0.320 | 0.722 | YES      |    0.404 |   -0.949 |
-| Controle     |      |        |          | 6 ano | dfs.media.math |  32 | 3.232 |  3.167 | 2.333 | 4.444 | 0.510 | 0.090 | 0.184 | 0.583 | NO       |    0.542 |   -0.503 |
-| Controle     |      |        |          | 7 ano | dfs.media.math |  31 | 3.336 |  3.333 | 2.444 | 4.222 | 0.482 | 0.087 | 0.177 | 0.646 | YES      |   -0.050 |   -0.883 |
-| Controle     |      |        |          | 8 ano | dfs.media.math |  17 | 3.248 |  3.222 | 2.333 | 4.444 | 0.510 | 0.124 | 0.262 | 0.444 | YES      |    0.431 |   -0.031 |
-| Controle     |      |        |          | 9 ano | dfs.media.math |  19 | 3.351 |  3.333 | 2.444 | 4.444 | 0.459 | 0.105 | 0.221 | 0.444 | YES      |    0.392 |    0.252 |
-| Experimental |      |        |          | 6 ano | dfs.media.math |  15 | 3.526 |  3.556 | 2.556 | 4.556 | 0.581 | 0.150 | 0.322 | 0.778 | YES      |    0.091 |   -1.193 |
-| Experimental |      |        |          | 7 ano | dfs.media.math |  11 | 3.303 |  3.333 | 2.556 | 4.222 | 0.533 | 0.161 | 0.358 | 0.833 | YES      |    0.059 |   -1.340 |
-| Experimental |      |        |          | 8 ano | dfs.media.math |  11 | 3.000 |  3.111 | 1.889 | 4.111 | 0.648 | 0.195 | 0.435 | 0.722 | YES      |   -0.138 |   -1.007 |
-| Experimental |      |        |          | 9 ano | dfs.media.math |   9 | 3.136 |  3.222 | 2.222 | 3.778 | 0.582 | 0.194 | 0.447 | 1.000 | YES      |   -0.316 |   -1.709 |
-| Controle     |      |        |          | 6 ano | fss.media.math |  32 | 3.452 |  3.444 | 2.444 | 5.000 | 0.585 | 0.103 | 0.211 | 0.604 | NO       |    0.621 |   -0.007 |
-| Controle     |      |        |          | 7 ano | fss.media.math |  31 | 3.480 |  3.444 | 2.444 | 5.000 | 0.582 | 0.104 | 0.213 | 0.778 | YES      |    0.463 |    0.060 |
-| Controle     |      |        |          | 8 ano | fss.media.math |  17 | 3.291 |  3.111 | 2.444 | 4.556 | 0.551 | 0.134 | 0.283 | 0.667 | NO       |    0.597 |   -0.517 |
-| Controle     |      |        |          | 9 ano | fss.media.math |  19 | 3.414 |  3.333 | 2.778 | 4.333 | 0.421 | 0.097 | 0.203 | 0.556 | YES      |    0.310 |   -0.807 |
-| Experimental |      |        |          | 6 ano | fss.media.math |  15 | 3.410 |  3.333 | 2.556 | 4.556 | 0.584 | 0.151 | 0.323 | 0.410 | NO       |    0.663 |   -0.723 |
-| Experimental |      |        |          | 7 ano | fss.media.math |  11 | 3.538 |  3.556 | 2.000 | 4.333 | 0.736 | 0.222 | 0.494 | 0.833 | NO       |   -0.733 |   -0.671 |
-| Experimental |      |        |          | 8 ano | fss.media.math |  11 | 2.960 |  2.778 | 2.222 | 4.556 | 0.680 | 0.205 | 0.457 | 0.722 | NO       |    1.074 |    0.066 |
-| Experimental |      |        |          | 9 ano | fss.media.math |   9 | 3.160 |  3.222 | 2.111 | 4.111 | 0.648 | 0.216 | 0.498 | 0.667 | YES      |    0.037 |   -1.341 |
+| grupo | Sexo | Zona | Cor.Raca | Serie | variable | n | mean | median | min | max | sd | se | ci | iqr | symmetry | skewness | kurtosis |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|---:|---:|
+| Controle |  |  |  |  | dfs.media.math | 99 | 3.290 | 3.222 | 2.333 | 4.444 | 0.487 | 0.049 | 0.097 | 0.556 | YES | 0.309 | -0.323 |
+| Experimental |  |  |  |  | dfs.media.math | 46 | 3.271 | 3.278 | 1.889 | 4.556 | 0.604 | 0.089 | 0.179 | 0.889 | YES | -0.118 | -0.567 |
+|  |  |  |  |  | dfs.media.math | 145 | 3.284 | 3.222 | 1.889 | 4.556 | 0.525 | 0.044 | 0.086 | 0.778 | YES | 0.100 | -0.276 |
+| Controle |  |  |  |  | fss.media.math | 99 | 3.426 | 3.444 | 2.444 | 5.000 | 0.546 | 0.055 | 0.109 | 0.764 | NO | 0.577 | 0.193 |
+| Experimental |  |  |  |  | fss.media.math | 46 | 3.284 | 3.333 | 2.000 | 4.556 | 0.674 | 0.099 | 0.200 | 0.861 | YES | 0.183 | -0.872 |
+|  |  |  |  |  | fss.media.math | 145 | 3.381 | 3.333 | 2.000 | 5.000 | 0.591 | 0.049 | 0.097 | 0.750 | YES | 0.330 | -0.146 |
+| Controle | F |  |  |  | dfs.media.math | 45 | 3.310 | 3.333 | 2.444 | 4.444 | 0.464 | 0.069 | 0.139 | 0.667 | YES | 0.293 | -0.617 |
+| Controle | M |  |  |  | dfs.media.math | 54 | 3.273 | 3.222 | 2.333 | 4.444 | 0.509 | 0.069 | 0.139 | 0.556 | YES | 0.328 | -0.260 |
+| Experimental | F |  |  |  | dfs.media.math | 17 | 3.046 | 3.000 | 1.889 | 4.556 | 0.688 | 0.167 | 0.354 | 0.667 | YES | 0.455 | -0.463 |
+| Experimental | M |  |  |  | dfs.media.math | 29 | 3.402 | 3.444 | 2.222 | 4.333 | 0.517 | 0.096 | 0.197 | 0.667 | YES | -0.360 | -0.523 |
+| Controle | F |  |  |  | fss.media.math | 45 | 3.389 | 3.333 | 2.444 | 4.556 | 0.507 | 0.076 | 0.152 | 0.667 | YES | 0.401 | -0.472 |
+| Controle | M |  |  |  | fss.media.math | 54 | 3.456 | 3.444 | 2.444 | 5.000 | 0.580 | 0.079 | 0.158 | 0.771 | NO | 0.625 | 0.273 |
+| Experimental | F |  |  |  | fss.media.math | 17 | 3.218 | 3.333 | 2.000 | 4.556 | 0.777 | 0.188 | 0.399 | 1.000 | YES | 0.157 | -1.234 |
+| Experimental | M |  |  |  | fss.media.math | 29 | 3.323 | 3.333 | 2.222 | 4.556 | 0.617 | 0.115 | 0.235 | 0.889 | YES | 0.295 | -0.878 |
+| Controle |  | Rural |  |  | dfs.media.math | 54 | 3.274 | 3.111 | 2.333 | 4.444 | 0.553 | 0.075 | 0.151 | 0.719 | YES | 0.404 | -0.685 |
+| Controle |  | Urbana |  |  | dfs.media.math | 17 | 3.222 | 3.222 | 2.333 | 4.000 | 0.480 | 0.116 | 0.247 | 0.667 | YES | -0.031 | -1.067 |
+| Controle |  |  |  |  | dfs.media.math | 28 | 3.361 | 3.333 | 2.667 | 4.222 | 0.340 | 0.064 | 0.132 | 0.444 | NO | 0.667 | 0.374 |
+| Experimental |  | Rural |  |  | dfs.media.math | 29 | 3.360 | 3.333 | 2.222 | 4.556 | 0.524 | 0.097 | 0.199 | 0.556 | YES | 0.262 | -0.189 |
+| Experimental |  | Urbana |  |  | dfs.media.math | 8 | 2.819 | 2.667 | 1.889 | 4.111 | 0.732 | 0.259 | 0.612 | 0.694 | YES | 0.434 | -1.220 |
+| Experimental |  |  |  |  | dfs.media.math | 9 | 3.383 | 3.667 | 2.444 | 4.111 | 0.614 | 0.205 | 0.472 | 1.111 | YES | -0.461 | -1.699 |
+| Controle |  | Rural |  |  | fss.media.math | 54 | 3.406 | 3.444 | 2.444 | 4.667 | 0.528 | 0.072 | 0.144 | 0.556 | YES | 0.139 | -0.317 |
+| Controle |  | Urbana |  |  | fss.media.math | 17 | 3.611 | 3.444 | 2.667 | 5.000 | 0.749 | 0.182 | 0.385 | 1.222 | NO | 0.645 | -1.076 |
+| Controle |  |  |  |  | fss.media.math | 28 | 3.352 | 3.333 | 2.778 | 4.000 | 0.420 | 0.079 | 0.163 | 0.750 | YES | 0.220 | -1.413 |
+| Experimental |  | Rural |  |  | fss.media.math | 29 | 3.280 | 3.333 | 2.000 | 4.556 | 0.653 | 0.121 | 0.248 | 0.778 | YES | 0.093 | -0.754 |
+| Experimental |  | Urbana |  |  | fss.media.math | 8 | 3.184 | 2.889 | 2.444 | 4.333 | 0.735 | 0.260 | 0.615 | 0.840 | NO | 0.610 | -1.484 |
+| Experimental |  |  |  |  | fss.media.math | 9 | 3.387 | 3.333 | 2.111 | 4.556 | 0.752 | 0.251 | 0.578 | 1.111 | YES | -0.059 | -1.213 |
+| Controle |  |  | Parda |  | dfs.media.math | 46 | 3.346 | 3.333 | 2.333 | 4.444 | 0.552 | 0.081 | 0.164 | 0.750 | YES | 0.106 | -0.877 |
+| Controle |  |  | Branca |  | dfs.media.math | 9 | 3.395 | 3.333 | 2.889 | 4.444 | 0.553 | 0.184 | 0.425 | 0.444 | NO | 0.749 | -1.034 |
+| Controle |  |  | Preta |  | dfs.media.math | 1 | 2.889 | 2.889 | 2.889 | 2.889 |  |  |  | 0.000 | few data | 0.000 | 0.000 |
+| Controle |  |  |  |  | dfs.media.math | 43 | 3.217 | 3.222 | 2.333 | 4.111 | 0.392 | 0.060 | 0.121 | 0.444 | YES | -0.020 | -0.194 |
+| Experimental |  |  | Parda |  | dfs.media.math | 12 | 3.315 | 3.333 | 2.444 | 4.222 | 0.540 | 0.156 | 0.343 | 0.750 | YES | 0.097 | -1.312 |
+| Experimental |  |  | Indígena |  | dfs.media.math | 5 | 3.422 | 3.556 | 2.667 | 4.111 | 0.552 | 0.247 | 0.686 | 0.556 | YES | -0.140 | -1.786 |
+| Experimental |  |  | Branca |  | dfs.media.math | 6 | 3.093 | 3.333 | 2.222 | 3.667 | 0.568 | 0.232 | 0.596 | 0.667 | NO | -0.502 | -1.742 |
+| Experimental |  |  | Amarela |  | dfs.media.math | 1 | 3.778 | 3.778 | 3.778 | 3.778 |  |  |  | 0.000 | few data | 0.000 | 0.000 |
+| Experimental |  |  |  |  | dfs.media.math | 22 | 3.237 | 3.111 | 1.889 | 4.556 | 0.683 | 0.146 | 0.303 | 1.056 | YES | 0.004 | -0.728 |
+| Controle |  |  | Parda |  | fss.media.math | 46 | 3.478 | 3.444 | 2.444 | 5.000 | 0.552 | 0.081 | 0.164 | 0.750 | YES | 0.321 | -0.031 |
+| Controle |  |  | Branca |  | fss.media.math | 9 | 3.481 | 3.556 | 2.444 | 4.667 | 0.603 | 0.201 | 0.464 | 0.444 | YES | 0.254 | -0.347 |
+| Controle |  |  | Preta |  | fss.media.math | 1 | 3.333 | 3.333 | 3.333 | 3.333 |  |  |  | 0.000 | few data | 0.000 | 0.000 |
+| Controle |  |  |  |  | fss.media.math | 43 | 3.361 | 3.222 | 2.667 | 5.000 | 0.540 | 0.082 | 0.166 | 0.778 | NO | 0.899 | 0.451 |
+| Experimental |  |  | Parda |  | fss.media.math | 12 | 3.259 | 3.278 | 2.111 | 4.333 | 0.589 | 0.170 | 0.374 | 0.722 | YES | -0.158 | -0.653 |
+| Experimental |  |  | Indígena |  | fss.media.math | 5 | 3.778 | 4.111 | 2.556 | 4.556 | 0.793 | 0.355 | 0.985 | 0.778 | NO | -0.507 | -1.657 |
+| Experimental |  |  | Branca |  | fss.media.math | 6 | 3.319 | 3.333 | 2.667 | 4.250 | 0.577 | 0.236 | 0.606 | 0.639 | YES | 0.332 | -1.468 |
+| Experimental |  |  | Amarela |  | fss.media.math | 1 | 3.375 | 3.375 | 3.375 | 3.375 |  |  |  | 0.000 | few data | 0.000 | 0.000 |
+| Experimental |  |  |  |  | fss.media.math | 22 | 3.172 | 3.111 | 2.000 | 4.556 | 0.721 | 0.154 | 0.320 | 0.722 | YES | 0.404 | -0.949 |
+| Controle |  |  |  | 6 ano | dfs.media.math | 32 | 3.232 | 3.167 | 2.333 | 4.444 | 0.510 | 0.090 | 0.184 | 0.583 | NO | 0.542 | -0.503 |
+| Controle |  |  |  | 7 ano | dfs.media.math | 31 | 3.336 | 3.333 | 2.444 | 4.222 | 0.482 | 0.087 | 0.177 | 0.646 | YES | -0.050 | -0.883 |
+| Controle |  |  |  | 8 ano | dfs.media.math | 17 | 3.248 | 3.222 | 2.333 | 4.444 | 0.510 | 0.124 | 0.262 | 0.444 | YES | 0.431 | -0.031 |
+| Controle |  |  |  | 9 ano | dfs.media.math | 19 | 3.351 | 3.333 | 2.444 | 4.444 | 0.459 | 0.105 | 0.221 | 0.444 | YES | 0.392 | 0.252 |
+| Experimental |  |  |  | 6 ano | dfs.media.math | 15 | 3.526 | 3.556 | 2.556 | 4.556 | 0.581 | 0.150 | 0.322 | 0.778 | YES | 0.091 | -1.193 |
+| Experimental |  |  |  | 7 ano | dfs.media.math | 11 | 3.303 | 3.333 | 2.556 | 4.222 | 0.533 | 0.161 | 0.358 | 0.833 | YES | 0.059 | -1.340 |
+| Experimental |  |  |  | 8 ano | dfs.media.math | 11 | 3.000 | 3.111 | 1.889 | 4.111 | 0.648 | 0.195 | 0.435 | 0.722 | YES | -0.138 | -1.007 |
+| Experimental |  |  |  | 9 ano | dfs.media.math | 9 | 3.136 | 3.222 | 2.222 | 3.778 | 0.582 | 0.194 | 0.447 | 1.000 | YES | -0.316 | -1.709 |
+| Controle |  |  |  | 6 ano | fss.media.math | 32 | 3.452 | 3.444 | 2.444 | 5.000 | 0.585 | 0.103 | 0.211 | 0.604 | NO | 0.621 | -0.007 |
+| Controle |  |  |  | 7 ano | fss.media.math | 31 | 3.480 | 3.444 | 2.444 | 5.000 | 0.582 | 0.104 | 0.213 | 0.778 | YES | 0.463 | 0.060 |
+| Controle |  |  |  | 8 ano | fss.media.math | 17 | 3.291 | 3.111 | 2.444 | 4.556 | 0.551 | 0.134 | 0.283 | 0.667 | NO | 0.597 | -0.517 |
+| Controle |  |  |  | 9 ano | fss.media.math | 19 | 3.414 | 3.333 | 2.778 | 4.333 | 0.421 | 0.097 | 0.203 | 0.556 | YES | 0.310 | -0.807 |
+| Experimental |  |  |  | 6 ano | fss.media.math | 15 | 3.410 | 3.333 | 2.556 | 4.556 | 0.584 | 0.151 | 0.323 | 0.410 | NO | 0.663 | -0.723 |
+| Experimental |  |  |  | 7 ano | fss.media.math | 11 | 3.538 | 3.556 | 2.000 | 4.333 | 0.736 | 0.222 | 0.494 | 0.833 | NO | -0.733 | -0.671 |
+| Experimental |  |  |  | 8 ano | fss.media.math | 11 | 2.960 | 2.778 | 2.222 | 4.556 | 0.680 | 0.205 | 0.457 | 0.722 | NO | 1.074 | 0.066 |
+| Experimental |  |  |  | 9 ano | fss.media.math | 9 | 3.160 | 3.222 | 2.111 | 4.111 | 0.648 | 0.216 | 0.498 | 0.667 | YES | 0.037 | -1.341 |
 
 # ANCOVA and Pairwise for one factor: **grupo**
 
@@ -352,15 +352,13 @@ ldat[["grupo"]] = wdat
 (non.normal)
 ```
 
-    ##  [1] "P1768" "P3630" "P130"  "P3013" "P3014" "P2244" "P3508" "P1010" "P510"  "P3624" "P1089"
-    ## [12] "P3598" "P1728" "P3160" "P3495" "P2247" "P3578" "P3094" "P622"  "P2294" "P3502" "P3031"
-    ## [23] "P231"  "P1016" "P3055" "P2408" "P3116" "P2380" "P1705" "P3027" "P3244" "P3516" "P829" 
-    ## [34] "P3577" "P3511" "P1701" "P3002" "P458"  "P3566" "P2250" "P3153" "P2240" "P3239" "P612" 
-    ## [45] "P3519" "P1698" "P3721" "P2383" "P812"  "P523"  "P960"  "P2390" "P997"  "P3091" "P124" 
-    ## [56] "P613"  "P2378" "P820"  "P3560" "P133"  "P448"  "P184"  "P952"  "P3615" "P123"  "P238" 
-    ## [67] "P232"  "P3492" "P1091" "P2376" "P140"  "P121"  "P2222" "P3098" "P3022" "P1764" "P626" 
-    ## [78] "P1742" "P1101" "P457"  "P192"  "P1094" "P463"  "P3093" "P1711" "P3178" "P950"  "P3008"
-    ## [89] "P947"  "P3512" "P138"  "P813"  "P3569" "P943"  "P3016" "P515"  "P3505" "P936"  "P3174"
+    ##  [1] "P1768" "P3630" "P130"  "P3013" "P3014" "P2244" "P3508" "P1010" "P510"  "P3624" "P1089" "P3598" "P1728" "P3160" "P3495"
+    ## [16] "P2247" "P3578" "P3094" "P622"  "P2294" "P3502" "P3031" "P231"  "P1016" "P3055" "P2408" "P3116" "P2380" "P1705" "P3027"
+    ## [31] "P3244" "P3516" "P829"  "P3577" "P3511" "P1701" "P3002" "P458"  "P3566" "P2250" "P3153" "P2240" "P3239" "P612"  "P3519"
+    ## [46] "P1698" "P3721" "P2383" "P812"  "P523"  "P960"  "P2390" "P997"  "P3091" "P124"  "P613"  "P2378" "P820"  "P3560" "P133" 
+    ## [61] "P448"  "P184"  "P952"  "P3615" "P123"  "P238"  "P232"  "P3492" "P1091" "P2376" "P140"  "P121"  "P2222" "P3098" "P3022"
+    ## [76] "P1764" "P626"  "P1742" "P1101" "P457"  "P192"  "P1094" "P463"  "P3093" "P1711" "P3178" "P950"  "P3008" "P947"  "P3512"
+    ## [91] "P138"  "P813"  "P3569" "P943"  "P3016" "P515"  "P3505" "P936"  "P3174"
 
 ``` r
 aov = anova_test(wdat, fss.media.math ~ dfs.media.math + grupo)
@@ -386,9 +384,9 @@ pwc <- emmeans_test(wdat, fss.media.math ~ grupo, covariate = dfs.media.math,
                     p.adjust.method = "bonferroni")
 ```
 
-| term                  | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
-|:----------------------|:---------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-| dfs.media.math\*grupo | fss.media.math | Controle | Experimental |  43 |     2.137 | 0.038 | 0.038 | \*           |
+| term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+| dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 43 | 2.137 | 0.038 | 0.038 | \* |
 
 ``` r
 pwc.long <- emmeans_test(dplyr::group_by_at(wdat.long, "grupo"),
@@ -420,10 +418,10 @@ colnames(ds) <- c("grupo", "N", paste0(c("M","SE")," (pre)"),
 lemms[["grupo"]] <- merge(ds, lemms[["grupo"]], by=c("grupo"), suffixes = c("","'"))
 ```
 
-| grupo        |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
-|:-------------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
-| Controle     |  30 |   3.259 |    0.095 |     3.916 |      0.061 |   3.986 |    0.042 |    3.900 |     4.071 |
-| Experimental |  16 |   3.632 |    0.140 |     3.958 |      0.105 |   3.827 |    0.059 |    3.708 |     3.946 |
+| grupo | N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Controle | 30 | 3.259 | 0.095 | 3.916 | 0.061 | 3.986 | 0.042 | 3.900 | 4.071 |
+| Experimental | 16 | 3.632 | 0.140 | 3.958 | 0.105 | 3.827 | 0.059 | 3.708 | 3.946 |
 
 ### Plots for ancova
 
@@ -605,15 +603,12 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-    ##  [1] "P3013" "P1768" "P3630" "P2244" "P130"  "P3508" "P1010" "P3014" "P3624" "P1089" "P510" 
-    ## [12] "P3160" "P3495" "P3598" "P1728" "P2247" "P3502" "P231"  "P3578" "P622"  "P3094" "P2294"
-    ## [23] "P2380" "P1705" "P3027" "P3031" "P1016" "P3055" "P2408" "P3244" "P3516" "P3577" "P3116"
-    ## [34] "P3566" "P2250" "P2240" "P3239" "P829"  "P612"  "P1698" "P3519" "P3511" "P3002" "P458" 
-    ## [45] "P3091" "P3153" "P1701" "P3721" "P812"  "P960"  "P2390" "P997"  "P2383" "P613"  "P3093"
-    ## [56] "P820"  "P523"  "P124"  "P3178" "P1711" "P133"  "P2378" "P448"  "P238"  "P463"  "P232" 
-    ## [67] "P1091" "P184"  "P3560" "P3615" "P123"  "P952"  "P121"  "P3492" "P140"  "P3098" "P2376"
-    ## [78] "P192"  "P2222" "P1094" "P626"  "P3022" "P1742" "P1764" "P3008" "P947"  "P1101" "P138" 
-    ## [89] "P1762" "P521"
+    ##  [1] "P3013" "P1768" "P3630" "P2244" "P130"  "P3508" "P1010" "P3014" "P3624" "P1089" "P510"  "P3160" "P3495" "P3598" "P1728"
+    ## [16] "P2247" "P3502" "P231"  "P3578" "P622"  "P3094" "P2294" "P2380" "P1705" "P3027" "P3031" "P1016" "P3055" "P2408" "P3244"
+    ## [31] "P3516" "P3577" "P3116" "P3566" "P2250" "P2240" "P3239" "P829"  "P612"  "P1698" "P3519" "P3511" "P3002" "P458"  "P3091"
+    ## [46] "P3153" "P1701" "P3721" "P812"  "P960"  "P2390" "P997"  "P2383" "P613"  "P3093" "P820"  "P523"  "P124"  "P3178" "P1711"
+    ## [61] "P133"  "P2378" "P448"  "P238"  "P463"  "P232"  "P1091" "P184"  "P3560" "P3615" "P123"  "P952"  "P121"  "P3492" "P140" 
+    ## [76] "P3098" "P2376" "P192"  "P2222" "P1094" "P626"  "P3022" "P1742" "P1764" "P3008" "P947"  "P1101" "P138"  "P1762" "P521"
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -646,12 +641,12 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-| grupo        | Sexo | term                  | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:-----|:----------------------|:---------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | F    | dfs.media.math\*grupo | fss.media.math | Controle | Experimental |  50 |     0.687 | 0.495 | 0.495 | ns           |
-|              | M    | dfs.media.math\*grupo | fss.media.math | Controle | Experimental |  50 |     2.674 | 0.010 | 0.010 | \*           |
-| Controle     |      | dfs.media.math\*Sexo  | fss.media.math | F        | M            |  50 |    -0.900 | 0.373 | 0.373 | ns           |
-| Experimental |      | dfs.media.math\*Sexo  | fss.media.math | F        | M            |  50 |     0.886 | 0.380 | 0.380 | ns           |
+| grupo | Sexo | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+|  | F | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 50 | 0.687 | 0.495 | 0.495 | ns |
+|  | M | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 50 | 2.674 | 0.010 | 0.010 | \* |
+| Controle |  | dfs.media.math\*Sexo | fss.media.math | F | M | 50 | -0.900 | 0.373 | 0.373 | ns |
+| Experimental |  | dfs.media.math\*Sexo | fss.media.math | F | M | 50 | 0.886 | 0.380 | 0.380 | ns |
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -665,12 +660,12 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-| grupo        | Sexo | term | .y.       | group1 | group2 |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:-----|:-----|:----------|:-------|:-------|----:|----------:|------:|------:|:-------------|
-| Controle     | F    | time | flow.math | pre    | pos    | 102 |    -2.851 | 0.005 | 0.005 | \*\*         |
-| Controle     | M    | time | flow.math | pre    | pos    | 102 |    -4.463 | 0.000 | 0.000 | \*\*\*\*     |
-| Experimental | F    | time | flow.math | pre    | pos    | 102 |    -1.488 | 0.140 | 0.140 | ns           |
-| Experimental | M    | time | flow.math | pre    | pos    | 102 |    -0.929 | 0.355 | 0.355 | ns           |
+| grupo | Sexo | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+| Controle | F | time | flow.math | pre | pos | 102 | -2.851 | 0.005 | 0.005 | \*\* |
+| Controle | M | time | flow.math | pre | pos | 102 | -4.463 | 0.000 | 0.000 | \*\*\*\* |
+| Experimental | F | time | flow.math | pre | pos | 102 | -1.488 | 0.140 | 0.140 | ns |
+| Experimental | M | time | flow.math | pre | pos | 102 | -0.929 | 0.355 | 0.355 | ns |
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -692,12 +687,12 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-| grupo        | Sexo |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
-|:-------------|:-----|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
-| Controle     | F    |  15 |   3.356 |    0.117 |     3.833 |      0.081 |   3.837 |    0.058 |    3.720 |     3.954 |
-| Controle     | M    |  22 |   3.177 |    0.116 |     3.794 |      0.079 |   3.906 |    0.049 |    3.806 |     4.005 |
-| Experimental | F    |   7 |   3.460 |    0.263 |     3.825 |      0.189 |   3.766 |    0.086 |    3.594 |     3.938 |
-| Experimental | M    |  11 |   3.677 |    0.129 |     3.859 |      0.131 |   3.668 |    0.071 |    3.526 |     3.811 |
+| grupo | Sexo | N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Controle | F | 15 | 3.356 | 0.117 | 3.833 | 0.081 | 3.837 | 0.058 | 3.720 | 3.954 |
+| Controle | M | 22 | 3.177 | 0.116 | 3.794 | 0.079 | 3.906 | 0.049 | 3.806 | 4.005 |
+| Experimental | F | 7 | 3.460 | 0.263 | 3.825 | 0.189 | 3.766 | 0.086 | 3.594 | 3.938 |
+| Experimental | M | 11 | 3.677 | 0.129 | 3.859 | 0.131 | 3.668 | 0.071 | 3.526 | 3.811 |
 
 ### Plots for ancova
 
@@ -713,7 +708,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -727,7 +722,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -746,10 +741,9 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour values.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -766,7 +760,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -781,7 +775,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -796,7 +790,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Sexo"]])) >= 2) {
@@ -811,7 +805,7 @@ if (length(unique(pdat[["Sexo"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -966,12 +960,12 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-| grupo        | Zona   | term                  | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:-------|:----------------------|:---------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | Rural  | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 103 |     1.364 | 0.175 | 0.175 | ns           |
-|              | Urbana | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 103 |     0.899 | 0.371 | 0.371 | ns           |
-| Controle     |        | dfs.media.math\*Zona  | fss.media.math | Rural    | Urbana       | 103 |    -1.537 | 0.127 | 0.127 | ns           |
-| Experimental |        | dfs.media.math\*Zona  | fss.media.math | Rural    | Urbana       | 103 |    -0.856 | 0.394 | 0.394 | ns           |
+| grupo | Zona | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+|  | Rural | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 103 | 1.364 | 0.175 | 0.175 | ns |
+|  | Urbana | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 103 | 0.899 | 0.371 | 0.371 | ns |
+| Controle |  | dfs.media.math\*Zona | fss.media.math | Rural | Urbana | 103 | -1.537 | 0.127 | 0.127 | ns |
+| Experimental |  | dfs.media.math\*Zona | fss.media.math | Rural | Urbana | 103 | -0.856 | 0.394 | 0.394 | ns |
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -985,12 +979,12 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-| grupo        | Zona   | term | .y.       | group1 | group2 |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:-------|:-----|:----------|:-------|:-------|----:|----------:|------:|------:|:-------------|
-| Controle     | Rural  | time | flow.math | pre    | pos    | 208 |    -1.169 | 0.244 | 0.244 | ns           |
-| Controle     | Urbana | time | flow.math | pre    | pos    | 208 |    -1.943 | 0.053 | 0.053 | ns           |
-| Experimental | Rural  | time | flow.math | pre    | pos    | 208 |     0.525 | 0.600 | 0.600 | ns           |
-| Experimental | Urbana | time | flow.math | pre    | pos    | 208 |    -1.250 | 0.213 | 0.213 | ns           |
+| grupo | Zona | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+| Controle | Rural | time | flow.math | pre | pos | 208 | -1.169 | 0.244 | 0.244 | ns |
+| Controle | Urbana | time | flow.math | pre | pos | 208 | -1.943 | 0.053 | 0.053 | ns |
+| Experimental | Rural | time | flow.math | pre | pos | 208 | 0.525 | 0.600 | 0.600 | ns |
+| Experimental | Urbana | time | flow.math | pre | pos | 208 | -1.250 | 0.213 | 0.213 | ns |
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1012,12 +1006,12 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-| grupo        | Zona   |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
-|:-------------|:-------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
-| Controle     | Rural  |  54 |   3.274 |    0.075 |     3.406 |      0.072 |   3.396 |    0.074 |    3.249 |     3.543 |
-| Controle     | Urbana |  17 |   3.222 |    0.116 |     3.611 |      0.182 |   3.629 |    0.132 |    3.367 |     3.891 |
-| Experimental | Rural  |  29 |   3.360 |    0.097 |     3.280 |      0.121 |   3.224 |    0.102 |    3.022 |     3.426 |
-| Experimental | Urbana |   8 |   2.819 |    0.259 |     3.184 |      0.260 |   3.416 |    0.197 |    3.024 |     3.807 |
+| grupo | Zona | N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Controle | Rural | 54 | 3.274 | 0.075 | 3.406 | 0.072 | 3.396 | 0.074 | 3.249 | 3.543 |
+| Controle | Urbana | 17 | 3.222 | 0.116 | 3.611 | 0.182 | 3.629 | 0.132 | 3.367 | 3.891 |
+| Experimental | Rural | 29 | 3.360 | 0.097 | 3.280 | 0.121 | 3.224 | 0.102 | 3.022 | 3.426 |
+| Experimental | Urbana | 8 | 2.819 | 0.259 | 3.184 | 0.260 | 3.416 | 0.197 | 3.024 | 3.807 |
 
 ### Plots for ancova
 
@@ -1033,7 +1027,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1047,7 +1041,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-67-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1066,10 +1060,9 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour values.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1086,7 +1079,7 @@ if (length(unique(pdat[["Zona"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -1101,7 +1094,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1116,7 +1109,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-75-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Zona"]])) >= 2) {
@@ -1131,7 +1124,7 @@ if (length(unique(pdat[["Zona"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -1299,12 +1292,12 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-| grupo        | Cor.Raca | term                     | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:---------|:-------------------------|:---------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | Parda    | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental |  68 |     1.212 | 0.230 | 0.230 | ns           |
-|              | Branca   | dfs.media.math\*grupo    | fss.media.math | Controle | Experimental |  68 |     0.136 | 0.892 | 0.892 | ns           |
-| Controle     |          | dfs.media.math\*Cor.Raca | fss.media.math | Parda    | Branca       |  68 |     0.085 | 0.932 | 0.932 | ns           |
-| Experimental |          | dfs.media.math\*Cor.Raca | fss.media.math | Parda    | Branca       |  68 |    -0.577 | 0.566 | 0.566 | ns           |
+| grupo | Cor.Raca | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+|  | Parda | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 68 | 1.212 | 0.230 | 0.230 | ns |
+|  | Branca | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 68 | 0.136 | 0.892 | 0.892 | ns |
+| Controle |  | dfs.media.math\*Cor.Raca | fss.media.math | Parda | Branca | 68 | 0.085 | 0.932 | 0.932 | ns |
+| Experimental |  | dfs.media.math\*Cor.Raca | fss.media.math | Parda | Branca | 68 | -0.577 | 0.566 | 0.566 | ns |
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1318,12 +1311,12 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-| grupo        | Cor.Raca | term | .y.       | group1 | group2 |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:---------|:-----|:----------|:-------|:-------|----:|----------:|------:|------:|:-------------|
-| Controle     | Parda    | time | flow.math | pre    | pos    | 138 |    -1.127 | 0.262 | 0.262 | ns           |
-| Controle     | Branca   | time | flow.math | pre    | pos    | 138 |    -0.328 | 0.743 | 0.743 | ns           |
-| Experimental | Parda    | time | flow.math | pre    | pos    | 138 |     0.243 | 0.808 | 0.808 | ns           |
-| Experimental | Branca   | time | flow.math | pre    | pos    | 138 |    -0.703 | 0.483 | 0.483 | ns           |
+| grupo | Cor.Raca | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+| Controle | Parda | time | flow.math | pre | pos | 138 | -1.127 | 0.262 | 0.262 | ns |
+| Controle | Branca | time | flow.math | pre | pos | 138 | -0.328 | 0.743 | 0.743 | ns |
+| Experimental | Parda | time | flow.math | pre | pos | 138 | 0.243 | 0.808 | 0.808 | ns |
+| Experimental | Branca | time | flow.math | pre | pos | 138 | -0.703 | 0.483 | 0.483 | ns |
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1345,12 +1338,12 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-| grupo        | Cor.Raca |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
-|:-------------|:---------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
-| Controle     | Branca   |   9 |   3.395 |    0.184 |     3.481 |      0.201 |   3.453 |    0.174 |    3.105 |     3.801 |
-| Controle     | Parda    |  46 |   3.346 |    0.081 |     3.478 |      0.081 |   3.469 |    0.077 |    3.316 |     3.623 |
-| Experimental | Branca   |   6 |   3.093 |    0.232 |     3.319 |      0.236 |   3.415 |    0.215 |    2.986 |     3.845 |
-| Experimental | Parda    |  12 |   3.315 |    0.156 |     3.259 |      0.170 |   3.264 |    0.151 |    2.963 |     3.565 |
+| grupo | Cor.Raca | N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Controle | Branca | 9 | 3.395 | 0.184 | 3.481 | 0.201 | 3.453 | 0.174 | 3.105 | 3.801 |
+| Controle | Parda | 46 | 3.346 | 0.081 | 3.478 | 0.081 | 3.469 | 0.077 | 3.316 | 3.623 |
+| Experimental | Branca | 6 | 3.093 | 0.232 | 3.319 | 0.236 | 3.415 | 0.215 | 2.986 | 3.845 |
+| Experimental | Parda | 12 | 3.315 | 0.156 | 3.259 | 0.170 | 3.264 | 0.151 | 2.963 | 3.565 |
 
 ### Plots for ancova
 
@@ -1366,7 +1359,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1380,7 +1373,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1399,10 +1392,9 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour
-    ## values.
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the data's colour values.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1419,7 +1411,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -1434,7 +1426,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-100-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1449,7 +1441,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-101-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
@@ -1464,7 +1456,7 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-102-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -1619,24 +1611,24 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-| grupo        | Serie | term                  | .y.            | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:------|:----------------------|:---------------|:---------|:-------------|----:|----------:|------:|------:|:-------------|
-|              | 6 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 |     1.110 | 0.269 | 0.269 | ns           |
-|              | 7 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 |    -0.398 | 0.691 | 0.691 | ns           |
-|              | 8 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 |     1.019 | 0.310 | 0.310 | ns           |
-|              | 9 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 |     0.688 | 0.493 | 0.493 | ns           |
-| Controle     |       | dfs.media.math\*Serie | fss.media.math | 6 ano    | 7 ano        | 136 |     0.172 | 0.864 | 1.000 | ns           |
-| Controle     |       | dfs.media.math\*Serie | fss.media.math | 6 ano    | 8 ano        | 136 |     1.067 | 0.288 | 1.000 | ns           |
-| Controle     |       | dfs.media.math\*Serie | fss.media.math | 6 ano    | 9 ano        | 136 |     0.630 | 0.530 | 1.000 | ns           |
-| Controle     |       | dfs.media.math\*Serie | fss.media.math | 7 ano    | 8 ano        | 136 |     0.916 | 0.361 | 1.000 | ns           |
-| Controle     |       | dfs.media.math\*Serie | fss.media.math | 7 ano    | 9 ano        | 136 |     0.479 | 0.633 | 1.000 | ns           |
-| Controle     |       | dfs.media.math\*Serie | fss.media.math | 8 ano    | 9 ano        | 136 |    -0.410 | 0.682 | 1.000 | ns           |
-| Experimental |       | dfs.media.math\*Serie | fss.media.math | 6 ano    | 7 ano        | 136 |    -1.123 | 0.263 | 1.000 | ns           |
-| Experimental |       | dfs.media.math\*Serie | fss.media.math | 6 ano    | 8 ano        | 136 |     0.900 | 0.370 | 1.000 | ns           |
-| Experimental |       | dfs.media.math\*Serie | fss.media.math | 6 ano    | 9 ano        | 136 |     0.261 | 0.795 | 1.000 | ns           |
-| Experimental |       | dfs.media.math\*Serie | fss.media.math | 7 ano    | 8 ano        | 136 |     1.894 | 0.060 | 0.362 | ns           |
-| Experimental |       | dfs.media.math\*Serie | fss.media.math | 7 ano    | 9 ano        | 136 |     1.241 | 0.217 | 1.000 | ns           |
-| Experimental |       | dfs.media.math\*Serie | fss.media.math | 8 ano    | 9 ano        | 136 |    -0.565 | 0.573 | 1.000 | ns           |
+| grupo | Serie | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+|  | 6 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 | 1.110 | 0.269 | 0.269 | ns |
+|  | 7 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 | -0.398 | 0.691 | 0.691 | ns |
+|  | 8 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 | 1.019 | 0.310 | 0.310 | ns |
+|  | 9 ano | dfs.media.math\*grupo | fss.media.math | Controle | Experimental | 136 | 0.688 | 0.493 | 0.493 | ns |
+| Controle |  | dfs.media.math\*Serie | fss.media.math | 6 ano | 7 ano | 136 | 0.172 | 0.864 | 1.000 | ns |
+| Controle |  | dfs.media.math\*Serie | fss.media.math | 6 ano | 8 ano | 136 | 1.067 | 0.288 | 1.000 | ns |
+| Controle |  | dfs.media.math\*Serie | fss.media.math | 6 ano | 9 ano | 136 | 0.630 | 0.530 | 1.000 | ns |
+| Controle |  | dfs.media.math\*Serie | fss.media.math | 7 ano | 8 ano | 136 | 0.916 | 0.361 | 1.000 | ns |
+| Controle |  | dfs.media.math\*Serie | fss.media.math | 7 ano | 9 ano | 136 | 0.479 | 0.633 | 1.000 | ns |
+| Controle |  | dfs.media.math\*Serie | fss.media.math | 8 ano | 9 ano | 136 | -0.410 | 0.682 | 1.000 | ns |
+| Experimental |  | dfs.media.math\*Serie | fss.media.math | 6 ano | 7 ano | 136 | -1.123 | 0.263 | 1.000 | ns |
+| Experimental |  | dfs.media.math\*Serie | fss.media.math | 6 ano | 8 ano | 136 | 0.900 | 0.370 | 1.000 | ns |
+| Experimental |  | dfs.media.math\*Serie | fss.media.math | 6 ano | 9 ano | 136 | 0.261 | 0.795 | 1.000 | ns |
+| Experimental |  | dfs.media.math\*Serie | fss.media.math | 7 ano | 8 ano | 136 | 1.894 | 0.060 | 0.362 | ns |
+| Experimental |  | dfs.media.math\*Serie | fss.media.math | 7 ano | 9 ano | 136 | 1.241 | 0.217 | 1.000 | ns |
+| Experimental |  | dfs.media.math\*Serie | fss.media.math | 8 ano | 9 ano | 136 | -0.565 | 0.573 | 1.000 | ns |
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1650,16 +1642,16 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-| grupo        | Serie | term | .y.       | group1 | group2 |  df | statistic |     p | p.adj | p.adj.signif |
-|:-------------|:------|:-----|:----------|:-------|:-------|----:|----------:|------:|------:|:-------------|
-| Controle     | 6 ano | time | flow.math | pre    | pos    | 274 |    -1.587 | 0.114 | 0.114 | ns           |
-| Controle     | 7 ano | time | flow.math | pre    | pos    | 274 |    -1.023 | 0.307 | 0.307 | ns           |
-| Controle     | 8 ano | time | flow.math | pre    | pos    | 274 |    -0.223 | 0.824 | 0.824 | ns           |
-| Controle     | 9 ano | time | flow.math | pre    | pos    | 274 |    -0.348 | 0.728 | 0.728 | ns           |
-| Experimental | 6 ano | time | flow.math | pre    | pos    | 274 |     0.571 | 0.569 | 0.569 | ns           |
-| Experimental | 7 ano | time | flow.math | pre    | pos    | 274 |    -0.992 | 0.322 | 0.322 | ns           |
-| Experimental | 8 ano | time | flow.math | pre    | pos    | 274 |     0.171 | 0.865 | 0.865 | ns           |
-| Experimental | 9 ano | time | flow.math | pre    | pos    | 274 |    -0.094 | 0.925 | 0.925 | ns           |
+| grupo | Serie | term | .y. | group1 | group2 | df | statistic | p | p.adj | p.adj.signif |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
+| Controle | 6 ano | time | flow.math | pre | pos | 274 | -1.587 | 0.114 | 0.114 | ns |
+| Controle | 7 ano | time | flow.math | pre | pos | 274 | -1.023 | 0.307 | 0.307 | ns |
+| Controle | 8 ano | time | flow.math | pre | pos | 274 | -0.223 | 0.824 | 0.824 | ns |
+| Controle | 9 ano | time | flow.math | pre | pos | 274 | -0.348 | 0.728 | 0.728 | ns |
+| Experimental | 6 ano | time | flow.math | pre | pos | 274 | 0.571 | 0.569 | 0.569 | ns |
+| Experimental | 7 ano | time | flow.math | pre | pos | 274 | -0.992 | 0.322 | 0.322 | ns |
+| Experimental | 8 ano | time | flow.math | pre | pos | 274 | 0.171 | 0.865 | 0.865 | ns |
+| Experimental | 9 ano | time | flow.math | pre | pos | 274 | -0.094 | 0.925 | 0.925 | ns |
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1681,16 +1673,16 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-| grupo        | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
-|:-------------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|
-| Controle     | 6 ano |  32 |   3.232 |    0.090 |     3.452 |      0.103 |   3.477 |    0.094 |    3.292 |     3.663 |
-| Controle     | 7 ano |  31 |   3.336 |    0.087 |     3.480 |      0.104 |   3.455 |    0.095 |    3.266 |     3.643 |
-| Controle     | 8 ano |  17 |   3.248 |    0.124 |     3.291 |      0.134 |   3.308 |    0.128 |    3.054 |     3.562 |
-| Controle     | 9 ano |  19 |   3.351 |    0.105 |     3.414 |      0.097 |   3.381 |    0.121 |    3.141 |     3.621 |
-| Experimental | 6 ano |  15 |   3.526 |    0.150 |     3.410 |      0.151 |   3.292 |    0.138 |    3.019 |     3.565 |
-| Experimental | 7 ano |  11 |   3.303 |    0.161 |     3.538 |      0.222 |   3.528 |    0.159 |    3.213 |     3.844 |
-| Experimental | 8 ano |  11 |   3.000 |    0.195 |     2.960 |      0.205 |   3.098 |    0.161 |    2.779 |     3.417 |
-| Experimental | 9 ano |   9 |   3.136 |    0.194 |     3.160 |      0.216 |   3.233 |    0.177 |    2.883 |     3.582 |
+| grupo | Serie | N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |
+|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Controle | 6 ano | 32 | 3.232 | 0.090 | 3.452 | 0.103 | 3.477 | 0.094 | 3.292 | 3.663 |
+| Controle | 7 ano | 31 | 3.336 | 0.087 | 3.480 | 0.104 | 3.455 | 0.095 | 3.266 | 3.643 |
+| Controle | 8 ano | 17 | 3.248 | 0.124 | 3.291 | 0.134 | 3.308 | 0.128 | 3.054 | 3.562 |
+| Controle | 9 ano | 19 | 3.351 | 0.105 | 3.414 | 0.097 | 3.381 | 0.121 | 3.141 | 3.621 |
+| Experimental | 6 ano | 15 | 3.526 | 0.150 | 3.410 | 0.151 | 3.292 | 0.138 | 3.019 | 3.565 |
+| Experimental | 7 ano | 11 | 3.303 | 0.161 | 3.538 | 0.222 | 3.528 | 0.159 | 3.213 | 3.844 |
+| Experimental | 8 ano | 11 | 3.000 | 0.195 | 2.960 | 0.205 | 3.098 | 0.161 | 2.779 | 3.417 |
+| Experimental | 9 ano | 9 | 3.136 | 0.194 | 3.160 | 0.216 | 3.233 | 0.177 | 2.883 | 3.582 |
 
 ### Plots for ancova
 
@@ -1706,7 +1698,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-116-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-120-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1720,7 +1712,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
     ## Scale for colour is already present.
     ## Adding another scale for colour, which will replace the existing scale.
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-117-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-121-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1739,7 +1731,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-119-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1756,7 +1748,7 @@ if (length(unique(pdat[["Serie"]])) >= 2)
     if (ymin < ymax) ggplot2::ylim(ymin, ymax)
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-121-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-125-1.png)<!-- -->
 
 ### Checking linearity assumption
 
@@ -1771,7 +1763,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-122-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-126-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1786,7 +1778,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-123-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-127-1.png)<!-- -->
 
 ``` r
 if (length(unique(pdat[["Serie"]])) >= 2) {
@@ -1801,7 +1793,7 @@ if (length(unique(pdat[["Serie"]])) >= 2) {
 }
 ```
 
-![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-124-1.png)<!-- -->
+![](aov-stari-flow.math_files/figure-gfm/unnamed-chunk-128-1.png)<!-- -->
 
 ### Checking normality and homogeneity
 
@@ -1848,54 +1840,54 @@ df <- df[,c(fatores1[fatores1 %in% colnames(df)],"variable",
              colnames(df)[!colnames(df) %in% c(fatores1,"variable")])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie | variable       |   n |  mean | median |   min |   max |    sd |    se |    ci |   iqr | symmetry | skewness | kurtosis |
-|:-------------|:-----|:-------|:---------|:------|:---------------|----:|------:|-------:|------:|------:|------:|------:|------:|------:|:---------|---------:|---------:|
-| Controle     |      |        |          |       | dfs.media.math |  30 | 3.259 |  3.167 | 2.333 | 4.444 | 0.520 | 0.095 | 0.194 | 0.528 | YES      |    0.470 |    0.087 |
-| Experimental |      |        |          |       | dfs.media.math |  16 | 3.632 |  3.722 | 2.667 | 4.556 | 0.560 | 0.140 | 0.299 | 0.833 | YES      |   -0.138 |   -1.198 |
-|              |      |        |          |       | dfs.media.math |  46 | 3.389 |  3.333 | 2.333 | 4.556 | 0.558 | 0.082 | 0.166 | 0.750 | YES      |    0.269 |   -0.590 |
-| Controle     |      |        |          |       | fss.media.math |  30 | 3.916 |  3.889 | 3.444 | 4.667 | 0.335 | 0.061 | 0.125 | 0.333 | NO       |    0.659 |   -0.538 |
-| Experimental |      |        |          |       | fss.media.math |  16 | 3.958 |  4.056 | 3.333 | 4.556 | 0.419 | 0.105 | 0.224 | 0.778 | YES      |   -0.089 |   -1.562 |
-|              |      |        |          |       | fss.media.math |  46 | 3.931 |  3.889 | 3.333 | 4.667 | 0.363 | 0.053 | 0.108 | 0.556 | YES      |    0.326 |   -0.981 |
-| Controle     | F    |        |          |       | dfs.media.math |  15 | 3.356 |  3.222 | 2.778 | 4.444 | 0.455 | 0.117 | 0.252 | 0.389 | NO       |    1.004 |    0.045 |
-| Controle     | M    |        |          |       | dfs.media.math |  22 | 3.177 |  3.111 | 2.333 | 4.444 | 0.545 | 0.116 | 0.242 | 0.556 | YES      |    0.365 |   -0.289 |
-| Experimental | F    |        |          |       | dfs.media.math |   7 | 3.460 |  3.333 | 2.667 | 4.556 | 0.695 | 0.263 | 0.643 | 0.944 | YES      |    0.313 |   -1.624 |
-| Experimental | M    |        |          |       | dfs.media.math |  11 | 3.677 |  3.778 | 3.000 | 4.333 | 0.429 | 0.129 | 0.288 | 0.556 | YES      |    0.070 |   -1.433 |
-| Controle     | F    |        |          |       | fss.media.math |  15 | 3.833 |  3.778 | 3.444 | 4.333 | 0.312 | 0.081 | 0.173 | 0.389 | YES      |    0.435 |   -1.212 |
-| Controle     | M    |        |          |       | fss.media.math |  22 | 3.794 |  3.764 | 3.111 | 4.667 | 0.369 | 0.079 | 0.164 | 0.417 | NO       |    0.589 |    0.089 |
-| Experimental | F    |        |          |       | fss.media.math |   7 | 3.825 |  3.556 | 3.333 | 4.556 | 0.500 | 0.189 | 0.463 | 0.778 | YES      |    0.303 |   -1.895 |
-| Experimental | M    |        |          |       | fss.media.math |  11 | 3.859 |  3.778 | 3.333 | 4.556 | 0.433 | 0.131 | 0.291 | 0.722 | YES      |    0.196 |   -1.626 |
-| Controle     |      | Rural  |          |       | dfs.media.math |  54 | 3.274 |  3.111 | 2.333 | 4.444 | 0.553 | 0.075 | 0.151 | 0.719 | YES      |    0.404 |   -0.685 |
-| Controle     |      | Urbana |          |       | dfs.media.math |  17 | 3.222 |  3.222 | 2.333 | 4.000 | 0.480 | 0.116 | 0.247 | 0.667 | YES      |   -0.031 |   -1.067 |
-| Experimental |      | Rural  |          |       | dfs.media.math |  29 | 3.360 |  3.333 | 2.222 | 4.556 | 0.524 | 0.097 | 0.199 | 0.556 | YES      |    0.262 |   -0.189 |
-| Experimental |      | Urbana |          |       | dfs.media.math |   8 | 2.819 |  2.667 | 1.889 | 4.111 | 0.732 | 0.259 | 0.612 | 0.694 | YES      |    0.434 |   -1.220 |
-| Controle     |      | Rural  |          |       | fss.media.math |  54 | 3.406 |  3.444 | 2.444 | 4.667 | 0.528 | 0.072 | 0.144 | 0.556 | YES      |    0.139 |   -0.317 |
-| Controle     |      | Urbana |          |       | fss.media.math |  17 | 3.611 |  3.444 | 2.667 | 5.000 | 0.749 | 0.182 | 0.385 | 1.222 | NO       |    0.645 |   -1.076 |
-| Experimental |      | Rural  |          |       | fss.media.math |  29 | 3.280 |  3.333 | 2.000 | 4.556 | 0.653 | 0.121 | 0.248 | 0.778 | YES      |    0.093 |   -0.754 |
-| Experimental |      | Urbana |          |       | fss.media.math |   8 | 3.184 |  2.889 | 2.444 | 4.333 | 0.735 | 0.260 | 0.615 | 0.840 | NO       |    0.610 |   -1.484 |
-| Controle     |      |        | Parda    |       | dfs.media.math |  46 | 3.346 |  3.333 | 2.333 | 4.444 | 0.552 | 0.081 | 0.164 | 0.750 | YES      |    0.106 |   -0.877 |
-| Controle     |      |        | Branca   |       | dfs.media.math |   9 | 3.395 |  3.333 | 2.889 | 4.444 | 0.553 | 0.184 | 0.425 | 0.444 | NO       |    0.749 |   -1.034 |
-| Experimental |      |        | Parda    |       | dfs.media.math |  12 | 3.315 |  3.333 | 2.444 | 4.222 | 0.540 | 0.156 | 0.343 | 0.750 | YES      |    0.097 |   -1.312 |
-| Experimental |      |        | Branca   |       | dfs.media.math |   6 | 3.093 |  3.333 | 2.222 | 3.667 | 0.568 | 0.232 | 0.596 | 0.667 | NO       |   -0.502 |   -1.742 |
-| Controle     |      |        | Parda    |       | fss.media.math |  46 | 3.478 |  3.444 | 2.444 | 5.000 | 0.552 | 0.081 | 0.164 | 0.750 | YES      |    0.321 |   -0.031 |
-| Controle     |      |        | Branca   |       | fss.media.math |   9 | 3.481 |  3.556 | 2.444 | 4.667 | 0.603 | 0.201 | 0.464 | 0.444 | YES      |    0.254 |   -0.347 |
-| Experimental |      |        | Parda    |       | fss.media.math |  12 | 3.259 |  3.278 | 2.111 | 4.333 | 0.589 | 0.170 | 0.374 | 0.722 | YES      |   -0.158 |   -0.653 |
-| Experimental |      |        | Branca   |       | fss.media.math |   6 | 3.319 |  3.333 | 2.667 | 4.250 | 0.577 | 0.236 | 0.606 | 0.639 | YES      |    0.332 |   -1.468 |
-| Controle     |      |        |          | 6 ano | dfs.media.math |  32 | 3.232 |  3.167 | 2.333 | 4.444 | 0.510 | 0.090 | 0.184 | 0.583 | NO       |    0.542 |   -0.503 |
-| Controle     |      |        |          | 7 ano | dfs.media.math |  31 | 3.336 |  3.333 | 2.444 | 4.222 | 0.482 | 0.087 | 0.177 | 0.646 | YES      |   -0.050 |   -0.883 |
-| Controle     |      |        |          | 8 ano | dfs.media.math |  17 | 3.248 |  3.222 | 2.333 | 4.444 | 0.510 | 0.124 | 0.262 | 0.444 | YES      |    0.431 |   -0.031 |
-| Controle     |      |        |          | 9 ano | dfs.media.math |  19 | 3.351 |  3.333 | 2.444 | 4.444 | 0.459 | 0.105 | 0.221 | 0.444 | YES      |    0.392 |    0.252 |
-| Experimental |      |        |          | 6 ano | dfs.media.math |  15 | 3.526 |  3.556 | 2.556 | 4.556 | 0.581 | 0.150 | 0.322 | 0.778 | YES      |    0.091 |   -1.193 |
-| Experimental |      |        |          | 7 ano | dfs.media.math |  11 | 3.303 |  3.333 | 2.556 | 4.222 | 0.533 | 0.161 | 0.358 | 0.833 | YES      |    0.059 |   -1.340 |
-| Experimental |      |        |          | 8 ano | dfs.media.math |  11 | 3.000 |  3.111 | 1.889 | 4.111 | 0.648 | 0.195 | 0.435 | 0.722 | YES      |   -0.138 |   -1.007 |
-| Experimental |      |        |          | 9 ano | dfs.media.math |   9 | 3.136 |  3.222 | 2.222 | 3.778 | 0.582 | 0.194 | 0.447 | 1.000 | YES      |   -0.316 |   -1.709 |
-| Controle     |      |        |          | 6 ano | fss.media.math |  32 | 3.452 |  3.444 | 2.444 | 5.000 | 0.585 | 0.103 | 0.211 | 0.604 | NO       |    0.621 |   -0.007 |
-| Controle     |      |        |          | 7 ano | fss.media.math |  31 | 3.480 |  3.444 | 2.444 | 5.000 | 0.582 | 0.104 | 0.213 | 0.778 | YES      |    0.463 |    0.060 |
-| Controle     |      |        |          | 8 ano | fss.media.math |  17 | 3.291 |  3.111 | 2.444 | 4.556 | 0.551 | 0.134 | 0.283 | 0.667 | NO       |    0.597 |   -0.517 |
-| Controle     |      |        |          | 9 ano | fss.media.math |  19 | 3.414 |  3.333 | 2.778 | 4.333 | 0.421 | 0.097 | 0.203 | 0.556 | YES      |    0.310 |   -0.807 |
-| Experimental |      |        |          | 6 ano | fss.media.math |  15 | 3.410 |  3.333 | 2.556 | 4.556 | 0.584 | 0.151 | 0.323 | 0.410 | NO       |    0.663 |   -0.723 |
-| Experimental |      |        |          | 7 ano | fss.media.math |  11 | 3.538 |  3.556 | 2.000 | 4.333 | 0.736 | 0.222 | 0.494 | 0.833 | NO       |   -0.733 |   -0.671 |
-| Experimental |      |        |          | 8 ano | fss.media.math |  11 | 2.960 |  2.778 | 2.222 | 4.556 | 0.680 | 0.205 | 0.457 | 0.722 | NO       |    1.074 |    0.066 |
-| Experimental |      |        |          | 9 ano | fss.media.math |   9 | 3.160 |  3.222 | 2.111 | 4.111 | 0.648 | 0.216 | 0.498 | 0.667 | YES      |    0.037 |   -1.341 |
+| grupo | Sexo | Zona | Cor.Raca | Serie | variable | n | mean | median | min | max | sd | se | ci | iqr | symmetry | skewness | kurtosis |
+|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|---:|---:|
+| Controle |  |  |  |  | dfs.media.math | 30 | 3.259 | 3.167 | 2.333 | 4.444 | 0.520 | 0.095 | 0.194 | 0.528 | YES | 0.470 | 0.087 |
+| Experimental |  |  |  |  | dfs.media.math | 16 | 3.632 | 3.722 | 2.667 | 4.556 | 0.560 | 0.140 | 0.299 | 0.833 | YES | -0.138 | -1.198 |
+|  |  |  |  |  | dfs.media.math | 46 | 3.389 | 3.333 | 2.333 | 4.556 | 0.558 | 0.082 | 0.166 | 0.750 | YES | 0.269 | -0.590 |
+| Controle |  |  |  |  | fss.media.math | 30 | 3.916 | 3.889 | 3.444 | 4.667 | 0.335 | 0.061 | 0.125 | 0.333 | NO | 0.659 | -0.538 |
+| Experimental |  |  |  |  | fss.media.math | 16 | 3.958 | 4.056 | 3.333 | 4.556 | 0.419 | 0.105 | 0.224 | 0.778 | YES | -0.089 | -1.562 |
+|  |  |  |  |  | fss.media.math | 46 | 3.931 | 3.889 | 3.333 | 4.667 | 0.363 | 0.053 | 0.108 | 0.556 | YES | 0.326 | -0.981 |
+| Controle | F |  |  |  | dfs.media.math | 15 | 3.356 | 3.222 | 2.778 | 4.444 | 0.455 | 0.117 | 0.252 | 0.389 | NO | 1.004 | 0.045 |
+| Controle | M |  |  |  | dfs.media.math | 22 | 3.177 | 3.111 | 2.333 | 4.444 | 0.545 | 0.116 | 0.242 | 0.556 | YES | 0.365 | -0.289 |
+| Experimental | F |  |  |  | dfs.media.math | 7 | 3.460 | 3.333 | 2.667 | 4.556 | 0.695 | 0.263 | 0.643 | 0.944 | YES | 0.313 | -1.624 |
+| Experimental | M |  |  |  | dfs.media.math | 11 | 3.677 | 3.778 | 3.000 | 4.333 | 0.429 | 0.129 | 0.288 | 0.556 | YES | 0.070 | -1.433 |
+| Controle | F |  |  |  | fss.media.math | 15 | 3.833 | 3.778 | 3.444 | 4.333 | 0.312 | 0.081 | 0.173 | 0.389 | YES | 0.435 | -1.212 |
+| Controle | M |  |  |  | fss.media.math | 22 | 3.794 | 3.764 | 3.111 | 4.667 | 0.369 | 0.079 | 0.164 | 0.417 | NO | 0.589 | 0.089 |
+| Experimental | F |  |  |  | fss.media.math | 7 | 3.825 | 3.556 | 3.333 | 4.556 | 0.500 | 0.189 | 0.463 | 0.778 | YES | 0.303 | -1.895 |
+| Experimental | M |  |  |  | fss.media.math | 11 | 3.859 | 3.778 | 3.333 | 4.556 | 0.433 | 0.131 | 0.291 | 0.722 | YES | 0.196 | -1.626 |
+| Controle |  | Rural |  |  | dfs.media.math | 54 | 3.274 | 3.111 | 2.333 | 4.444 | 0.553 | 0.075 | 0.151 | 0.719 | YES | 0.404 | -0.685 |
+| Controle |  | Urbana |  |  | dfs.media.math | 17 | 3.222 | 3.222 | 2.333 | 4.000 | 0.480 | 0.116 | 0.247 | 0.667 | YES | -0.031 | -1.067 |
+| Experimental |  | Rural |  |  | dfs.media.math | 29 | 3.360 | 3.333 | 2.222 | 4.556 | 0.524 | 0.097 | 0.199 | 0.556 | YES | 0.262 | -0.189 |
+| Experimental |  | Urbana |  |  | dfs.media.math | 8 | 2.819 | 2.667 | 1.889 | 4.111 | 0.732 | 0.259 | 0.612 | 0.694 | YES | 0.434 | -1.220 |
+| Controle |  | Rural |  |  | fss.media.math | 54 | 3.406 | 3.444 | 2.444 | 4.667 | 0.528 | 0.072 | 0.144 | 0.556 | YES | 0.139 | -0.317 |
+| Controle |  | Urbana |  |  | fss.media.math | 17 | 3.611 | 3.444 | 2.667 | 5.000 | 0.749 | 0.182 | 0.385 | 1.222 | NO | 0.645 | -1.076 |
+| Experimental |  | Rural |  |  | fss.media.math | 29 | 3.280 | 3.333 | 2.000 | 4.556 | 0.653 | 0.121 | 0.248 | 0.778 | YES | 0.093 | -0.754 |
+| Experimental |  | Urbana |  |  | fss.media.math | 8 | 3.184 | 2.889 | 2.444 | 4.333 | 0.735 | 0.260 | 0.615 | 0.840 | NO | 0.610 | -1.484 |
+| Controle |  |  | Parda |  | dfs.media.math | 46 | 3.346 | 3.333 | 2.333 | 4.444 | 0.552 | 0.081 | 0.164 | 0.750 | YES | 0.106 | -0.877 |
+| Controle |  |  | Branca |  | dfs.media.math | 9 | 3.395 | 3.333 | 2.889 | 4.444 | 0.553 | 0.184 | 0.425 | 0.444 | NO | 0.749 | -1.034 |
+| Experimental |  |  | Parda |  | dfs.media.math | 12 | 3.315 | 3.333 | 2.444 | 4.222 | 0.540 | 0.156 | 0.343 | 0.750 | YES | 0.097 | -1.312 |
+| Experimental |  |  | Branca |  | dfs.media.math | 6 | 3.093 | 3.333 | 2.222 | 3.667 | 0.568 | 0.232 | 0.596 | 0.667 | NO | -0.502 | -1.742 |
+| Controle |  |  | Parda |  | fss.media.math | 46 | 3.478 | 3.444 | 2.444 | 5.000 | 0.552 | 0.081 | 0.164 | 0.750 | YES | 0.321 | -0.031 |
+| Controle |  |  | Branca |  | fss.media.math | 9 | 3.481 | 3.556 | 2.444 | 4.667 | 0.603 | 0.201 | 0.464 | 0.444 | YES | 0.254 | -0.347 |
+| Experimental |  |  | Parda |  | fss.media.math | 12 | 3.259 | 3.278 | 2.111 | 4.333 | 0.589 | 0.170 | 0.374 | 0.722 | YES | -0.158 | -0.653 |
+| Experimental |  |  | Branca |  | fss.media.math | 6 | 3.319 | 3.333 | 2.667 | 4.250 | 0.577 | 0.236 | 0.606 | 0.639 | YES | 0.332 | -1.468 |
+| Controle |  |  |  | 6 ano | dfs.media.math | 32 | 3.232 | 3.167 | 2.333 | 4.444 | 0.510 | 0.090 | 0.184 | 0.583 | NO | 0.542 | -0.503 |
+| Controle |  |  |  | 7 ano | dfs.media.math | 31 | 3.336 | 3.333 | 2.444 | 4.222 | 0.482 | 0.087 | 0.177 | 0.646 | YES | -0.050 | -0.883 |
+| Controle |  |  |  | 8 ano | dfs.media.math | 17 | 3.248 | 3.222 | 2.333 | 4.444 | 0.510 | 0.124 | 0.262 | 0.444 | YES | 0.431 | -0.031 |
+| Controle |  |  |  | 9 ano | dfs.media.math | 19 | 3.351 | 3.333 | 2.444 | 4.444 | 0.459 | 0.105 | 0.221 | 0.444 | YES | 0.392 | 0.252 |
+| Experimental |  |  |  | 6 ano | dfs.media.math | 15 | 3.526 | 3.556 | 2.556 | 4.556 | 0.581 | 0.150 | 0.322 | 0.778 | YES | 0.091 | -1.193 |
+| Experimental |  |  |  | 7 ano | dfs.media.math | 11 | 3.303 | 3.333 | 2.556 | 4.222 | 0.533 | 0.161 | 0.358 | 0.833 | YES | 0.059 | -1.340 |
+| Experimental |  |  |  | 8 ano | dfs.media.math | 11 | 3.000 | 3.111 | 1.889 | 4.111 | 0.648 | 0.195 | 0.435 | 0.722 | YES | -0.138 | -1.007 |
+| Experimental |  |  |  | 9 ano | dfs.media.math | 9 | 3.136 | 3.222 | 2.222 | 3.778 | 0.582 | 0.194 | 0.447 | 1.000 | YES | -0.316 | -1.709 |
+| Controle |  |  |  | 6 ano | fss.media.math | 32 | 3.452 | 3.444 | 2.444 | 5.000 | 0.585 | 0.103 | 0.211 | 0.604 | NO | 0.621 | -0.007 |
+| Controle |  |  |  | 7 ano | fss.media.math | 31 | 3.480 | 3.444 | 2.444 | 5.000 | 0.582 | 0.104 | 0.213 | 0.778 | YES | 0.463 | 0.060 |
+| Controle |  |  |  | 8 ano | fss.media.math | 17 | 3.291 | 3.111 | 2.444 | 4.556 | 0.551 | 0.134 | 0.283 | 0.667 | NO | 0.597 | -0.517 |
+| Controle |  |  |  | 9 ano | fss.media.math | 19 | 3.414 | 3.333 | 2.778 | 4.333 | 0.421 | 0.097 | 0.203 | 0.556 | YES | 0.310 | -0.807 |
+| Experimental |  |  |  | 6 ano | fss.media.math | 15 | 3.410 | 3.333 | 2.556 | 4.556 | 0.584 | 0.151 | 0.323 | 0.410 | NO | 0.663 | -0.723 |
+| Experimental |  |  |  | 7 ano | fss.media.math | 11 | 3.538 | 3.556 | 2.000 | 4.333 | 0.736 | 0.222 | 0.494 | 0.833 | NO | -0.733 | -0.671 |
+| Experimental |  |  |  | 8 ano | fss.media.math | 11 | 2.960 | 2.778 | 2.222 | 4.556 | 0.680 | 0.205 | 0.457 | 0.722 | NO | 1.074 | 0.066 |
+| Experimental |  |  |  | 9 ano | fss.media.math | 9 | 3.160 | 3.222 | 2.111 | 4.111 | 0.648 | 0.216 | 0.498 | 0.667 | YES | 0.037 | -1.341 |
 
 ## ANCOVA Table Comparison
 
@@ -1904,18 +1896,18 @@ df <- do.call(plyr::rbind.fill, laov)
 df <- df[!duplicated(df$Effect),]
 ```
 
-|     | Effect         | DFn | DFd |      F |     p | p\<.05 |   ges | DFn’ | DFd’ |     F’ |    p’ | p\<.05’ |  ges’ |
-|:----|:---------------|----:|----:|-------:|------:|:-------|------:|-----:|-----:|-------:|------:|:--------|------:|
-| 1   | dfs.media.math |   1 |  43 | 70.878 | 0.000 | \*     | 0.622 |    1 |  142 | 36.730 | 0.000 | \*      | 0.206 |
-| 2   | grupo          |   1 |  43 |  4.567 | 0.038 | \*     | 0.096 |    1 |  142 |  1.959 | 0.164 |         | 0.014 |
-| 5   | grupo:Sexo     |   1 |  50 |  1.515 | 0.224 |        | 0.029 |    1 |  140 |  0.713 | 0.400 |         | 0.005 |
-| 6   | Sexo           |   1 |  50 |  0.052 | 0.820 |        | 0.001 |    1 |  140 |  0.172 | 0.679 |         | 0.001 |
-| 9   | grupo:Zona     |   1 | 103 |  0.024 | 0.878 |        | 0.000 |    1 |  103 |  0.024 | 0.878 |         | 0.000 |
-| 10  | Zona           |   1 | 103 |  3.051 | 0.084 |        | 0.029 |    1 |  103 |  3.051 | 0.084 |         | 0.029 |
-| 11  | Cor.Raca       |   1 |  68 |  0.073 | 0.787 |        | 0.001 |    1 |   68 |  0.073 | 0.787 |         | 0.001 |
-| 14  | grupo:Cor.Raca |   1 |  68 |  0.266 | 0.607 |        | 0.004 |    1 |   68 |  0.266 | 0.607 |         | 0.004 |
-| 17  | grupo:Serie    |   3 | 136 |  0.486 | 0.693 |        | 0.011 |    3 |  136 |  0.486 | 0.693 |         | 0.011 |
-| 18  | Serie          |   3 | 136 |  1.218 | 0.305 |        | 0.026 |    3 |  136 |  1.218 | 0.305 |         | 0.026 |
+|  | Effect | DFn | DFd | F | p | p\<.05 | ges | DFn’ | DFd’ | F’ | p’ | p\<.05’ | ges’ |
+|:---|:---|---:|---:|---:|---:|:---|---:|---:|---:|---:|---:|:---|---:|
+| 1 | dfs.media.math | 1 | 43 | 70.878 | 0.000 | \* | 0.622 | 1 | 142 | 36.730 | 0.000 | \* | 0.206 |
+| 2 | grupo | 1 | 43 | 4.567 | 0.038 | \* | 0.096 | 1 | 142 | 1.959 | 0.164 |  | 0.014 |
+| 5 | grupo:Sexo | 1 | 50 | 1.515 | 0.224 |  | 0.029 | 1 | 140 | 0.713 | 0.400 |  | 0.005 |
+| 6 | Sexo | 1 | 50 | 0.052 | 0.820 |  | 0.001 | 1 | 140 | 0.172 | 0.679 |  | 0.001 |
+| 9 | grupo:Zona | 1 | 103 | 0.024 | 0.878 |  | 0.000 | 1 | 103 | 0.024 | 0.878 |  | 0.000 |
+| 10 | Zona | 1 | 103 | 3.051 | 0.084 |  | 0.029 | 1 | 103 | 3.051 | 0.084 |  | 0.029 |
+| 11 | Cor.Raca | 1 | 68 | 0.073 | 0.787 |  | 0.001 | 1 | 68 | 0.073 | 0.787 |  | 0.001 |
+| 14 | grupo:Cor.Raca | 1 | 68 | 0.266 | 0.607 |  | 0.004 | 1 | 68 | 0.266 | 0.607 |  | 0.004 |
+| 17 | grupo:Serie | 3 | 136 | 0.486 | 0.693 |  | 0.011 | 3 | 136 | 0.486 | 0.693 |  | 0.011 |
+| 18 | Serie | 3 | 136 | 1.218 | 0.305 |  | 0.026 | 3 | 136 | 1.218 | 0.305 |  | 0.026 |
 
 ## PairWise Table Comparison
 
@@ -1925,59 +1917,59 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
             names(df)[!names(df) %in% c(names(lfatores),"term",".y.")])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie | group1   | group2       |  df | statistic |     p | p.adj | p.adj.signif | df’ | statistic’ |    p’ | p.adj’ | p.adj.signif’ |
-|:-------------|:-----|:-------|:---------|:------|:---------|:-------------|----:|----------:|------:|------:|:-------------|----:|-----------:|------:|-------:|:--------------|
-| Controle     |      |        |          |       | pre      | pos          |  88 |    -5.554 | 0.000 | 0.000 | \*\*\*\*     | 286 |     -1.708 | 0.089 |  0.089 | ns            |
-| Experimental |      |        |          |       | pre      | pos          |  88 |    -2.017 | 0.047 | 0.047 | \*           | 286 |     -0.117 | 0.907 |  0.907 | ns            |
-|              |      |        |          |       | Controle | Experimental |  43 |     2.137 | 0.038 | 0.038 | \*           | 142 |      1.400 | 0.164 |  0.164 | ns            |
-| Controle     | F    |        |          |       | pre      | pos          | 102 |    -2.851 | 0.005 | 0.005 | \*\*         | 282 |     -0.670 | 0.504 |  0.504 | ns            |
-| Controle     | M    |        |          |       | pre      | pos          | 102 |    -4.463 | 0.000 | 0.000 | \*\*\*\*     | 282 |     -1.706 | 0.089 |  0.089 | ns            |
-| Controle     |      |        |          |       | F        | M            |  50 |    -0.900 | 0.373 | 0.373 | ns           | 140 |     -0.809 | 0.420 |  0.420 | ns            |
-| Experimental | F    |        |          |       | pre      | pos          | 102 |    -1.488 | 0.140 | 0.140 | ns           | 282 |     -0.901 | 0.368 |  0.368 | ns            |
-| Experimental | M    |        |          |       | pre      | pos          | 102 |    -0.929 | 0.355 | 0.355 | ns           | 282 |      0.543 | 0.588 |  0.588 | ns            |
-| Experimental |      |        |          |       | F        | M            |  50 |     0.886 | 0.380 | 0.380 | ns           | 140 |      0.484 | 0.629 |  0.629 | ns            |
-|              | F    |        |          |       | Controle | Experimental |  50 |     0.687 | 0.495 | 0.495 | ns           | 140 |      0.224 | 0.823 |  0.823 | ns            |
-|              | M    |        |          |       | Controle | Experimental |  50 |     2.674 | 0.010 | 0.010 | \*           | 140 |      1.637 | 0.104 |  0.104 | ns            |
-| Controle     |      |        |          |       | Rural    | Urbana       | 103 |    -1.537 | 0.127 | 0.127 | ns           | 103 |     -1.537 | 0.127 |  0.127 | ns            |
-| Controle     |      | Rural  |          |       | pre      | pos          | 208 |    -1.169 | 0.244 | 0.244 | ns           | 208 |     -1.169 | 0.244 |  0.244 | ns            |
-| Controle     |      | Urbana |          |       | pre      | pos          | 208 |    -1.943 | 0.053 | 0.053 | ns           | 208 |     -1.943 | 0.053 |  0.053 | ns            |
-| Experimental |      |        |          |       | Rural    | Urbana       | 103 |    -0.856 | 0.394 | 0.394 | ns           | 103 |     -0.856 | 0.394 |  0.394 | ns            |
-| Experimental |      | Rural  |          |       | pre      | pos          | 208 |     0.525 | 0.600 | 0.600 | ns           | 208 |      0.525 | 0.600 |  0.600 | ns            |
-| Experimental |      | Urbana |          |       | pre      | pos          | 208 |    -1.250 | 0.213 | 0.213 | ns           | 208 |     -1.250 | 0.213 |  0.213 | ns            |
-|              |      | Rural  |          |       | Controle | Experimental | 103 |     1.364 | 0.175 | 0.175 | ns           | 103 |      1.364 | 0.175 |  0.175 | ns            |
-|              |      | Urbana |          |       | Controle | Experimental | 103 |     0.899 | 0.371 | 0.371 | ns           | 103 |      0.899 | 0.371 |  0.371 | ns            |
-| Controle     |      |        | Branca   |       | pre      | pos          | 138 |    -0.328 | 0.743 | 0.743 | ns           | 138 |     -0.328 | 0.743 |  0.743 | ns            |
-| Controle     |      |        |          |       | Parda    | Branca       |  68 |     0.085 | 0.932 | 0.932 | ns           |  68 |      0.085 | 0.932 |  0.932 | ns            |
-| Controle     |      |        | Parda    |       | pre      | pos          | 138 |    -1.127 | 0.262 | 0.262 | ns           | 138 |     -1.127 | 0.262 |  0.262 | ns            |
-| Experimental |      |        | Branca   |       | pre      | pos          | 138 |    -0.703 | 0.483 | 0.483 | ns           | 138 |     -0.703 | 0.483 |  0.483 | ns            |
-| Experimental |      |        |          |       | Parda    | Branca       |  68 |    -0.577 | 0.566 | 0.566 | ns           |  68 |     -0.577 | 0.566 |  0.566 | ns            |
-| Experimental |      |        | Parda    |       | pre      | pos          | 138 |     0.243 | 0.808 | 0.808 | ns           | 138 |      0.243 | 0.808 |  0.808 | ns            |
-|              |      |        | Branca   |       | Controle | Experimental |  68 |     0.136 | 0.892 | 0.892 | ns           |  68 |      0.136 | 0.892 |  0.892 | ns            |
-|              |      |        | Parda    |       | Controle | Experimental |  68 |     1.212 | 0.230 | 0.230 | ns           |  68 |      1.212 | 0.230 |  0.230 | ns            |
-| Controle     |      |        |          | 6 ano | pre      | pos          | 274 |    -1.587 | 0.114 | 0.114 | ns           | 274 |     -1.587 | 0.114 |  0.114 | ns            |
-| Controle     |      |        |          | 7 ano | pre      | pos          | 274 |    -1.023 | 0.307 | 0.307 | ns           | 274 |     -1.023 | 0.307 |  0.307 | ns            |
-| Controle     |      |        |          | 8 ano | pre      | pos          | 274 |    -0.223 | 0.824 | 0.824 | ns           | 274 |     -0.223 | 0.824 |  0.824 | ns            |
-| Controle     |      |        |          | 9 ano | pre      | pos          | 274 |    -0.348 | 0.728 | 0.728 | ns           | 274 |     -0.348 | 0.728 |  0.728 | ns            |
-| Controle     |      |        |          |       | 6 ano    | 7 ano        | 136 |     0.172 | 0.864 | 1.000 | ns           | 136 |      0.172 | 0.864 |  1.000 | ns            |
-| Controle     |      |        |          |       | 6 ano    | 8 ano        | 136 |     1.067 | 0.288 | 1.000 | ns           | 136 |      1.067 | 0.288 |  1.000 | ns            |
-| Controle     |      |        |          |       | 6 ano    | 9 ano        | 136 |     0.630 | 0.530 | 1.000 | ns           | 136 |      0.630 | 0.530 |  1.000 | ns            |
-| Controle     |      |        |          |       | 7 ano    | 8 ano        | 136 |     0.916 | 0.361 | 1.000 | ns           | 136 |      0.916 | 0.361 |  1.000 | ns            |
-| Controle     |      |        |          |       | 7 ano    | 9 ano        | 136 |     0.479 | 0.633 | 1.000 | ns           | 136 |      0.479 | 0.633 |  1.000 | ns            |
-| Controle     |      |        |          |       | 8 ano    | 9 ano        | 136 |    -0.410 | 0.682 | 1.000 | ns           | 136 |     -0.410 | 0.682 |  1.000 | ns            |
-| Experimental |      |        |          | 6 ano | pre      | pos          | 274 |     0.571 | 0.569 | 0.569 | ns           | 274 |      0.571 | 0.569 |  0.569 | ns            |
-| Experimental |      |        |          | 7 ano | pre      | pos          | 274 |    -0.992 | 0.322 | 0.322 | ns           | 274 |     -0.992 | 0.322 |  0.322 | ns            |
-| Experimental |      |        |          | 8 ano | pre      | pos          | 274 |     0.171 | 0.865 | 0.865 | ns           | 274 |      0.171 | 0.865 |  0.865 | ns            |
-| Experimental |      |        |          | 9 ano | pre      | pos          | 274 |    -0.094 | 0.925 | 0.925 | ns           | 274 |     -0.094 | 0.925 |  0.925 | ns            |
-| Experimental |      |        |          |       | 6 ano    | 7 ano        | 136 |    -1.123 | 0.263 | 1.000 | ns           | 136 |     -1.123 | 0.263 |  1.000 | ns            |
-| Experimental |      |        |          |       | 6 ano    | 8 ano        | 136 |     0.900 | 0.370 | 1.000 | ns           | 136 |      0.900 | 0.370 |  1.000 | ns            |
-| Experimental |      |        |          |       | 6 ano    | 9 ano        | 136 |     0.261 | 0.795 | 1.000 | ns           | 136 |      0.261 | 0.795 |  1.000 | ns            |
-| Experimental |      |        |          |       | 7 ano    | 8 ano        | 136 |     1.894 | 0.060 | 0.362 | ns           | 136 |      1.894 | 0.060 |  0.362 | ns            |
-| Experimental |      |        |          |       | 7 ano    | 9 ano        | 136 |     1.241 | 0.217 | 1.000 | ns           | 136 |      1.241 | 0.217 |  1.000 | ns            |
-| Experimental |      |        |          |       | 8 ano    | 9 ano        | 136 |    -0.565 | 0.573 | 1.000 | ns           | 136 |     -0.565 | 0.573 |  1.000 | ns            |
-|              |      |        |          | 6 ano | Controle | Experimental | 136 |     1.110 | 0.269 | 0.269 | ns           | 136 |      1.110 | 0.269 |  0.269 | ns            |
-|              |      |        |          | 7 ano | Controle | Experimental | 136 |    -0.398 | 0.691 | 0.691 | ns           | 136 |     -0.398 | 0.691 |  0.691 | ns            |
-|              |      |        |          | 8 ano | Controle | Experimental | 136 |     1.019 | 0.310 | 0.310 | ns           | 136 |      1.019 | 0.310 |  0.310 | ns            |
-|              |      |        |          | 9 ano | Controle | Experimental | 136 |     0.688 | 0.493 | 0.493 | ns           | 136 |      0.688 | 0.493 |  0.493 | ns            |
+| grupo | Sexo | Zona | Cor.Raca | Serie | group1 | group2 | df | statistic | p | p.adj | p.adj.signif | df’ | statistic’ | p’ | p.adj’ | p.adj.signif’ |
+|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|---:|---:|---:|---:|:---|
+| Controle |  |  |  |  | pre | pos | 88 | -5.554 | 0.000 | 0.000 | \*\*\*\* | 286 | -1.708 | 0.089 | 0.089 | ns |
+| Experimental |  |  |  |  | pre | pos | 88 | -2.017 | 0.047 | 0.047 | \* | 286 | -0.117 | 0.907 | 0.907 | ns |
+|  |  |  |  |  | Controle | Experimental | 43 | 2.137 | 0.038 | 0.038 | \* | 142 | 1.400 | 0.164 | 0.164 | ns |
+| Controle | F |  |  |  | pre | pos | 102 | -2.851 | 0.005 | 0.005 | \*\* | 282 | -0.670 | 0.504 | 0.504 | ns |
+| Controle | M |  |  |  | pre | pos | 102 | -4.463 | 0.000 | 0.000 | \*\*\*\* | 282 | -1.706 | 0.089 | 0.089 | ns |
+| Controle |  |  |  |  | F | M | 50 | -0.900 | 0.373 | 0.373 | ns | 140 | -0.809 | 0.420 | 0.420 | ns |
+| Experimental | F |  |  |  | pre | pos | 102 | -1.488 | 0.140 | 0.140 | ns | 282 | -0.901 | 0.368 | 0.368 | ns |
+| Experimental | M |  |  |  | pre | pos | 102 | -0.929 | 0.355 | 0.355 | ns | 282 | 0.543 | 0.588 | 0.588 | ns |
+| Experimental |  |  |  |  | F | M | 50 | 0.886 | 0.380 | 0.380 | ns | 140 | 0.484 | 0.629 | 0.629 | ns |
+|  | F |  |  |  | Controle | Experimental | 50 | 0.687 | 0.495 | 0.495 | ns | 140 | 0.224 | 0.823 | 0.823 | ns |
+|  | M |  |  |  | Controle | Experimental | 50 | 2.674 | 0.010 | 0.010 | \* | 140 | 1.637 | 0.104 | 0.104 | ns |
+| Controle |  |  |  |  | Rural | Urbana | 103 | -1.537 | 0.127 | 0.127 | ns | 103 | -1.537 | 0.127 | 0.127 | ns |
+| Controle |  | Rural |  |  | pre | pos | 208 | -1.169 | 0.244 | 0.244 | ns | 208 | -1.169 | 0.244 | 0.244 | ns |
+| Controle |  | Urbana |  |  | pre | pos | 208 | -1.943 | 0.053 | 0.053 | ns | 208 | -1.943 | 0.053 | 0.053 | ns |
+| Experimental |  |  |  |  | Rural | Urbana | 103 | -0.856 | 0.394 | 0.394 | ns | 103 | -0.856 | 0.394 | 0.394 | ns |
+| Experimental |  | Rural |  |  | pre | pos | 208 | 0.525 | 0.600 | 0.600 | ns | 208 | 0.525 | 0.600 | 0.600 | ns |
+| Experimental |  | Urbana |  |  | pre | pos | 208 | -1.250 | 0.213 | 0.213 | ns | 208 | -1.250 | 0.213 | 0.213 | ns |
+|  |  | Rural |  |  | Controle | Experimental | 103 | 1.364 | 0.175 | 0.175 | ns | 103 | 1.364 | 0.175 | 0.175 | ns |
+|  |  | Urbana |  |  | Controle | Experimental | 103 | 0.899 | 0.371 | 0.371 | ns | 103 | 0.899 | 0.371 | 0.371 | ns |
+| Controle |  |  | Branca |  | pre | pos | 138 | -0.328 | 0.743 | 0.743 | ns | 138 | -0.328 | 0.743 | 0.743 | ns |
+| Controle |  |  |  |  | Parda | Branca | 68 | 0.085 | 0.932 | 0.932 | ns | 68 | 0.085 | 0.932 | 0.932 | ns |
+| Controle |  |  | Parda |  | pre | pos | 138 | -1.127 | 0.262 | 0.262 | ns | 138 | -1.127 | 0.262 | 0.262 | ns |
+| Experimental |  |  | Branca |  | pre | pos | 138 | -0.703 | 0.483 | 0.483 | ns | 138 | -0.703 | 0.483 | 0.483 | ns |
+| Experimental |  |  |  |  | Parda | Branca | 68 | -0.577 | 0.566 | 0.566 | ns | 68 | -0.577 | 0.566 | 0.566 | ns |
+| Experimental |  |  | Parda |  | pre | pos | 138 | 0.243 | 0.808 | 0.808 | ns | 138 | 0.243 | 0.808 | 0.808 | ns |
+|  |  |  | Branca |  | Controle | Experimental | 68 | 0.136 | 0.892 | 0.892 | ns | 68 | 0.136 | 0.892 | 0.892 | ns |
+|  |  |  | Parda |  | Controle | Experimental | 68 | 1.212 | 0.230 | 0.230 | ns | 68 | 1.212 | 0.230 | 0.230 | ns |
+| Controle |  |  |  | 6 ano | pre | pos | 274 | -1.587 | 0.114 | 0.114 | ns | 274 | -1.587 | 0.114 | 0.114 | ns |
+| Controle |  |  |  | 7 ano | pre | pos | 274 | -1.023 | 0.307 | 0.307 | ns | 274 | -1.023 | 0.307 | 0.307 | ns |
+| Controle |  |  |  | 8 ano | pre | pos | 274 | -0.223 | 0.824 | 0.824 | ns | 274 | -0.223 | 0.824 | 0.824 | ns |
+| Controle |  |  |  | 9 ano | pre | pos | 274 | -0.348 | 0.728 | 0.728 | ns | 274 | -0.348 | 0.728 | 0.728 | ns |
+| Controle |  |  |  |  | 6 ano | 7 ano | 136 | 0.172 | 0.864 | 1.000 | ns | 136 | 0.172 | 0.864 | 1.000 | ns |
+| Controle |  |  |  |  | 6 ano | 8 ano | 136 | 1.067 | 0.288 | 1.000 | ns | 136 | 1.067 | 0.288 | 1.000 | ns |
+| Controle |  |  |  |  | 6 ano | 9 ano | 136 | 0.630 | 0.530 | 1.000 | ns | 136 | 0.630 | 0.530 | 1.000 | ns |
+| Controle |  |  |  |  | 7 ano | 8 ano | 136 | 0.916 | 0.361 | 1.000 | ns | 136 | 0.916 | 0.361 | 1.000 | ns |
+| Controle |  |  |  |  | 7 ano | 9 ano | 136 | 0.479 | 0.633 | 1.000 | ns | 136 | 0.479 | 0.633 | 1.000 | ns |
+| Controle |  |  |  |  | 8 ano | 9 ano | 136 | -0.410 | 0.682 | 1.000 | ns | 136 | -0.410 | 0.682 | 1.000 | ns |
+| Experimental |  |  |  | 6 ano | pre | pos | 274 | 0.571 | 0.569 | 0.569 | ns | 274 | 0.571 | 0.569 | 0.569 | ns |
+| Experimental |  |  |  | 7 ano | pre | pos | 274 | -0.992 | 0.322 | 0.322 | ns | 274 | -0.992 | 0.322 | 0.322 | ns |
+| Experimental |  |  |  | 8 ano | pre | pos | 274 | 0.171 | 0.865 | 0.865 | ns | 274 | 0.171 | 0.865 | 0.865 | ns |
+| Experimental |  |  |  | 9 ano | pre | pos | 274 | -0.094 | 0.925 | 0.925 | ns | 274 | -0.094 | 0.925 | 0.925 | ns |
+| Experimental |  |  |  |  | 6 ano | 7 ano | 136 | -1.123 | 0.263 | 1.000 | ns | 136 | -1.123 | 0.263 | 1.000 | ns |
+| Experimental |  |  |  |  | 6 ano | 8 ano | 136 | 0.900 | 0.370 | 1.000 | ns | 136 | 0.900 | 0.370 | 1.000 | ns |
+| Experimental |  |  |  |  | 6 ano | 9 ano | 136 | 0.261 | 0.795 | 1.000 | ns | 136 | 0.261 | 0.795 | 1.000 | ns |
+| Experimental |  |  |  |  | 7 ano | 8 ano | 136 | 1.894 | 0.060 | 0.362 | ns | 136 | 1.894 | 0.060 | 0.362 | ns |
+| Experimental |  |  |  |  | 7 ano | 9 ano | 136 | 1.241 | 0.217 | 1.000 | ns | 136 | 1.241 | 0.217 | 1.000 | ns |
+| Experimental |  |  |  |  | 8 ano | 9 ano | 136 | -0.565 | 0.573 | 1.000 | ns | 136 | -0.565 | 0.573 | 1.000 | ns |
+|  |  |  |  | 6 ano | Controle | Experimental | 136 | 1.110 | 0.269 | 0.269 | ns | 136 | 1.110 | 0.269 | 0.269 | ns |
+|  |  |  |  | 7 ano | Controle | Experimental | 136 | -0.398 | 0.691 | 0.691 | ns | 136 | -0.398 | 0.691 | 0.691 | ns |
+|  |  |  |  | 8 ano | Controle | Experimental | 136 | 1.019 | 0.310 | 0.310 | ns | 136 | 1.019 | 0.310 | 0.310 | ns |
+|  |  |  |  | 9 ano | Controle | Experimental | 136 | 0.688 | 0.493 | 0.493 | ns | 136 | 0.688 | 0.493 | 0.493 | ns |
 
 ## EMMS Table Comparison
 
@@ -1988,27 +1980,27 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
             names(df)[!names(df) %in% names(lfatores)])]
 ```
 
-| grupo        | Sexo | Zona   | Cor.Raca | Serie |   N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high |  N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | conf.low’ | conf.high’ | N-N’ |
-|:-------------|:-----|:-------|:---------|:------|----:|--------:|---------:|----------:|-----------:|--------:|---------:|---------:|----------:|----:|---------:|----------:|-----------:|------------:|---------:|----------:|----------:|-----------:|-----:|
-| Controle     |      |        |          |       |  30 |   3.259 |    0.095 |     3.916 |      0.061 |   3.986 |    0.042 |    3.900 |     4.071 |  99 |    3.290 |     0.049 |      3.426 |       0.055 |    3.423 |     0.053 |     3.318 |      3.527 |  -69 |
-| Experimental |      |        |          |       |  16 |   3.632 |    0.140 |     3.958 |      0.105 |   3.827 |    0.059 |    3.708 |     3.946 |  46 |    3.271 |     0.089 |      3.284 |       0.099 |    3.291 |     0.078 |     3.137 |      3.445 |  -30 |
-| Controle     | F    |        |          |       |  15 |   3.356 |    0.117 |     3.833 |      0.081 |   3.837 |    0.058 |    3.720 |     3.954 |  45 |    3.310 |     0.069 |      3.389 |       0.076 |    3.375 |     0.079 |     3.219 |      3.531 |  -30 |
-| Controle     | M    |        |          |       |  22 |   3.177 |    0.116 |     3.794 |      0.079 |   3.906 |    0.049 |    3.806 |     4.005 |  54 |    3.273 |     0.069 |      3.456 |       0.079 |    3.462 |     0.072 |     3.319 |      3.604 |  -32 |
-| Experimental | F    |        |          |       |   7 |   3.460 |    0.263 |     3.825 |      0.189 |   3.766 |    0.086 |    3.594 |     3.938 |  17 |    3.046 |     0.167 |      3.218 |       0.188 |    3.341 |     0.130 |     3.084 |      3.598 |  -10 |
-| Experimental | M    |        |          |       |  11 |   3.677 |    0.129 |     3.859 |      0.131 |   3.668 |    0.071 |    3.526 |     3.811 |  29 |    3.402 |     0.096 |      3.323 |       0.115 |    3.262 |     0.099 |     3.066 |      3.457 |  -18 |
-| Controle     |      | Rural  |          |       |  54 |   3.274 |    0.075 |     3.406 |      0.072 |   3.396 |    0.074 |    3.249 |     3.543 |  54 |    3.274 |     0.075 |      3.406 |       0.072 |    3.396 |     0.074 |     3.249 |      3.543 |    0 |
-| Controle     |      | Urbana |          |       |  17 |   3.222 |    0.116 |     3.611 |      0.182 |   3.629 |    0.132 |    3.367 |     3.891 |  17 |    3.222 |     0.116 |      3.611 |       0.182 |    3.629 |     0.132 |     3.367 |      3.891 |    0 |
-| Experimental |      | Rural  |          |       |  29 |   3.360 |    0.097 |     3.280 |      0.121 |   3.224 |    0.102 |    3.022 |     3.426 |  29 |    3.360 |     0.097 |      3.280 |       0.121 |    3.224 |     0.102 |     3.022 |      3.426 |    0 |
-| Experimental |      | Urbana |          |       |   8 |   2.819 |    0.259 |     3.184 |      0.260 |   3.416 |    0.197 |    3.024 |     3.807 |   8 |    2.819 |     0.259 |      3.184 |       0.260 |    3.416 |     0.197 |     3.024 |      3.807 |    0 |
-| Controle     |      |        | Branca   |       |   9 |   3.395 |    0.184 |     3.481 |      0.201 |   3.453 |    0.174 |    3.105 |     3.801 |   9 |    3.395 |     0.184 |      3.481 |       0.201 |    3.453 |     0.174 |     3.105 |      3.801 |    0 |
-| Controle     |      |        | Parda    |       |  46 |   3.346 |    0.081 |     3.478 |      0.081 |   3.469 |    0.077 |    3.316 |     3.623 |  46 |    3.346 |     0.081 |      3.478 |       0.081 |    3.469 |     0.077 |     3.316 |      3.623 |    0 |
-| Experimental |      |        | Branca   |       |   6 |   3.093 |    0.232 |     3.319 |      0.236 |   3.415 |    0.215 |    2.986 |     3.845 |   6 |    3.093 |     0.232 |      3.319 |       0.236 |    3.415 |     0.215 |     2.986 |      3.845 |    0 |
-| Experimental |      |        | Parda    |       |  12 |   3.315 |    0.156 |     3.259 |      0.170 |   3.264 |    0.151 |    2.963 |     3.565 |  12 |    3.315 |     0.156 |      3.259 |       0.170 |    3.264 |     0.151 |     2.963 |      3.565 |    0 |
-| Controle     |      |        |          | 6 ano |  32 |   3.232 |    0.090 |     3.452 |      0.103 |   3.477 |    0.094 |    3.292 |     3.663 |  32 |    3.232 |     0.090 |      3.452 |       0.103 |    3.477 |     0.094 |     3.292 |      3.663 |    0 |
-| Controle     |      |        |          | 7 ano |  31 |   3.336 |    0.087 |     3.480 |      0.104 |   3.455 |    0.095 |    3.266 |     3.643 |  31 |    3.336 |     0.087 |      3.480 |       0.104 |    3.455 |     0.095 |     3.266 |      3.643 |    0 |
-| Controle     |      |        |          | 8 ano |  17 |   3.248 |    0.124 |     3.291 |      0.134 |   3.308 |    0.128 |    3.054 |     3.562 |  17 |    3.248 |     0.124 |      3.291 |       0.134 |    3.308 |     0.128 |     3.054 |      3.562 |    0 |
-| Controle     |      |        |          | 9 ano |  19 |   3.351 |    0.105 |     3.414 |      0.097 |   3.381 |    0.121 |    3.141 |     3.621 |  19 |    3.351 |     0.105 |      3.414 |       0.097 |    3.381 |     0.121 |     3.141 |      3.621 |    0 |
-| Experimental |      |        |          | 6 ano |  15 |   3.526 |    0.150 |     3.410 |      0.151 |   3.292 |    0.138 |    3.019 |     3.565 |  15 |    3.526 |     0.150 |      3.410 |       0.151 |    3.292 |     0.138 |     3.019 |      3.565 |    0 |
-| Experimental |      |        |          | 7 ano |  11 |   3.303 |    0.161 |     3.538 |      0.222 |   3.528 |    0.159 |    3.213 |     3.844 |  11 |    3.303 |     0.161 |      3.538 |       0.222 |    3.528 |     0.159 |     3.213 |      3.844 |    0 |
-| Experimental |      |        |          | 8 ano |  11 |   3.000 |    0.195 |     2.960 |      0.205 |   3.098 |    0.161 |    2.779 |     3.417 |  11 |    3.000 |     0.195 |      2.960 |       0.205 |    3.098 |     0.161 |     2.779 |      3.417 |    0 |
-| Experimental |      |        |          | 9 ano |   9 |   3.136 |    0.194 |     3.160 |      0.216 |   3.233 |    0.177 |    2.883 |     3.582 |   9 |    3.136 |     0.194 |      3.160 |       0.216 |    3.233 |     0.177 |     2.883 |      3.582 |    0 |
+| grupo | Sexo | Zona | Cor.Raca | Serie | N | M (pre) | SE (pre) | M (unadj) | SE (unadj) | M (adj) | SE (adj) | conf.low | conf.high | N’ | M (pre)’ | SE (pre)’ | M (unadj)’ | SE (unadj)’ | M (adj)’ | SE (adj)’ | conf.low’ | conf.high’ | N-N’ |
+|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Controle |  |  |  |  | 30 | 3.259 | 0.095 | 3.916 | 0.061 | 3.986 | 0.042 | 3.900 | 4.071 | 99 | 3.290 | 0.049 | 3.426 | 0.055 | 3.423 | 0.053 | 3.318 | 3.527 | -69 |
+| Experimental |  |  |  |  | 16 | 3.632 | 0.140 | 3.958 | 0.105 | 3.827 | 0.059 | 3.708 | 3.946 | 46 | 3.271 | 0.089 | 3.284 | 0.099 | 3.291 | 0.078 | 3.137 | 3.445 | -30 |
+| Controle | F |  |  |  | 15 | 3.356 | 0.117 | 3.833 | 0.081 | 3.837 | 0.058 | 3.720 | 3.954 | 45 | 3.310 | 0.069 | 3.389 | 0.076 | 3.375 | 0.079 | 3.219 | 3.531 | -30 |
+| Controle | M |  |  |  | 22 | 3.177 | 0.116 | 3.794 | 0.079 | 3.906 | 0.049 | 3.806 | 4.005 | 54 | 3.273 | 0.069 | 3.456 | 0.079 | 3.462 | 0.072 | 3.319 | 3.604 | -32 |
+| Experimental | F |  |  |  | 7 | 3.460 | 0.263 | 3.825 | 0.189 | 3.766 | 0.086 | 3.594 | 3.938 | 17 | 3.046 | 0.167 | 3.218 | 0.188 | 3.341 | 0.130 | 3.084 | 3.598 | -10 |
+| Experimental | M |  |  |  | 11 | 3.677 | 0.129 | 3.859 | 0.131 | 3.668 | 0.071 | 3.526 | 3.811 | 29 | 3.402 | 0.096 | 3.323 | 0.115 | 3.262 | 0.099 | 3.066 | 3.457 | -18 |
+| Controle |  | Rural |  |  | 54 | 3.274 | 0.075 | 3.406 | 0.072 | 3.396 | 0.074 | 3.249 | 3.543 | 54 | 3.274 | 0.075 | 3.406 | 0.072 | 3.396 | 0.074 | 3.249 | 3.543 | 0 |
+| Controle |  | Urbana |  |  | 17 | 3.222 | 0.116 | 3.611 | 0.182 | 3.629 | 0.132 | 3.367 | 3.891 | 17 | 3.222 | 0.116 | 3.611 | 0.182 | 3.629 | 0.132 | 3.367 | 3.891 | 0 |
+| Experimental |  | Rural |  |  | 29 | 3.360 | 0.097 | 3.280 | 0.121 | 3.224 | 0.102 | 3.022 | 3.426 | 29 | 3.360 | 0.097 | 3.280 | 0.121 | 3.224 | 0.102 | 3.022 | 3.426 | 0 |
+| Experimental |  | Urbana |  |  | 8 | 2.819 | 0.259 | 3.184 | 0.260 | 3.416 | 0.197 | 3.024 | 3.807 | 8 | 2.819 | 0.259 | 3.184 | 0.260 | 3.416 | 0.197 | 3.024 | 3.807 | 0 |
+| Controle |  |  | Branca |  | 9 | 3.395 | 0.184 | 3.481 | 0.201 | 3.453 | 0.174 | 3.105 | 3.801 | 9 | 3.395 | 0.184 | 3.481 | 0.201 | 3.453 | 0.174 | 3.105 | 3.801 | 0 |
+| Controle |  |  | Parda |  | 46 | 3.346 | 0.081 | 3.478 | 0.081 | 3.469 | 0.077 | 3.316 | 3.623 | 46 | 3.346 | 0.081 | 3.478 | 0.081 | 3.469 | 0.077 | 3.316 | 3.623 | 0 |
+| Experimental |  |  | Branca |  | 6 | 3.093 | 0.232 | 3.319 | 0.236 | 3.415 | 0.215 | 2.986 | 3.845 | 6 | 3.093 | 0.232 | 3.319 | 0.236 | 3.415 | 0.215 | 2.986 | 3.845 | 0 |
+| Experimental |  |  | Parda |  | 12 | 3.315 | 0.156 | 3.259 | 0.170 | 3.264 | 0.151 | 2.963 | 3.565 | 12 | 3.315 | 0.156 | 3.259 | 0.170 | 3.264 | 0.151 | 2.963 | 3.565 | 0 |
+| Controle |  |  |  | 6 ano | 32 | 3.232 | 0.090 | 3.452 | 0.103 | 3.477 | 0.094 | 3.292 | 3.663 | 32 | 3.232 | 0.090 | 3.452 | 0.103 | 3.477 | 0.094 | 3.292 | 3.663 | 0 |
+| Controle |  |  |  | 7 ano | 31 | 3.336 | 0.087 | 3.480 | 0.104 | 3.455 | 0.095 | 3.266 | 3.643 | 31 | 3.336 | 0.087 | 3.480 | 0.104 | 3.455 | 0.095 | 3.266 | 3.643 | 0 |
+| Controle |  |  |  | 8 ano | 17 | 3.248 | 0.124 | 3.291 | 0.134 | 3.308 | 0.128 | 3.054 | 3.562 | 17 | 3.248 | 0.124 | 3.291 | 0.134 | 3.308 | 0.128 | 3.054 | 3.562 | 0 |
+| Controle |  |  |  | 9 ano | 19 | 3.351 | 0.105 | 3.414 | 0.097 | 3.381 | 0.121 | 3.141 | 3.621 | 19 | 3.351 | 0.105 | 3.414 | 0.097 | 3.381 | 0.121 | 3.141 | 3.621 | 0 |
+| Experimental |  |  |  | 6 ano | 15 | 3.526 | 0.150 | 3.410 | 0.151 | 3.292 | 0.138 | 3.019 | 3.565 | 15 | 3.526 | 0.150 | 3.410 | 0.151 | 3.292 | 0.138 | 3.019 | 3.565 | 0 |
+| Experimental |  |  |  | 7 ano | 11 | 3.303 | 0.161 | 3.538 | 0.222 | 3.528 | 0.159 | 3.213 | 3.844 | 11 | 3.303 | 0.161 | 3.538 | 0.222 | 3.528 | 0.159 | 3.213 | 3.844 | 0 |
+| Experimental |  |  |  | 8 ano | 11 | 3.000 | 0.195 | 2.960 | 0.205 | 3.098 | 0.161 | 2.779 | 3.417 | 11 | 3.000 | 0.195 | 2.960 | 0.205 | 3.098 | 0.161 | 2.779 | 3.417 | 0 |
+| Experimental |  |  |  | 9 ano | 9 | 3.136 | 0.194 | 3.160 | 0.216 | 3.233 | 0.177 | 2.883 | 3.582 | 9 | 3.136 | 0.194 | 3.160 | 0.216 | 3.233 | 0.177 | 2.883 | 3.582 | 0 |

@@ -1,3 +1,4 @@
+
 ---
 title: "ANCOVA in flow (reading) (flow (reading))"
 author: Geiser C. Challco <geiser@alumni.usp.br>
@@ -410,6 +411,25 @@ levene_test(res, .resid ~ grupo)
 ```
 
 
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "fss.media.read",
+    covar = "dfs.media.read",
+    iv = c("grupo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-fssmediaread-from-dfsmediaread-grupo.rds')
+```
+
 # ANCOVA and Pairwise for two factors **grupo:Sexo**
 
 ## Without remove non-normal data
@@ -696,6 +716,26 @@ if (length(unique(pdat[["Sexo"]])) >= 2)
 if (length(unique(pdat[["Sexo"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Sexo)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "fss.media.read",
+    covar = "dfs.media.read",
+    iv = c("grupo","Sexo"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-fssmediaread-from-dfsmediaread-grupo-Sexo.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Zona**
@@ -986,6 +1026,26 @@ if (length(unique(pdat[["Zona"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "fss.media.read",
+    covar = "dfs.media.read",
+    iv = c("grupo","Zona"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-fssmediaread-from-dfsmediaread-grupo-Zona.rds')
+```
+
+
+
 # ANCOVA and Pairwise for two factors **grupo:Cor.Raca**
 
 ## Without remove non-normal data
@@ -1272,6 +1332,26 @@ if (length(unique(pdat[["Cor.Raca"]])) >= 2)
 if (length(unique(pdat[["Cor.Raca"]])) >= 2) 
   levene_test(res, .resid ~ grupo*Cor.Raca)
 ```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "fss.media.read",
+    covar = "dfs.media.read",
+    iv = c("grupo","Cor.Raca"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-fssmediaread-from-dfsmediaread-grupo-CorRaca.rds')
+```
+
 
 
 # ANCOVA and Pairwise for two factors **grupo:Serie**
@@ -1562,6 +1642,26 @@ if (length(unique(pdat[["Serie"]])) >= 2)
 ```
 
 
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(
+  list(
+    test = "ancova",
+    dv = "fss.media.read",
+    covar = "dfs.media.read",
+    iv = c("grupo","Serie"),
+    wid = "id",
+    transformation = "none",
+    outliers = list(method = "none"),
+    non.normality = non.normal,
+    data = dat,
+    wdat = wdat
+  ),
+  file = 'Stari.Grupo-ancova-fssmediaread-from-dfsmediaread-grupo-Serie.rds')
+```
+
+
+
 
 # Summary of Results
 
@@ -1622,6 +1722,12 @@ df <- df[,c(names(lfatores)[names(lfatores) %in% colnames(df)],
 
 ```{r, echo=FALSE, purl=FALSE}
 kable(df, digits = 3)
+```
+
+
+```{r include=FALSE}
+### Saving ancova information
+saveRDS(df, file = '/mnt/c/Users/geise/OneDrive/Workspace/Stari-WG-Fase2/code/aov-stari-flow.read-emms.rds')
 ```
 
 
